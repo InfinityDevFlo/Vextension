@@ -38,15 +38,15 @@ pipeline {
                             repository: NEXUS_REPOSITORY
                             credentialsId: NEXUS_CREDENTIAL_ID
                             artifact {
-                                    artifactId: "vextension-core",
-                                    type: "jar",
-                                    classifier: "",
+                                    artifactId: "vextension-core"
+                                    type: "jar"
+                                    classifier: ""
                                     file: "vextension-core/build/libs/vextension-core.jar"
                             }
                             artifact {
-                                    artifactId: "vextension-core",
-                                    type: "pom",
-                                    classifier: "",
+                                    artifactId: "vextension-core"
+                                    type: "pom"
+                                    classifier: ""
                                     file: "vextension-core/build/pom/pom.xml"
                             }
                         }
