@@ -40,10 +40,6 @@ package eu.vironlab.vextension.rest.wrapper.mojang.user
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 
-interface MojangUser : Nameable {
+data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin): Nameable
 
-    val uuid: UUID
-
-    fun getNameHistory(): NameHistory
-
-}
+data class Skin(val texture: String, val signature: String)

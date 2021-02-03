@@ -46,88 +46,106 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 
 
 class RestClient(val agent: String) {
 
-    fun getJsonArray(url: String): JsonArray {
+    fun getJsonArray(url: String): Optional<JsonArray> {
         return getJsonArray(url, mutableMapOf())
     }
 
-    fun getDocument(url: String): Document {
+    fun getDocument(url: String): Optional<Document> {
         return getDocument(url, mutableMapOf())
     }
 
-    fun <T> getClassInstance(url: String, clazz: Class<T>): T {
+    fun <T> getClassInstance(url: String, clazz: Class<T>): Optional<T> {
         return getClassInstance(url, clazz, mutableMapOf(), Gson())
     }
 
-    fun <T> getClassInstance(url: String, clazz: Class<T>, gson: Gson): T {
+    fun <T> getClassInstance(url: String, clazz: Class<T>, gson: Gson): Optional<T> {
         return getClassInstance(url, clazz, mutableMapOf(), gson)
     }
 
-    fun <T> getClassInstance(url: String, clazz: Class<T>, properties: Map<String, String>): T {
+    fun <T> getClassInstance(url: String, clazz: Class<T>, properties: Map<String, String>): Optional<T> {
         return getClassInstance(url, clazz, properties, Gson())
     }
 
-    fun getJsonArray(urlStr: String, properties: Map<String, String>): JsonArray {
-        val url: URL = URL(urlStr)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = HttpMethod.GET.toString()
-        connection.setRequestProperty("User-Agent", agent)
-        if (!properties.isEmpty()) {
-            properties.forEach { k, v ->
-                connection.setRequestProperty(k, v)
-            }
-        }
-        connection.connect()
-        val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-        val result: JsonArray = JsonParser.parseReader(input).asJsonArray
-        connection.disconnect()
-        return result
-    }
-
-    fun getDocument(urlStr: String, properties: Map<String, String>): Document {
-        val url = URL(urlStr)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = HttpMethod.GET.toString()
-        connection.setRequestProperty("User-Agent", agent)
-        if (!properties.isEmpty()) {
-            properties.forEach { k, v ->
-                connection.setRequestProperty(k, v)
-            }
-        }
-        connection.connect()
-        val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-        val document = DocumentManagement.jsonStorage().read(input)
-        connection.disconnect()
-        return document
-    }
-
-    fun <T> getClassInstance(urlStr: String, clazz: Class<T>, properties: Map<String, String>, gson: Gson): T {
-        val url = URL(urlStr)
-        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = HttpMethod.GET.toString()
-        connection.setRequestProperty("User-Agent", agent)
-        if (!properties.isEmpty()) {
-            properties.forEach { k, v ->
-                connection.setRequestProperty(k, v)
-            }
-        }
-        connection.connect()
-        var content: StringBuilder
+    fun getJsonArray(urlStr: String, properties: Map<String, String>): Optional<JsonArray> {
         try {
-            BufferedReader(InputStreamReader(connection.inputStream)).use { input ->
-                var line: String?
-                content = StringBuilder()
-                while (input.readLine().also { line = it } != null) {
-                    content.append(line)
+            val url: URL = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.GET.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (!properties.isEmpty()) {
+                properties.forEach { k, v ->
+                    connection.setRequestProperty(k, v)
                 }
             }
-        } finally {
+            connection.connect()
+            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
+            val result: JsonArray = JsonParser.parseReader(input).asJsonArray
             connection.disconnect()
+            return Optional.of(result)
+        } catch (e: Exception) {
+            return Optional.ofNullable(null)
         }
-        return gson.fromJson(content.toString(), clazz)
+    }
+
+    fun getDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
+        try {
+            val url = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.GET.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (!properties.isEmpty()) {
+                properties.forEach { k, v ->
+                    connection.setRequestProperty(k, v)
+                }
+            }
+            connection.connect()
+            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
+            val document = DocumentManagement.jsonStorage().read(input)
+            connection.disconnect()
+            return Optional.of(document)
+        } catch (e: Exception) {
+            return Optional.ofNullable(null)
+        }
+    }
+
+    fun <T> getClassInstance(
+        urlStr: String,
+        clazz: Class<T>,
+        properties: Map<String, String>,
+        gson: Gson
+    ): Optional<T> {
+        try {
+            val url = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.GET.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (!properties.isEmpty()) {
+                properties.forEach { k, v ->
+                    connection.setRequestProperty(k, v)
+                }
+            }
+            connection.connect()
+            var content: StringBuilder
+            try {
+                BufferedReader(InputStreamReader(connection.inputStream)).use { input ->
+                    var line: String?
+                    content = StringBuilder()
+                    while (input.readLine().also { line = it } != null) {
+                        content.append(line)
+                    }
+                }
+            } finally {
+                connection.disconnect()
+            }
+            return Optional.of(gson.fromJson(content.toString(), clazz))
+        } catch (e: Exception) {
+            return Optional.ofNullable(null)
+        }
     }
 
 

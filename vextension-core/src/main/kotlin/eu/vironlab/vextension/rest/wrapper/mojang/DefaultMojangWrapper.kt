@@ -37,6 +37,53 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang
 
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
+import eu.vironlab.vextension.rest.wrapper.mojang.user.MojangUser
+import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistory
+import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistoryEntry
+import eu.vironlab.vextension.rest.wrapper.mojang.user.Skin
+import java.util.*
 
-class DefaultMojangWrapper {
+
+class DefaultMojangWrapper : AbstractMojangWrapper() {
+    override fun getPlayer(uuid: UUID): Optional<MojangUser> {
+        val profileRequest = CLIENT.getDocument(PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
+        var result: MojangUser? = null
+        profileRequest.ifPresent {
+            val name = it.getString("name").get()
+            val properties = it.get<MutableList<PropertyToken>>("properties", object : TypeToken<MutableList<PropertyToken>>() {}.type)
+            val skin = Skin(properties.get().get(0).value, properties.get().get(0).signature)
+            val namehistory = getNameHistory(uuid).get()
+            result = MojangUser(uuid, name, namehistory, skin)
+        }
+        return Optional.ofNullable(result)
+    }
+
+    override fun getUUID(name: String): Optional<UUID> {
+        val request = CLIENT.getDocument(UUID_REQUEST_URL + name)
+        var result: UUID? = null
+        request.ifPresent {
+            result = it.getString("id").get().appendToUUID()
+        }
+        return Optional.ofNullable(result)
+    }
+
+    override fun getNameHistory(uuid: UUID): Optional<NameHistory> {
+        val request = CLIENT.getJsonArray(PLAYER_NAME_HISTORY.replace("%uuid%", uuid.toString()))
+        var result: NameHistory? = null
+        request.ifPresent {
+            val firstName: JsonElement = it.first()
+            it.remove(0)
+            val history: MutableList<NameHistoryEntry> = mutableListOf(NameHistoryEntry(firstName.asJsonObject.get("name").asString, 0L))
+            it.forEach { element ->
+                val name = element.asJsonObject.get("name").asString
+                val changedToAt = element.asJsonObject.get("changedToAt").asLong
+                history.add(NameHistoryEntry(name, changedToAt))
+            }
+            result = NameHistory(history)
+        }
+        return Optional.ofNullable(result)
+    }
+
 }

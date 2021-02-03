@@ -38,17 +38,34 @@
 package eu.vironlab.vextension.rest.wrapper.mojang
 
 import eu.vironlab.vextension.rest.RestUtil
+import java.util.*
 
 
 abstract class AbstractMojangWrapper : MojangWrapper {
 
-    companion object {
-        val STATUS_CHECK_URL = "https://status.mojang.com/check"
-        val CLIENT = RestUtil.getDefaultClient()
-    }
+    val STATUS_CHECK_URL = "https://status.mojang.com/check"
+    val UUID_REQUEST_URL = "https://api.mojang.com/users/profiles/minecraft/"
+    val PLAYER_PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/%uuid%?unsigned=false"
+    val PLAYER_NAME_HISTORY = "https://api.mojang.com/user/profiles/%uuid%/names"
+    val CLIENT = RestUtil.getDefaultClient()
 
     override fun getServiceStatus(): MojangServiceStatusList {
-        return CLIENT.getClassInstance(STATUS_CHECK_URL, MojangServiceStatusList::class.java)
+        return CLIENT.getClassInstance(STATUS_CHECK_URL, MojangServiceStatusList::class.java).get()
     }
 
+    protected fun String.appendToUUID(): UUID {
+        var uuid = ""
+        for (i in 0..31) {
+            uuid = uuid + this[i]
+            if (i == 7 || i == 11 || i == 15 || i == 19) {
+                uuid = "$uuid-"
+            }
+        }
+        return UUID.fromString(uuid)
+    }
+
+    inner class PropertyToken(val name: String, val value: String, val signature: String)
+
+
 }
+
