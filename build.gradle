@@ -70,6 +70,7 @@ allprojects {
 
 subprojects {
     apply plugin: "java"
+    apply plugin: "maven"
     apply plugin: "org.jetbrains.kotlin.jvm"
 
 
@@ -106,6 +107,24 @@ subprojects {
 
     jar {
         archiveFileName.set("${project.name}.jar")
+    }
+
+    jar.doLast {
+        pom {
+            project {
+                groupId = group
+                artifactId = project.name
+                version = version
+                inceptionYear '2020'
+                licenses {
+                    license {
+                        name 'GNU General Public License v3.0'
+                        url 'http://www.gnu.de/documents/gpl-3.0.de.html'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("build/pom.xml")
     }
 
     java {
