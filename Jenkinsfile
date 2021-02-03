@@ -20,9 +20,9 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                nexusArtifactUploader (
+                nexusArtifactUploader {
                     nexusVersion('nexus3')
-                    protocol('https')
+                    protocol('http')
                     nexusUrl('repo.vironlab.eu')
                     groupId('eu.vironlab.vextension')
                     version('1.0.1-SNAPSHOT')
@@ -34,7 +34,7 @@ pipeline {
                         classifier('snapshot')
                         file('vextension-core/build/libs/vextension-core.jar')
                     }
-                )
+                }
             }
         }
     }
