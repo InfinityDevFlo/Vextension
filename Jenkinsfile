@@ -40,16 +40,16 @@ pipeline {
                     credentialsId: NEXUS_CREDENTIAL_ID
                     artifacts: [
                         [
-                            artifactId("vextension-core")
-                            type("jar")
-                            classifier("")
-                            file("vextension-core/build/libs/vextension-core.jar")
+                            artifactId: "vextension-core",
+                            type: "jar",
+                            classifier: "",
+                            file: "vextension-core/build/libs/vextension-core.jar"
                         ],
                         [
-                            artifactId("vextension-core")
-                            type("pom")
-                            classifier("")
-                            file("vextension-core/build/pom/pom.xml")
+                            artifactId: "vextension-core",
+                            type: "pom",
+                            classifier: "",
+                            file: "vextension-core/build/pom/pom.xml"
                         ]
                     ]
                 }
