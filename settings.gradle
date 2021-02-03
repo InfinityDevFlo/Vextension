@@ -1,0 +1,6 @@
+rootProject.name = 'Vextension'
+include 'vextension-core'
+include 'vextension-minecraft'
+include 'vextension-minecraft:vextension-server'
+include 'vextension-minecraft:vextension-proxy'
+

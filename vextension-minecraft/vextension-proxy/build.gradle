@@ -1,0 +1,22 @@
+dependencies {
+    implementation project(":vextension-core")
+    implementation(coords_waterfall)
+    implementation(coords_velocity)
+}
+
+jar {
+    def proj = ':vextension-core'
+
+    dependsOn "$proj:build"
+
+    def buildDir = project(proj).buildDir.path
+    from("$buildDir/classes/java/main") {
+        include '**'
+    }
+    from("$buildDir/classes/kotlin/main") {
+        include '**'
+    }
+    from("$buildDir/resources/main") {
+        include '**'
+    }
+}

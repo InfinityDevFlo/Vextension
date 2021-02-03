@@ -1,0 +1,117 @@
+plugins {
+    id "java"
+    id "org.jetbrains.kotlin.jvm" version "1.4.21"
+}
+
+defaultTasks "clean", "build", "jar"
+
+allprojects {
+
+    def major = 0, minor = 0, patch = 1, type = "SNAPSHOT"
+
+    group "eu.vironlab.vextension"
+    version "$major.$minor.$patch-$type"
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name = 'sonatype'
+            url = 'https://oss.sonatype.org/content/groups/public/'
+        }
+        maven {
+            name = 'papermc-repo'
+            url = 'https://papermc.io/repo/repository/maven-public/'
+        }
+        maven {
+            name = 'destroystokyo-repo'
+            url = 'https://repo.destroystokyo.com/repository/maven-public/'
+        }
+        maven {
+            name = 'velocitypowered-repo'
+            url = 'https://repo.velocitypowered.com/releases/'
+        }
+        maven {
+            name = 'minecraft-libraries'
+            url = 'https://libraries.minecraft.net/'
+        }
+        maven {
+            name = 'spongepowered-repo'
+            url = 'https://repo.spongepowered.org/maven'
+        }
+    }
+
+    ext.gitCommitHash = { ->
+        try {
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine "git", "rev-parse", "--short", "HEAD"
+                standardOutput = stdout
+            }
+            return stdout.toString().trim()
+        } catch (Exception ignored) {
+            return "unknown"
+        }
+    }
+
+
+    ext {
+        coords_mongo = "org.mongodb:mongodb-driver-sync:3.12.7"
+        coords_gson = "com.google.code.gson:gson:2.8.6"
+        coords_snakeyml = "org.yaml:snakeyaml:1.27"
+
+        //Minecraft APIs
+        coords_bukkit = "com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT"
+        coords_waterfall = "io.github.waterfallmc:waterfall-api:1.16-R0.4-SNAPSHOT"
+        coords_velocity = "com.velocitypowered:velocity-api:1.1.0"
+    }
+
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "org.jetbrains.kotlin.jvm"
+
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.allSource
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+    }
+
+    dependencies {
+        compile("org.jetbrains.kotlin:kotlin-stdlib:1.4.21")
+        compile("org.jetbrains.kotlin:kotlin-serialization:1.4.21")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    }
+
+    jar.doFirst {
+        manifest {
+            attributes "Implementation-Title": project.name
+            attributes "Implementation-Version": version
+            attributes "Specification-Version": version
+            attributes "Implementation-Vendor": "VironLab.eu"
+            attributes "Built-By": System.getProperty("user.name")
+            attributes "Build-Jdk": System.getProperty("java.version")
+            attributes "Created-By": "Gradle " + gradle.gradleVersion
+        }
+    }
+
+    jar {
+        archiveFileName.set("${project.name}.jar")
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+
+
+}
