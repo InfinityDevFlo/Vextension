@@ -29,7 +29,7 @@ pipeline {
             }
         }
         stage("Publish") {
-            script {
+            steps {
                 nexusArtifactUploader {
                     nexusVersion: NEXUS_VERSION
                     protocol: NEXUS_PROTOCOL
