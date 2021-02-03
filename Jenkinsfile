@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label "main"
-    }
+    agent any
 
     environment {
         NEXUS_VERSION = "nexus3"
