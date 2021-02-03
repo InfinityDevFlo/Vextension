@@ -35,7 +35,21 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedAnnotationTypes
+import javax.lang.model.element.TypeElement
+
 annotation class NewDatabaseObject()
+
+@SupportedAnnotationTypes("eu.vironlab.vextension.database.NewDatabaseObject")
+class DatabaseObjectProcessor : AbstractProcessor() {
+
+    override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
+        TODO("Add Constructor to Objects")
+        return true
+    }
+
+}
