@@ -35,7 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.vironlab
+package eu.vironlab.vextension.rest.wrapper.vironlab
 
 interface VironLabAPI {
 }

@@ -46,9 +46,7 @@ import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
 import eu.vironlab.vextension.database.sql.SqlDatabaseClient
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.builder.sidebar
-import eu.vironlab.vextension.vironlab.VironLabAPI
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 

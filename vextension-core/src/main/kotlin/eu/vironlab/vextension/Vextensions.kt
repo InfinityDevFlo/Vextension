@@ -6,7 +6,7 @@ import eu.vironlab.vextension.database.DatabaseClientType
 import eu.vironlab.vextension.database.DatabaseConnectionData
 import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
 import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.vironlab.VironLabAPI
+import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
 
 object VextensionAPI {
 
