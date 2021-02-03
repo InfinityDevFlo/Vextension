@@ -35,15 +35,81 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.collection
 
-/**
- * Put two objects in the same class instance
- */
-data class DataPair<F, S>(var first: F, var second: S)
+import java.util.*
 
-/**
- * Put three objects in the same class instance
- */
-data class DataTriple<F, S, T>(var first: F, var second: S, var third: F)
+
+class TripleMap<K, F, S> {
+
+    var wrapped: MutableMap<K, DataPair<F, S>> = mutableMapOf()
+
+    fun entrySet(): Set<Map.Entry<K, DataPair<F, S>>> {
+        return wrapped.entries
+    }
+
+    fun clear() {
+        wrapped.clear()
+    }
+
+    fun size(): Int {
+        return wrapped.size
+    }
+
+    fun add(key: K, valueF: F, valueS: S) {
+        wrapped[key] = DataPair(valueF, valueS)
+    }
+
+    fun remove(key: K) {
+        wrapped.remove(key)
+    }
+
+    fun keySet(): Set<K> {
+        return wrapped.keys
+    }
+
+    operator fun contains(key: K): Boolean {
+        return wrapped.containsKey(key)
+    }
+
+    operator fun get(key: K): Optional<DataPair<F, S>> {
+        return Optional.ofNullable(wrapped[key])
+    }
+
+    fun getFirst(key: K): Optional<F> {
+        if (wrapped.containsKey(key)) {
+            return Optional.ofNullable(wrapped[key]!!.first)
+        }else {
+            return Optional.ofNullable(null)
+        }
+    }
+
+    fun getSecond(key: K): Optional<S> {
+        if (wrapped.containsKey(key)) {
+            return Optional.ofNullable(wrapped[key]!!.second)
+        }else {
+            return Optional.ofNullable(null)
+        }
+    }
+
+    fun replaceFirst(key: K, value: F) {
+        if (wrapped.containsKey(key)) {
+            wrapped[key]!!.first = value
+        }
+    }
+
+    fun replaceSecond(key: K, value: S) {
+        if (wrapped.containsKey(key)) {
+            wrapped[key]!!.second = value
+        }
+    }
+
+    fun replace(key: K, valueF: F, valueS: S) {
+        if (wrapped.containsKey(key)) {
+            wrapped[key]!!.first = valueF
+            wrapped[key]!!.second = valueS
+        }
+    }
+
+
+}
