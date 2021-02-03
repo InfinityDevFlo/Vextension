@@ -1,5 +1,6 @@
 plugins {
     id "java"
+    id "maven"
     id "org.jetbrains.kotlin.jvm" version "1.4.21"
 }
 
@@ -72,6 +73,24 @@ allprojects {
         coords_velocity = "com.velocitypowered:velocity-api:1.1.0"
     }
 
+    jar.doLast {
+        pom {
+            project {
+                groupId = group
+                artifactId = project.name
+                version = project_version
+                inceptionYear "2021"
+                licenses {
+                    license {
+                        name 'GNU General Public License v3.0'
+                        url 'http://www.gnu.de/documents/gpl.de.html'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("build/pom/pom.xml")
+    }
+
 }
 
 subprojects {
@@ -113,24 +132,6 @@ subprojects {
 
     jar {
         archiveFileName.set("${project.name}.jar")
-    }
-
-    jar.doLast {
-        pom {
-            project {
-                groupId = group
-                artifactId = project.name
-                version = project_version
-                inceptionYear "2021"
-                licenses {
-                    license {
-                        name 'GNU General Public License v3.0'
-                        url 'http://www.gnu.de/documents/gpl.de.html'
-                        distribution 'repo'
-                    }
-                }
-            }
-        }.writeTo("build/pom/pom.xml")
     }
 
 }
