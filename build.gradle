@@ -60,6 +60,8 @@ allprojects {
 
 
     ext {
+        project_version = "$major.$minor.$patch-$type"
+
         coords_mongo = "org.mongodb:mongodb-driver-sync:3.12.7"
         coords_gson = "com.google.code.gson:gson:2.8.6"
         coords_snakeyml = "org.yaml:snakeyaml:1.27"
@@ -111,6 +113,24 @@ subprojects {
 
     jar {
         archiveFileName.set("${project.name}.jar")
+    }
+
+    jar.doLast {
+        pom {
+            project {
+                groupId = group
+                artifactId = project.name
+                version = project_version
+                inceptionYear "2021"
+                licenses {
+                    license {
+                        name 'GNU General Public License v3.0'
+                        url 'http://www.gnu.de/documents/gpl.de.html'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("build/pom/pom.xml")
     }
 
 }
