@@ -30,28 +30,30 @@ pipeline {
         }
         stage("Publish") {
             steps {
-                nexusArtifactUploader {
-                    nexusVersion: NEXUS_VERSION
-                    protocol: NEXUS_PROTOCOL
-                    nexusUrl: NEXUS_URL
-                    groupId("eu.vironlab.vextension")
-                    version("1.0.1-SNAPSHOT")
-                    repository: NEXUS_REPOSITORY
-                    credentialsId: NEXUS_CREDENTIAL_ID
-                    artifacts: [
-                        [
-                            artifactId: "vextension-core",
-                            type: "jar",
-                            classifier: "",
-                            file: "vextension-core/build/libs/vextension-core.jar"
-                        ],
-                        [
-                            artifactId: "vextension-core",
-                            type: "pom",
-                            classifier: "",
-                            file: "vextension-core/build/pom/pom.xml"
-                        ]
-                    ]
+                step {
+                        nexusArtifactUploader {
+                            nexusVersion: NEXUS_VERSION
+                            protocol: NEXUS_PROTOCOL
+                            nexusUrl: NEXUS_URL
+                            groupId("eu.vironlab.vextension")
+                            version("1.0.1-SNAPSHOT")
+                            repository: NEXUS_REPOSITORY
+                            credentialsId: NEXUS_CREDENTIAL_ID
+                            artifacts: [
+                                [
+                                    artifactId: "vextension-core",
+                                    type: "jar",
+                                    classifier: "",
+                                    file: "vextension-core/build/libs/vextension-core.jar"
+                                ],
+                                [
+                                    artifactId: "vextension-core",
+                                    type: "pom",
+                                    classifier: "",
+                                    file: "vextension-core/build/pom/pom.xml"
+                                ]
+                            ]
+                        }
                 }
             }
         }
