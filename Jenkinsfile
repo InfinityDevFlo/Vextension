@@ -33,8 +33,8 @@ pipeline {
                             nexusVersion: NEXUS_VERSION
                             protocol: NEXUS_PROTOCOL
                             nexusUrl: NEXUS_URL
-                            groupId: "eu.vironlab.vextension")
-                            version: "1.0.1-SNAPSHOT")
+                            groupId: "eu.vironlab.vextension"
+                            version: "1.0.1-SNAPSHOT"
                             repository: NEXUS_REPOSITORY
                             credentialsId: NEXUS_CREDENTIAL_ID
                             artifacts: [
