@@ -1,31 +1,33 @@
 pipeline {
+    agent any
+
     stages {
-        stage("Clean") {
+        stage('Clean') {
             steps {
-                sh "chmod +x ./gradlew";
-                sh "./gradlew clean";
+                sh 'chmod +x ./gradlew';
+                sh './gradlew clean';
             }
         }
-        stage("Build") {
+        stage('Build') {
             steps {
-                sh "./gradlew jar";
+                sh './gradlew jar';
             }
         }
-        stage("Sources") {
+        stage('Sources') {
             steps {
-                sh "./gradlew sourceJar";
+                sh './gradlew sourceJar';
             }
         }
-        stage("Deploy") {
+        stage('Deploy') {
             steps {
                 nexusArtifactUploader {
-                    nexusVersion("nexus3")
-                    protocol("https")
-                    nexusUrl("repo.vironlab.eu")
-                    groupId("eu.vironlab.vextension")
-                    version("1.0.1-SNAPSHOT")
-                    repository("Nexus")
-                    credentialsId("jenkins")
+                    nexusVersion('nexus3')
+                    protocol('https')
+                    nexusUrl('repo.vironlab.eu')
+                    groupId('eu.vironlab.vextension')
+                    version('1.0.1-SNAPSHOT')
+                    repository('Nexus')
+                    credentialsId('jenkins')
                     artifact {
                         artifactId('vextension-core')
                         type('jar')
