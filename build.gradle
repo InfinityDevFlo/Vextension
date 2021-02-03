@@ -7,7 +7,7 @@ defaultTasks "clean", "build", "jar"
 
 allprojects {
 
-    def major = 0, minor = 0, patch = 1, type = "SNAPSHOT"
+    def major = 1, minor = 0, patch = 0, type = "SNAPSHOT"
 
     group "eu.vironlab.vextension"
     version "$major.$minor.$patch-$type"
@@ -38,6 +38,10 @@ allprojects {
         maven {
             name = 'spongepowered-repo'
             url = 'https://repo.spongepowered.org/maven'
+        }
+        maven {
+            name = "vironlab"
+            url = "https://repo.vironlab.eu/repository/snapshot/"
         }
     }
 
@@ -108,29 +112,5 @@ subprojects {
     jar {
         archiveFileName.set("${project.name}.jar")
     }
-
-    jar.doLast {
-        pom {
-            project {
-                groupId = group
-                artifactId = project.name
-                version = version
-                inceptionYear '2020'
-                licenses {
-                    license {
-                        name 'GNU General Public License v3.0'
-                        url 'http://www.gnu.de/documents/gpl-3.0.de.html'
-                        distribution 'repo'
-                    }
-                }
-            }
-        }.writeTo("build/pom.xml")
-    }
-
-    java {
-        withSourcesJar()
-    }
-
-
 
 }

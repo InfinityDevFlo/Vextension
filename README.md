@@ -8,6 +8,23 @@
 
 --- 
 
+```gradle
+
+//Repository
+maven {
+    name = "vironlab"
+    url = "https://repo.vironlab.eu/repository/snapshot/"
+}
+
+//Dependency - Core 
+compile("eu.vironlab.vextension:vextension-core:1.0.0-SNAPSHOT")
+
+//Dependency - Minecraft - Server
+compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
+
+//Dependency - Minecraft - Proxy
+compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
+```
 
 # Project is no Stable Version
 
