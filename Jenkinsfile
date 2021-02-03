@@ -20,21 +20,21 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                nexusArtifactUploader {
-                    nexusVersion('nexus3');
-                    protocol('https');
-                    nexusUrl('repo.vironlab.eu');
-                    groupId('eu.vironlab.vextension');
-                    version('1.0.1-SNAPSHOT');
-                    repository('Nexus');
-                    credentialsId('jenkins');
+                nexusArtifactUploader (
+                    nexusVersion('nexus3')
+                    protocol('https')
+                    nexusUrl('repo.vironlab.eu')
+                    groupId('eu.vironlab.vextension')
+                    version('1.0.1-SNAPSHOT')
+                    repository('Nexus')
+                    credentialsId('jenkins')
                     artifact {
-                        artifactId('vextension-core');
-                        type('jar');
-                        classifier('snapshot');
-                        file('vextension-core/build/libs/vextension-core.jar');
+                        artifactId('vextension-core')
+                        type('jar')
+                        classifier('snapshot')
+                        file('vextension-core/build/libs/vextension-core.jar')
                     }
-                }
+                )
             }
         }
     }
