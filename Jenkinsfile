@@ -55,7 +55,7 @@ pipeline {
                                             [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft-server/build/libs/vextension-server.jar",
+                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar",
                                                     type      : "jar"
                                             ],
                                             [
@@ -67,7 +67,7 @@ pipeline {
                                             [
                                                     artifactId: "vextension-minecraft-proxy",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-proxy.jar",
+                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar",
                                                     type      : "jar"
                                             ],
                                             [
