@@ -76,7 +76,7 @@ allprojects {
     jar.doLast {
         pom {
             project {
-                groupId = group
+                groupId = "eu.vironlab.vextension"
                 artifactId = project.name
                 version = project_version
                 inceptionYear "2021"
