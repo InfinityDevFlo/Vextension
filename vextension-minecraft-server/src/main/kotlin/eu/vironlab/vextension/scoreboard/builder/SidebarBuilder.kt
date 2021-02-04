@@ -54,7 +54,7 @@ class SidebarBuilder : Builder<Sidebar> {
         val builder: LineBuilder = LineBuilder()
         builder.init()
         val line = builder.build()
-        this.lines.put(line.name, line)
+        this.lines[line.name] = line
     }
 
     fun addEmptyLine(name: String, score: Int) {
