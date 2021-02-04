@@ -72,25 +72,6 @@ allprojects {
         coords_waterfall = "io.github.waterfallmc:waterfall-api:1.16-R0.4-SNAPSHOT"
         coords_velocity = "com.velocitypowered:velocity-api:1.1.0"
     }
-
-    jar.doLast {
-        pom {
-            project {
-                groupId = "eu.vironlab.vextension"
-                artifactId = project.name
-                version = project_version
-                inceptionYear "2021"
-                licenses {
-                    license {
-                        name 'GNU General Public License v3.0'
-                        url 'http://www.gnu.de/documents/gpl.de.html'
-                        distribution 'repo'
-                    }
-                }
-            }
-        }.writeTo("build/pom/pom.xml")
-    }
-
 }
 
 subprojects {
@@ -133,5 +114,24 @@ subprojects {
     jar {
         archiveFileName.set("${project.name}.jar")
     }
+
+    jar.doLast {
+        pom {
+            project {
+                groupId = "eu.vironlab.vextension"
+                artifactId = project.name
+                version = project_version
+                inceptionYear "2021"
+                licenses {
+                    license {
+                        name 'GNU General Public License v3.0'
+                        url 'http://www.gnu.de/documents/gpl.de.html'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo("build/pom/pom.xml")
+    }
+
 
 }
