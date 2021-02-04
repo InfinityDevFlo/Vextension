@@ -4,9 +4,10 @@ pipeline {
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "repo.vironlab.eu"
+        NEXUS_URL = "localhost:8081"
         NEXUS_REPOSITORY = "snapshot"
         NEXUS_CREDENTIAL_ID = "jenkins"
+        PROJECT_VERSION = "1.0.0-SNAPSHOT"
     }
 
     stages {
@@ -29,37 +30,54 @@ pipeline {
         stage("Publish") {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactExists = fileExists artifactPath;
-
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version: ${pom.version}"
-                        nexusArtifactUploader {
-                            nexusVersion: NEXUS_VERSION
-                            protocol: NEXUS_PROTOCOL
-                            nexusUrl: NEXUS_URL
-                            groupId: pom.groupId
-                            version: pom.version
-                            repository: NEXUS_REPOSITORY
-                            credentialsId: NEXUS_CREDENTIAL_ID
-                            artifact {
-                                    artifactId: "vextension-core",
-                                    type: "jar",
-                                    classifier: "",
-                                    file: "vextension-core/build/libs/vextension-core.jar"
-                            }
-                            artifact {
-                                    artifactId: "vextension-core",
-                                    type: "pom",
-                                    classifier: "",
-                                    file: "vextension-core/build/pom/pom.xml"
-                            }
-                        }
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found"
-                    }
+                    nexusArtifactUploader(
+                            nexusVersion: NEXUS_VERSION,
+                            protocol: NEXUS_PROTOCOL,
+                            nexusUrl: NEXUS_URL,
+                            groupId: "eu.vironlab.vextension",
+                            version: PROJECT_VERSION,
+                            repository: NEXUS_REPOSITORY,
+                            credentialsId: NEXUS_CREDENTIAL_ID,
+                            artifacts:
+                                    [
+                                            [
+                                                    artifactId: "vextension-core",
+                                                    classifier: '',
+                                                    file      : "vextension-core/build/libs/vextension-core.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-core",
+                                                    classifier: '',
+                                                    file      : "vextension-core/build/pom/pom.xml",
+                                                    type      : "pom"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-minecraft-server",
+                                                    classifier: '',
+                                                    file      : "vextension-minecraft/vextension-server/build/libs/vextension-core.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-minecraft-server",
+                                                    classifier: '',
+                                                    file      : "vextension-minecraft/vextension-server/build/pom/pom.xml",
+                                                    type      : "pom"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-minecraft-proxy",
+                                                    classifier: '',
+                                                    file      : "vextension-minecraft/vextension-proxy/build/libs/vextension-core.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-minecraft-proxy",
+                                                    classifier: '',
+                                                    file      : "vextension-minecraft/vextension-proxy/build/pom/pom.xml",
+                                                    type      : "pom"
+                                            ]
+                                    ]
+                    );
                 }
             }
         }
