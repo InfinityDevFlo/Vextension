@@ -55,25 +55,25 @@ pipeline {
                                             [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft/vextension-server/build/libs/vextension-server.jar",
+                                                    file      : "vextension-minecraft-server/build/libs/vextension-server.jar",
                                                     type      : "jar"
                                             ],
                                             [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft/vextension-server/build/pom/pom.xml",
+                                                    file      : "vextension-minecraft-server/build/pom/pom.xml",
                                                     type      : "pom"
                                             ],
                                             [
                                                     artifactId: "vextension-minecraft-proxy",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft/vextension-proxy/build/libs/vextension-proxy.jar",
+                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-proxy.jar",
                                                     type      : "jar"
                                             ],
                                             [
                                                     artifactId: "vextension-minecraft-proxy",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft/vextension-proxy/build/pom/pom.xml",
+                                                    file      : "vextension-minecraft-proxy/build/pom/pom.xml",
                                                     type      : "pom"
                                             ]
                                     ]
