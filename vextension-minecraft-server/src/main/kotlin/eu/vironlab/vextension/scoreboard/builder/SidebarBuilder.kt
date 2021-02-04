@@ -57,6 +57,14 @@ class SidebarBuilder : Builder<Sidebar> {
         this.lines.put(line.name, line)
     }
 
+    fun addEmptyLine(name: String, score: Int) {
+        addLine {
+            this.score = score
+            this.content = " "
+            this.name = name
+        }
+    }
+
     override fun build(): Sidebar {
         val finalLines: MutableMap<String, DataPair<String, SidebarLine>> = mutableMapOf()
         val usedColors: MutableList<String> = mutableListOf()
