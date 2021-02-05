@@ -37,9 +37,20 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang.user
 
+import eu.vironlab.vextension.database.DatabaseObject
+import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 
-data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin): Nameable
+data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin): Nameable, DatabaseObject {
+    override fun init(document: Document) {
+        TODO("Not yet implemented")
+    }
+
+    override fun toDocument(): Document {
+        TODO("Not yet implemented")
+    }
+
+}
 
 data class Skin(val texture: String, val signature: String)
