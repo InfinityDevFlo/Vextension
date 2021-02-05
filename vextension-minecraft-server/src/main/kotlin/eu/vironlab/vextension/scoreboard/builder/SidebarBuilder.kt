@@ -43,6 +43,9 @@ import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.bukkit.BukkitSidebar
+import eu.vironlab.vextension.scoreboard.sponge.SpongeSidebar
+import eu.vironlab.vextension.util.ServerType
+import eu.vironlab.vextension.util.ServerUtil
 
 
 class SidebarBuilder : Builder<Sidebar> {
@@ -73,7 +76,11 @@ class SidebarBuilder : Builder<Sidebar> {
             usedColors.add(color)
             finalLines.put(it.key, DataPair(color, it.value))
         }
-        return BukkitSidebar(finalLines, usedColors, title)
+        return if(ServerUtil.getServerType().equals(ServerType.BUKKIT))  {
+            BukkitSidebar(finalLines, usedColors, title)
+        }else {
+            SpongeSidebar(finalLines, usedColors, title)
+        }
     }
 
 }

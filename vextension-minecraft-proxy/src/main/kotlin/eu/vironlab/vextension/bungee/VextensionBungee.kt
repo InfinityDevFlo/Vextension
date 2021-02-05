@@ -35,38 +35,34 @@
  *<p>
  */
 
-package eu.vironlab.vextension.bukkit
+package eu.vironlab.vextension.bungee
 
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
+import eu.vironlab.vextension.bungee.extension.injectPipeline
 import eu.vironlab.vextension.database.ClientNotInitializedException
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.DatabaseClientType
 import eu.vironlab.vextension.database.DatabaseConnectionData
 import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
 import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.rest.wrapper.mojang.DefaultMojangWrapper
-import eu.vironlab.vextension.rest.wrapper.mojang.MojangWrapper
-import eu.vironlab.vextension.scoreboard.Sidebar
-import eu.vironlab.vextension.scoreboard.builder.sidebar
-import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
-import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
+import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.event.LoginEvent
+import net.md_5.bungee.api.event.PostLoginEvent
+import net.md_5.bungee.api.plugin.Listener
+import net.md_5.bungee.api.plugin.Plugin
+import net.md_5.bungee.event.EventHandler
 
 
-class VextensionBukkit : JavaPlugin(), Vextension {
-
+class VextensionBungee : Plugin() , Vextension, Listener {
     private var databaseClient: DatabaseClient? = null
 
-    companion object {
-        @JvmStatic
-        lateinit var instance: VextensionBukkit
-    }
 
     override fun onLoad() {
-        instance = this
         VextensionAPI.instance = this
+        proxy.pluginManager.registerListener(this, this)
     }
+
 
     override fun getDatabaseClient(): DatabaseClient {
         return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
@@ -75,9 +71,9 @@ class VextensionBukkit : JavaPlugin(), Vextension {
 
     override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
         when(type) {
-             DatabaseClientType.SQL -> {
-                 this.databaseClient = SqlDatabaseClient(connectionData.toSql())
-             }
+            DatabaseClientType.SQL -> {
+                this.databaseClient = SqlDatabaseClient(connectionData.toSql())
+            }
             DatabaseClientType.MONGO -> {
                 this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
             }

@@ -35,38 +35,35 @@
  *<p>
  */
 
-package eu.vironlab.vextension.bukkit
+package eu.vironlab.vextension.velocity
 
+import com.google.inject.Inject
+import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.proxy.ProxyServer
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.ClientNotInitializedException
-import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.DatabaseClientType
-import eu.vironlab.vextension.database.DatabaseConnectionData
+import eu.vironlab.vextension.database.*
 import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
 import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.rest.wrapper.mojang.DefaultMojangWrapper
-import eu.vironlab.vextension.rest.wrapper.mojang.MojangWrapper
-import eu.vironlab.vextension.scoreboard.Sidebar
-import eu.vironlab.vextension.scoreboard.builder.sidebar
-import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
-import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
+import org.slf4j.Logger
 
-
-class VextensionBukkit : JavaPlugin(), Vextension {
-
+@Plugin(
+    name = "Vextension-Velocity",
+    authors = arrayOf("VironLab"),
+    id = "vextension_velocity",
+    description = "Vextension for Velocity",
+    version = "1.0.0-SNAPSHOT"
+)
+class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
     private var databaseClient: DatabaseClient? = null
 
-    companion object {
-        @JvmStatic
-        lateinit var instance: VextensionBukkit
-    }
 
-    override fun onLoad() {
-        instance = this
+    init {
         VextensionAPI.instance = this
     }
+
 
     override fun getDatabaseClient(): DatabaseClient {
         return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
@@ -74,13 +71,15 @@ class VextensionBukkit : JavaPlugin(), Vextension {
 
 
     override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        when(type) {
-             DatabaseClientType.SQL -> {
-                 this.databaseClient = SqlDatabaseClient(connectionData.toSql())
-             }
+        when (type) {
+            DatabaseClientType.SQL -> {
+                this.databaseClient = SqlDatabaseClient(connectionData.toSql())
+            }
             DatabaseClientType.MONGO -> {
                 this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
             }
         }
     }
+
+
 }
