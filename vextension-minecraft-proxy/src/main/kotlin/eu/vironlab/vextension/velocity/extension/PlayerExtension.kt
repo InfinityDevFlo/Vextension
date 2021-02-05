@@ -38,8 +38,15 @@
 package eu.vironlab.vextension.velocity.extension
 
 import com.velocitypowered.api.proxy.Player
+import eu.vironlab.vextension.bungee.extension.injectPipeline
 import io.netty.channel.Channel
+import java.lang.reflect.Field
 
 fun Player.injectPipeline(): Channel {
-TODO("Not yet implemented")
+    val minecraftConnectionField = this::class.java.getDeclaredField("connection")
+    minecraftConnectionField.isAccessible = true
+    val minecraftConnection = minecraftConnectionField.get(this)
+    val channelField = minecraftConnection::class.java.getDeclaredField("channel")
+    channelField.isAccessible = true
+    return channelField.get(minecraftConnection) as Channel
 }
