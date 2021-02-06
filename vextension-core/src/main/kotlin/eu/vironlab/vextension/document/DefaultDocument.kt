@@ -42,7 +42,6 @@ import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import eu.vironlab.vextension.database.DatabaseObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import eu.vironlab.vextension.document.storage.WrappedSpecificDocumentStorage
@@ -654,17 +653,6 @@ open class DefaultDocument: Document {
     fun toByteArray(): ByteArray {
         return toJsonString().toByteArray(StandardCharsets.UTF_8)
     }
-
-    override fun init(document: Document) {
-        document.forEach {
-            insert(it, document.get(it))
-        }
-    }
-
-    override fun toDocument(): Document {
-        return this
-    }
-
 
     override fun toString(): String {
         return toJson()

@@ -35,20 +35,15 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.sql
+package eu.vironlab.vextension.database.mongo
 
-import eu.vironlab.vextension.concurrent.AsyncTask
-import eu.vironlab.vextension.database.Database
-import eu.vironlab.vextension.database.DatabaseObject
+import eu.vironlab.vextension.database.AbstractDatabase
 import java.util.*
 import java.util.function.BiConsumer
 
 
-class SqlDatabase<T: DatabaseObject>(
-    override val name: String,
-    val client: SqlDatabaseClient
-) : Database<T> {
-
+class MongoDatabase<T>(override val name: String, val mongoClient: MongoClient, parsedClass: Class<T>) :
+    AbstractDatabase<T>(name) {
     override fun insert(key: String, obj: T): Boolean {
         TODO("Not yet implemented")
     }
@@ -93,47 +88,4 @@ class SqlDatabase<T: DatabaseObject>(
         TODO("Not yet implemented")
     }
 
-    override fun insertAsync(key: String, obj: T): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAsync(key: String): AsyncTask<Optional<T>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAsync(field: String, value: String): AsyncTask<Collection<T>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAllObjectsAsync(): AsyncTask<MutableMap<String, T>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun keysAsync(): AsyncTask<Collection<String>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateAsync(key: String, newObj: T): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteAsync(key: String): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun containsAsync(key: String): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun clearAsync(): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDocumentsCountAsync(): AsyncTask<Long> {
-        TODO("Not yet implemented")
-    }
-
-    override fun forEachAsync(consumer: BiConsumer<String, T>): AsyncTask<Boolean> {
-        TODO("Not yet implemented")
-    }
 }

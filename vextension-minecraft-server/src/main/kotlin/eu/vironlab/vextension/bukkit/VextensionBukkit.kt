@@ -37,13 +37,11 @@
 
 package eu.vironlab.vextension.bukkit
 
+import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.database.ClientNotInitializedException
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.DatabaseClientType
-import eu.vironlab.vextension.database.DatabaseConnectionData
-import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
-import eu.vironlab.vextension.database.sql.SqlDatabaseClient
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.builder.sidebar
 import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
@@ -62,36 +60,15 @@ class VextensionBukkit : JavaPlugin(), Vextension {
 
     override fun onLoad() {
         instance = this
-        val sidebar: Sidebar = sidebar {
-            this.title = "Ein Toller Titel"
-            addLine {
-                this.name = "PlayerName"
-                this.content = "§b%name%"
-                this.score = 15
-                 proceed { line, playerId ->
-                     line.content.replace("%name%", Bukkit.getPlayer(playerId)!!.name)
-                 }
-            }
-        }
     }
 
     override fun getDatabaseClient(): DatabaseClient {
         return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
-    override fun getVironLabAPI(): VironLabAPI {
-        TODO("Not yet implemented")
-    }
 
 
     override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        when(type) {
-             DatabaseClientType.SQL -> {
-                 this.databaseClient = SqlDatabaseClient(connectionData.toSql())
-             }
-            DatabaseClientType.MONGO -> {
-                this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
-            }
-        }
+        TODO("Not yet implemented")
     }
 }

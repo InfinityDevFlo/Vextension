@@ -39,3 +39,5 @@
 package eu.vironlab.vextension.database
 
 class InvalidDatabaseObjectException(message: String) : Exception(message)
+
+class ClientNotInitializedException(message: String) : Exception(message)

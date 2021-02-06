@@ -35,22 +35,9 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.lang.Nameable
-import java.io.Serializable
+import eu.vironlab.vextension.document.DefaultDocument
 
-/**
- * Only an instance of the class can stored into the Database by the DatabaseClient <p>
- *
- * Make sure you have an Empty constructor
- */
-interface DatabaseObject : Serializable {
 
-    fun init(document: Document)
-
-    fun toDocument(): Document
-
-}
+class BasicDatabaseObject(val key: String, val document: DefaultDocument)

@@ -314,12 +314,4 @@ class ConfigDocument(val file: File) : Document {
     override fun getKeys(): MutableCollection<String> {
         return wrapped.getKeys()
     }
-
-    override fun init(document: Document) {
-        wrapped = document
-    }
-
-    override fun toDocument(): Document {
-        return wrapped
-    }
 }

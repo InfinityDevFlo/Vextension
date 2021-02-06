@@ -39,8 +39,7 @@
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
-import eu.vironlab.vextension.concurrent.AsyncUtil
-import eu.vironlab.vextension.document.DefaultDocument
+import eu.vironlab.vextension.concurrent.scheduleAsync
 
 /**
  * Client to Connect to the Database <p>
@@ -51,12 +50,17 @@ import eu.vironlab.vextension.document.DefaultDocument
  * you can use the Following Clients: <p>
  *
  *
- * @sample eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
+ * @sample eu.vironlab.vextension.database.old_mongodb.MongoDatabaseClient
  *
  * @sample eu.vironlab.vextension.database.sql.SqlDatabaseClient <p>
  *
  */
 interface DatabaseClient {
+
+    /**
+     * This method is called when the Client will be initialized
+     */
+    fun init()
 
     /**
      * Use this Method to get a Database instance from the Client <p>
@@ -68,7 +72,7 @@ interface DatabaseClient {
      *
      * @return The Database instance, wich will be created if the Database does not exists
      */
-    fun <T : DatabaseObject> getDatabase(name: String, parsedClass: Class<T>): Database<T>
+    fun <T> getDatabase(name: String, parsedClass: Class<T>): Database<T>
 
     /**
      * Get a Database with the Document
@@ -79,23 +83,19 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase
      */
-    fun getBasicDatabase(name: String): Database<DefaultDocument>
+    fun getBasicDatabase(name: String): Database<BasicDatabaseObject>
 
     /**
      * Async Method for
      * @see DatabaseClient.getDatabase
      */
-    fun <T: DatabaseObject> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T>> {
-        return AsyncUtil.schedule{ getDatabase(name, parsedClass) }
-    }
+    fun <T> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T>>
 
     /**
      * Async Method for
      * @see DatabaseClient.getBasicDatabase
      */
-    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<DefaultDocument>> {
-        return AsyncUtil.schedule{ getBasicDatabase(name) }
-    }
+    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<BasicDatabaseObject>>
 
     /**
      * Check if a Database with the given name exists
@@ -114,20 +114,14 @@ interface DatabaseClient {
     fun drop(name: String)
 }
 
-enum class DatabaseClientType {
-    MONGO, SQL
-}
+abstract class AbstractDatabaseClient : DatabaseClient {
 
-data class DatabaseConnectionData(val host: String, val port: String, val user: String, val password: String, val database: String) {
-
-    fun toSql(): String {
-        return "jdbc:mysql://${host}:${port}/${database}?user=${user}&password=${password}"
+    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<BasicDatabaseObject>> {
+        return scheduleAsync { this.getBasicDatabase(name) }
     }
 
-    fun toMongo(): String {
-        return "mongodb://${user}:${password}@${host}:${port}/${database}"
+    override fun <T> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T>> {
+        return scheduleAsync { this.getDatabase(name, parsedClass) }
     }
 
 }
-
-class ClientNotInitializedException(message: String) : Exception(message)

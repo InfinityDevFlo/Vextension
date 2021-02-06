@@ -38,14 +38,11 @@
 package eu.vironlab.vextension.sponge
 
 import com.google.inject.Inject
+import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.database.ClientNotInitializedException
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.DatabaseClientType
-import eu.vironlab.vextension.database.DatabaseConnectionData
-import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
-import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
 import org.slf4j.Logger
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameStartedServerEvent
@@ -75,14 +72,7 @@ class VextensionSponge : Vextension  {
 
 
     override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        when(type) {
-            DatabaseClientType.SQL -> {
-                this.databaseClient = SqlDatabaseClient(connectionData.toSql())
-            }
-            DatabaseClientType.MONGO -> {
-                this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
-            }
-        }
+        TODO("Not yet implemented")
     }
 
 }

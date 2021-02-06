@@ -39,11 +39,12 @@
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 import java.util.function.BiConsumer
 
-interface Database<T : DatabaseObject> : Nameable {
+interface Database<T> : Nameable {
 
     fun insert(key: String, obj: T): Boolean
 
@@ -88,6 +89,54 @@ interface Database<T : DatabaseObject> : Nameable {
     fun getDocumentsCountAsync(): AsyncTask<Long>
 
     fun forEachAsync(consumer: BiConsumer<String, T>): AsyncTask<Boolean>
+
+
+}
+
+abstract class AbstractDatabase<T>(override val name: String) : Database<T> {
+    override fun insertAsync(key: String, obj: T): AsyncTask<Boolean> {
+        return scheduleAsync { this.insert(key, obj) }
+    }
+
+    override fun getAsync(key: String): AsyncTask<Optional<T>> {
+        return scheduleAsync { this.get(key) }
+    }
+
+    override fun getAsync(field: String, value: String): AsyncTask<Collection<T>> {
+        return scheduleAsync { this.get(field, value) }
+    }
+
+    override fun getAllObjectsAsync(): AsyncTask<MutableMap<String, T>> {
+        return scheduleAsync { this.getAllObjects() }
+    }
+
+    override fun keysAsync(): AsyncTask<Collection<String>> {
+        return scheduleAsync { this.keys() }
+    }
+
+    override fun updateAsync(key: String, newObj: T): AsyncTask<Boolean> {
+        return scheduleAsync { this.update(key, newObj) }
+    }
+
+    override fun deleteAsync(key: String): AsyncTask<Boolean> {
+        return scheduleAsync { this.delete(key) }
+    }
+
+    override fun containsAsync(key: String): AsyncTask<Boolean> {
+        return scheduleAsync { this.contains(key) }
+    }
+
+    override fun clearAsync(): AsyncTask<Boolean> {
+        return scheduleAsync { this.clear() }
+    }
+
+    override fun getDocumentsCountAsync(): AsyncTask<Long> {
+        return scheduleAsync { this.getDocumentsCount() }
+    }
+
+    override fun forEachAsync(consumer: BiConsumer<String, T>): AsyncTask<Boolean> {
+        return scheduleAsync { this.forEach(consumer) }
+    }
 
 
 }

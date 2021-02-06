@@ -35,46 +35,29 @@
  *<p>
  */
 
+package eu.vironlab.vextension.database.mongo
 
-package eu.vironlab.vextension.database.sql
-
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoClients
 import eu.vironlab.vextension.database.*
 import eu.vironlab.vextension.document.DefaultDocument
-import java.sql.Driver
-import java.sql.DriverManager
+import eu.vironlab.vextension.document.Document
 
+class MongoClient(val connectionString: String, val targetDatabase: String) : AbstractDatabaseClient() {
 
-class SqlDatabaseClient(val connectionString: String) : DatabaseClient {
+    var mongoClient: MongoClient? = null
 
-    val TABLE_KEY: String = "name"
-    val TABLE_DOCUMENT = "document"
-
-    init {
-
+    override fun init() {
+        this.mongoClient = MongoClients.create(connectionString)
     }
 
-    fun connect() {
-        DriverManager.getConnection(connectionString)
+    override fun <T> getDatabase(name: String, parsedClass: Class<T>): Database<T> {
+        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
+        return MongoDatabase(name, this, parsedClass)
     }
 
-    override fun <T : DatabaseObject> getDatabase(name: String, parsedClass: Class<T>): Database<T> {
-        if (parsedClass.isAnnotationPresent(NewDatabaseObject::class.java)) {
-            executeUpdate("CREATE TABLE IF NOT EXISTS `" + name + "` (" + TABLE_KEY + " VARCHAR(64) PRIMARY KEY, " + TABLE_DOCUMENT + " TEXT);");
-            return SqlDatabase(
-                name,
-                this
-            )
-        } else {
-            throw InvalidDatabaseObjectException("You need to add the ${NewDatabaseObject::class.java.name} Annotation to your Object")
-        }
-    }
-
-    override fun getBasicDatabase(name: String): Database<DefaultDocument> {
-        executeUpdate("CREATE TABLE IF NOT EXISTS `" + name + "` (" + TABLE_KEY + " VARCHAR(64) PRIMARY KEY, " + TABLE_DOCUMENT + " TEXT);");
-        return SqlDatabase<DefaultDocument>(
-            name,
-            this
-        )
+    override fun getBasicDatabase(name: String): Database<BasicDatabaseObject> {
+        return getDatabase(name, BasicDatabaseObject::class.java)
     }
 
     override fun exists(name: String): Boolean {
@@ -83,9 +66,5 @@ class SqlDatabaseClient(val connectionString: String) : DatabaseClient {
 
     override fun drop(name: String) {
         TODO("Not yet implemented")
-    }
-
-    fun executeUpdate(query: String) {
-
     }
 }

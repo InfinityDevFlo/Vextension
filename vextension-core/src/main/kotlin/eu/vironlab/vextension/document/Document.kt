@@ -43,7 +43,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import eu.vironlab.vextension.database.DatabaseObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import java.lang.reflect.Type
@@ -56,7 +55,7 @@ import java.util.function.Consumer
  * This class is used for the hole storage and Database System of the Cord. You can get this as ExtensionConfig or when you add/get Properties from many instances.
  * You can store the Document as Json of Yaml
  */
-interface Document : DatabaseObject{
+interface Document {
     /**
      * Get the current Document instance as plain Java Object (Any in Kotlin)
      * @return the current instance as Object
