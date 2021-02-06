@@ -101,6 +101,5 @@ fun createPerson(person: PersonObject) {
 
 <div align="center">
     <h1 style="color:#154444">Other Links:</h1>
-    <a style="color:#00ff00" target="_blank" href="https://github.com/VironLab"><img src="https://img.shields.io/github/followers/VironLab?label=GitHub%20Followers&logo=GitHub&logoColor=%23ffffff&style=flat-square"></img></a>
     <a style="color:#00ff00" target="_blank" href="https://discord.gg/wvcX92VyEH"><img src="https://img.shields.io/discord/785956343407181824?label=vironlab.eu%20Discord&logo=Discord&logoColor=%23ffffff&style=flat-square"></img></a>
 </div>
