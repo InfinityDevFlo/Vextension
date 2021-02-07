@@ -61,10 +61,12 @@ class MongoClient(val connectionString: String, val targetDatabase: String) : Ab
     }
 
     override fun exists(name: String): Boolean {
-        TODO("Not yet implemented")
+        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
+        return this.mongoClient!!.getDatabase(targetDatabase).listCollectionNames().contains(name)
     }
 
     override fun drop(name: String) {
-        TODO("Not yet implemented")
+        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
+        this.mongoClient!!.getDatabase(targetDatabase).getCollection(name).drop()
     }
 }
