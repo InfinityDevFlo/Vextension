@@ -1,5 +1,6 @@
 dependencies {
     implementation project(":vextension-core")
+    kapt project(":vextension-core")
     implementation(coords_waterfall)
     implementation(coords_velocity)
 }

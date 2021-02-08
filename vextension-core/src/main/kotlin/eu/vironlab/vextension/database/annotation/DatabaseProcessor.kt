@@ -37,26 +37,101 @@
 
 package eu.vironlab.vextension.database.annotation
 
-import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.RoundEnvironment
+import com.google.gson.GsonBuilder
+import eu.vironlab.vextension.database.info.CachingInformation
+import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.database.info.SpecificNameInformation
+import java.lang.StringBuilder
+import java.util.concurrent.TimeUnit
+import javax.annotation.processing.*
+import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
+import javax.tools.Diagnostic
+import javax.lang.model.element.ElementKind
+import javax.lang.model.element.Modifier
 
 
 class DatabaseProcessor : AbstractProcessor() {
 
-    var test: String? = null
+    val GSON = GsonBuilder().serializeNulls().setPrettyPrinting().create()
+    private var running: Boolean = false
+    private lateinit var filer: Filer
+    private lateinit var processingEnvironment: ProcessingEnvironment
 
-    override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-        if (test == null) {
-            test = System.currentTimeMillis().toString()
+    @Synchronized
+    override fun init(processingEnv: ProcessingEnvironment) {
+        super.init(processingEnv)
+        filer = processingEnv.filer
+        processingEnvironment = processingEnv
+    }
+
+    override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
+        try {
+            if (!running) {
+                println("________________________________________________________________________________")
+                println("                      _                      _               \n" +
+                            " /\\   /\\   ___ __  __| |_   ___  _ __   ___ (_)  ___   _ __  \n" +
+                            " \\ \\ / /  / _ \\\\ \\/ /| __| / _ \\| '_ \\ / __|| | / _ \\ | '_ \\ \n" +
+                            "  \\ V /  |  __/ >  < | |_ |  __/| | | |\\__ \\| || (_) || | | |\n" +
+                            "   \\_/    \\___|/_/\\_\\ \\__| \\___||_| |_||___/|_| \\___/ |_| |_|\n" +
+                            "                                                             \n"
+                )
+                println("Starting Vextension Database Processor")
+                this.running = true
+                for (element: Element in roundEnv.getElementsAnnotatedWith(NewDatabaseObject::class.java)) {
+                    if (!element.kind.isClass) {
+                        println("Only Classes can be a DatabaseObject")
+                    }
+                    val time = System.currentTimeMillis()
+                    val targetClassName: String = (element as TypeElement).qualifiedName.toString()
+                    println("Processing Class ${targetClassName}... ")
+                    if (element.enclosedElements.filter { it.getAnnotation(DatabaseKey::class.java) != null }.size != 1) {
+                        throw IllegalStateException("Need exaclty ONE Key")
+                    }
+                    val key = element.enclosedElements.filter { it.getAnnotation(DatabaseKey::class.java) != null }.first()
+                    var keyName: String? = null
+                    if (key.getAnnotation(DatabaseName::class.java) != null) {
+                        keyName = key.getAnnotation(DatabaseName::class.java).name
+                    }
+                    val ignoredFields: MutableList<String> = mutableListOf()
+                    val specificNames: MutableList<SpecificNameInformation> = mutableListOf()
+                    element.enclosedElements.forEach {
+                        if (it.kind.equals(ElementKind.FIELD)) {
+                            if (it.getAnnotation(DatabaseName::class.java) != null) {
+                                specificNames.add(SpecificNameInformation(it.simpleName.toString(), it.getAnnotation(DatabaseName::class.java).name))
+                            }
+                            if (it.getAnnotation(Ignored::class.java) != null) {
+                                ignoredFields.add(it.simpleName.toString())
+                            }
+                        }
+                    }
+                    val obj = element.getAnnotation(NewDatabaseObject::class.java)
+                    val cachingInformation: CachingInformation =
+                        CachingInformation(obj.caching, obj.cacheTime, obj.cacheTimeUnit)
+                    val objectInfo: ObjectInformation = ObjectInformation(
+                        keyName ?: key.simpleName.toString(),
+                        key.simpleName.toString(),
+                        ignoredFields,
+                        specificNames,
+                        cachingInformation
+                    )
+                    println("Finished Processing ${targetClassName} in ${(System.currentTimeMillis() - time)} Millis (${TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis() - time))} Seconds)")
+                }
+                println("________________________________________________________________________________")
+            }
+        }catch(e: Exception) {
+            e.printStackTrace()
         }
-        println("________________")
-        println(test)
-        println("________________")
         return true
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         return mutableSetOf(NewDatabaseObject::class.java.canonicalName)
     }
+
+    override fun getSupportedSourceVersion(): SourceVersion? {
+        return SourceVersion.latestSupported()
+    }
+
 }

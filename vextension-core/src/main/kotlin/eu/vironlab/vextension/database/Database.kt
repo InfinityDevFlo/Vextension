@@ -38,6 +38,8 @@
 package eu.vironlab.vextension.database
 
 /**
+ * A Wrapper for Multiple Database Types
+ *
  * @param T is the Class the requests will return
  * @param K is the Key type of the Database
  */

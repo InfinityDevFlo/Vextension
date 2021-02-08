@@ -42,6 +42,6 @@ import java.util.concurrent.TimeUnit
 
 class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableCollection<SpecificNameInformation>, val caching: CachingInformation)
 
-class CachingInformation(val enabled: Boolean, val cacheTime: Int, val cacheUnit: TimeUnit)
+class CachingInformation(val enabled: Boolean, val cacheTime: Long, val cacheUnit: TimeUnit)
 
 class SpecificNameInformation(val field: String, val name: String)
