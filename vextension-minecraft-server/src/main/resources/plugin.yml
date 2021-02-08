@@ -1,3 +1,4 @@
 name: Vextension-Server
 main: eu.vironlab.vextension.bukkit.VextensionBukkit
 version: 0.0.1-SNAPSHOT
+description: Vextension for Bukkit

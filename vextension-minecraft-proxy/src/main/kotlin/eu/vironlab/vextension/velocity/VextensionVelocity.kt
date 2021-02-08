@@ -35,52 +35,53 @@
  *<p>
  */
 
-package eu.vironlab.vextension.scoreboard.sponge
+package eu.vironlab.vextension.velocity
 
-import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.scoreboard.Sidebar
-import eu.vironlab.vextension.scoreboard.SidebarLine
-import java.util.*
+import com.google.inject.Inject
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.connection.LoginEvent
+import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.proxy.ProxyServer
+import eu.vironlab.vextension.Vextension
+import eu.vironlab.vextension.VextensionAPI
+import eu.vironlab.vextension.database.*
+import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
+import eu.vironlab.vextension.database.sql.SqlDatabaseClient
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
+import eu.vironlab.vextension.velocity.extension.injectPipeline
+import org.slf4j.Logger
+
+@Plugin(
+    name = "Vextension-Velocity",
+    authors = arrayOf("VironLab"),
+    id = "vextension_velocity",
+    description = "Vextension for Velocity",
+    version = "1.0.0-SNAPSHOT"
+)
+class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
+    private var databaseClient: DatabaseClient? = null
 
 
-class SpongeSidebar(
-    override val lines: MutableMap<String, DataPair<String, SidebarLine>>,
-    val usedColors: MutableCollection<String>,
-    override var title: String
-) : Sidebar {
-    override fun addLine(line: SidebarLine) {
-        TODO("Not yet implemented")
+    init {
+        VextensionAPI.instance = this
     }
 
-    override fun updateLine(name: String, line: SidebarLine) {
-        TODO("Not yet implemented")
+    override fun getDatabaseClient(): DatabaseClient {
+        return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
-    override fun set(player: UUID) {
-        TODO("Not yet implemented")
+
+    override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
+        when (type) {
+            DatabaseClientType.SQL -> {
+                this.databaseClient = SqlDatabaseClient(connectionData.toSql())
+            }
+            DatabaseClientType.MONGO -> {
+                this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
+            }
+        }
     }
 
-    override fun setAll() {
-        TODO("Not yet implemented")
-    }
 
-    override fun setAllAndListen() {
-        TODO("Not yet implemented")
-    }
-
-    override fun cancelListening() {
-        TODO("Not yet implemented")
-    }
-
-    override fun removeAll() {
-        TODO("Not yet implemented")
-    }
-
-    override fun remove(player: UUID) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTitle(title: String) {
-        TODO("Not yet implemented")
-    }
 }

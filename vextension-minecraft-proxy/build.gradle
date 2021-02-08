@@ -3,6 +3,7 @@ dependencies {
     kapt project(":vextension-core")
     implementation(coords_waterfall)
     implementation(coords_velocity)
+    kapt(coords_velocity)
 }
 
 jar {
