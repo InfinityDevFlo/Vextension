@@ -55,9 +55,9 @@ class JsonDocumentStorage : DocumentStorage {
         return toString()
     }
 
-    override fun read(reader: Reader): DefaultDocument {
+    override fun read(name: String, reader: Reader): DefaultDocument {
         BufferedReader(reader).use { bufferedReader ->
-            return DocumentManagement.newDocument(
+            return DocumentManagement.newDocument(name,
                 JsonParser.parseReader(
                     bufferedReader
                 ).getAsJsonObject()

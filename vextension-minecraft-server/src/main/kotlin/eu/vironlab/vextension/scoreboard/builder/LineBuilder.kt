@@ -51,7 +51,6 @@ class LineBuilder : Builder<SidebarLine> {
     var proceed: ((SidebarLine, UUID) -> Unit?)? = null
 
     fun proceed(proceed: (SidebarLine, UUID) -> Unit) {
-        Bukkit.getConsoleSender().sendMessage("DU KLEINER KAKA MENSCH")
         this.proceed = proceed
     }
 

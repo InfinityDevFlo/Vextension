@@ -35,22 +35,13 @@
  *<p>
  */
 
+package eu.vironlab.vextension.database.info
 
-package eu.vironlab.vextension.database
+import java.util.concurrent.TimeUnit
 
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.lang.Nameable
-import java.io.Serializable
 
-/**
- * Only an instance of the class can stored into the Database by the DatabaseClient <p>
- *
- * Make sure you have an Empty constructor
- */
-interface DatabaseObject : Serializable {
+class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableCollection<SpecificNameInformation>, val caching: CachingInformation)
 
-    fun init(document: Document)
+class CachingInformation(val enabled: Boolean, val cacheTime: Long, val cacheUnit: TimeUnit)
 
-    fun toDocument(): Document
-
-}
+class SpecificNameInformation(val field: String, val name: String)

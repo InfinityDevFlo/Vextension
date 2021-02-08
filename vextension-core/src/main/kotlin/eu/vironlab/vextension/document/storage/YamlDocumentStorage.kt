@@ -58,10 +58,10 @@ class YamlDocumentStorage : DocumentStorage {
         Yaml(Constructor(), Representer(), options)
     })
 
-    override fun read(reader: Reader): DefaultDocument {
+    override fun read(name: String, reader: Reader): DefaultDocument {
         val map: LinkedHashMap<*, *>? = yaml.get().loadAs<LinkedHashMap<*, *>>(reader, LinkedHashMap::class.java)
         val element: JsonElement = DefaultDocument.GSON.toJsonTree(map)
-        return DocumentManagement.newDocument(element)
+        return DocumentManagement.newDocument(name, element)
     }
 
     override fun write(Document: Document, writer: Writer) {

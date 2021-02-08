@@ -105,7 +105,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-            val document = DocumentManagement.jsonStorage().read(input)
+            val document = DocumentManagement.jsonStorage().read(urlStr, input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {

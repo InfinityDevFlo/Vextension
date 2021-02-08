@@ -35,57 +35,23 @@
  *<p>
  */
 
+package eu.vironlab.vextension.database.annotation
 
-package eu.vironlab.vextension.database.sql
+import java.util.concurrent.TimeUnit
 
-import eu.vironlab.vextension.database.*
-import eu.vironlab.vextension.document.DefaultDocument
-import java.sql.Driver
-import java.sql.DriverManager
+@Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class NewDatabaseObject(val caching: Boolean = false, val cacheTime: Long = 10, val cacheTimeUnit: TimeUnit = TimeUnit.MINUTES)
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DatabaseName(val name: String)
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Ignored
 
 
-class SqlDatabaseClient(val connectionString: String) : DatabaseClient {
-
-    val TABLE_KEY: String = "name"
-    val TABLE_DOCUMENT = "document"
-
-    init {
-
-    }
-
-    fun connect() {
-        DriverManager.getConnection(connectionString)
-    }
-
-    override fun <T : DatabaseObject> getDatabase(name: String, parsedClass: Class<T>): Database<T> {
-        if (parsedClass.isAnnotationPresent(NewDatabaseObject::class.java)) {
-            executeUpdate("CREATE TABLE IF NOT EXISTS `" + name + "` (" + TABLE_KEY + " VARCHAR(64) PRIMARY KEY, " + TABLE_DOCUMENT + " TEXT);");
-            return SqlDatabase(
-                name,
-                this
-            )
-        } else {
-            throw InvalidDatabaseObjectException("You need to add the ${NewDatabaseObject::class.java.name} Annotation to your Object")
-        }
-    }
-
-    override fun getBasicDatabase(name: String): Database<DefaultDocument> {
-        executeUpdate("CREATE TABLE IF NOT EXISTS `" + name + "` (" + TABLE_KEY + " VARCHAR(64) PRIMARY KEY, " + TABLE_DOCUMENT + " TEXT);");
-        return SqlDatabase<DefaultDocument>(
-            name,
-            this
-        )
-    }
-
-    override fun exists(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun drop(name: String) {
-        TODO("Not yet implemented")
-    }
-
-    fun executeUpdate(query: String) {
-
-    }
-}
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DatabaseKey

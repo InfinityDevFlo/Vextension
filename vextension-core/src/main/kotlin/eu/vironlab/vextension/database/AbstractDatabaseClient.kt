@@ -35,37 +35,20 @@
  *<p>
  */
 
-package eu.vironlab.vextension.sponge
+package eu.vironlab.vextension.database
 
-import com.google.inject.Inject
-import eu.vironlab.vextension.DatabaseConnectionData
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.database.DatabaseClient
-import org.slf4j.Logger
-import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.game.state.GameStartedServerEvent
-import org.spongepowered.api.plugin.Plugin
+import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.document.Document
 
-@Plugin(
-    id = "vextension_sponge",
-    name = "Vextension-Sponge",
-    version = "1.0.0-SNAPSHOT",
-    description = "Vextension for Sponge Plugins",
-    authors = arrayOf("VironLab")
-)
-class VextensionSponge : Vextension  {
+abstract class AbstractDatabaseClient : DatabaseClient {
 
-    private var databaseClient: DatabaseClient? = null
-    @Inject
-    private lateinit var logger: Logger
-
-    @Listener
-    fun init(event: GameStartedServerEvent) {
-        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
+    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<Document, String>> {
+        return scheduleAsync { this.getBasicDatabase(name) }
     }
 
-    override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
+    override fun <T, K> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T, K>> {
+        return scheduleAsync { this.getDatabase(name, parsedClass) }
     }
 
 }

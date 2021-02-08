@@ -56,11 +56,11 @@ class ConfigDocument(val file: File) : Document {
     private var wrapped: Document
 
     init {
-        this.wrapped = DocumentManagement.newDocument()
+        this.wrapped = DocumentManagement.newDocument(file.name)
     }
 
     fun loadConfig() {
-        this.wrapped = DocumentManagement.newJsonDocument(file.toPath())
+        this.wrapped = DocumentManagement.newJsonDocument(file.name, file.toPath())
     }
 
     fun saveConfig() {
@@ -107,13 +107,6 @@ class ConfigDocument(val file: File) : Document {
         return wrapped.insert(jsonObject)
     }
 
-    override fun insert(properties: Properties): Document {
-        return wrapped.insert(properties)
-    }
-
-    override fun insert(key: String, properties: Properties): Document {
-        return wrapped.insert(key, properties)
-    }
 
     override fun insert(key: String, bytes: ByteArray): Document {
         return wrapped.insert(key, bytes)
@@ -243,14 +236,6 @@ class ConfigDocument(val file: File) : Document {
         return wrapped.getJsonObject(key, def)
     }
 
-    override fun getProperties(key: String): Optional<Properties> {
-        return wrapped.getProperties(key)
-    }
-
-    override fun getProperties(key: String, def: Properties): Properties {
-        return wrapped.getProperties(key, def)
-    }
-
     override fun getBinary(key: String): Optional<ByteArray> {
         return wrapped.getBinary(key)
     }
@@ -313,13 +298,5 @@ class ConfigDocument(val file: File) : Document {
 
     override fun getKeys(): MutableCollection<String> {
         return wrapped.getKeys()
-    }
-
-    override fun init(document: Document) {
-        wrapped = document
-    }
-
-    override fun toDocument(): Document {
-        return wrapped
     }
 }

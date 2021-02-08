@@ -35,7 +35,35 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
-class InvalidDatabaseObjectException(message: String) : Exception(message)
+import eu.vironlab.vextension.database.info.CachingInformation
+import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.database.info.SpecificNameInformation
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
+import java.util.*
+
+
+object DatabaseUtil {
+
+    @JvmStatic
+    fun <T> getInfo(clazz: Class<T>): Optional<ObjectInformation> {
+        try {
+            val document: Document =
+                DocumentManagement.jsonStorage()
+                    .read(clazz.canonicalName, clazz.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.canonicalName}.json"))
+            return Optional.of(ObjectInformation(
+                document.getString("keyField").get(),
+                document.getString("key").get(),
+                document.getList<String>("ignoredFields").get(),
+                document.getList<SpecificNameInformation>("specificNames").get(),
+                document.get("caching", CachingInformation::class.java).get()
+            ))
+        } catch (e: Exception) {
+            return Optional.empty()
+        }
+    }
+
+
+}
