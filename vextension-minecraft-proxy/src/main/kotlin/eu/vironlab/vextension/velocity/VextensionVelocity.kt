@@ -45,11 +45,6 @@ import com.velocitypowered.api.proxy.ProxyServer
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.*
-import eu.vironlab.vextension.database.mongodb.MongoDatabaseClient
-import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import eu.vironlab.vextension.velocity.extension.injectPipeline
 import org.slf4j.Logger
 
 @Plugin(
@@ -68,19 +63,7 @@ class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger
     }
 
     override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
-    }
-
-
-    override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        when (type) {
-            DatabaseClientType.SQL -> {
-                this.databaseClient = SqlDatabaseClient(connectionData.toSql())
-            }
-            DatabaseClientType.MONGO -> {
-                this.databaseClient = MongoDatabaseClient(connectionData.database, connectionData.toMongo())
-            }
-        }
+        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
 
