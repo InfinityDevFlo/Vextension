@@ -39,13 +39,7 @@ package eu.vironlab.vextension.bukkit
 
 import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.database.ClientNotInitializedException
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.DatabaseClientType
-import eu.vironlab.vextension.scoreboard.Sidebar
-import eu.vironlab.vextension.scoreboard.builder.sidebar
-import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
-import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -63,12 +57,9 @@ class VextensionBukkit : JavaPlugin(), Vextension {
     }
 
     override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
+        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
 
 
-    override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        TODO("Not yet implemented")
-    }
 }

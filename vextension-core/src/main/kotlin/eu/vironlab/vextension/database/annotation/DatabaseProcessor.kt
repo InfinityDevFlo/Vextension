@@ -35,38 +35,28 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.mongo
+package eu.vironlab.vextension.database.annotation
 
-import com.mongodb.client.MongoClient
-import com.mongodb.client.MongoClients
-import eu.vironlab.vextension.database.*
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.RoundEnvironment
+import javax.lang.model.element.TypeElement
 
-class MongoClient(val connectionString: String, val targetDatabase: String) : AbstractDatabaseClient() {
 
-    var mongoClient: MongoClient? = null
+class DatabaseProcessor : AbstractProcessor() {
 
-    override fun init() {
-        this.mongoClient = MongoClients.create(connectionString)
+    var test: String? = null
+
+    override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
+        if (test == null) {
+            test = System.currentTimeMillis().toString()
+        }
+        println("________________")
+        println(test)
+        println("________________")
+        return true
     }
 
-    override fun <T> getDatabase(name: String, parsedClass: Class<T>): Database<T> {
-        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
-        return MongoDatabase(name, this, parsedClass)
-    }
-
-    override fun getBasicDatabase(name: String): Database<BasicDatabaseObject> {
-        return getDatabase(name, BasicDatabaseObject::class.java)
-    }
-
-    override fun exists(name: String): Boolean {
-        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
-        return this.mongoClient!!.getDatabase(targetDatabase).listCollectionNames().contains(name)
-    }
-
-    override fun drop(name: String) {
-        this.mongoClient ?: throw ClientNotInitializedException("You have to Initialize the Client first")
-        this.mongoClient!!.getDatabase(targetDatabase).getCollection(name).drop()
+    override fun getSupportedAnnotationTypes(): MutableSet<String> {
+        return mutableSetOf(NewDatabaseObject::class.java.canonicalName)
     }
 }

@@ -35,9 +35,20 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
-class InvalidDatabaseObjectException(message: String) : Exception(message)
+import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.document.Document
 
-class ClientNotInitializedException(message: String) : Exception(message)
+abstract class AbstractDatabaseClient : DatabaseClient {
+
+    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<Document, String>> {
+        return scheduleAsync { this.getBasicDatabase(name) }
+    }
+
+    override fun <T, K> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T, K>> {
+        return scheduleAsync { this.getDatabase(name, parsedClass) }
+    }
+
+}

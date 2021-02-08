@@ -45,6 +45,7 @@ import com.google.gson.stream.JsonWriter
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import eu.vironlab.vextension.document.storage.WrappedSpecificDocumentStorage
+import eu.vironlab.vextension.lang.Nameable
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -58,15 +59,15 @@ import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class DefaultDocument: Document {
+open class DefaultDocument(override val name: String) : Document, Nameable {
     private var jsonObject: JsonObject
 
 
-    constructor() {
+    init {
         this.jsonObject = JsonObject()
     }
 
-    constructor(jsonElement: JsonElement) {
+    constructor(name: String, jsonElement: JsonElement) : this(name) {
         jsonObject = jsonElement.getAsJsonObject()
     }
 
@@ -205,22 +206,6 @@ open class DefaultDocument: Document {
         return this
     }
 
-    override fun insert(properties: Properties): DefaultDocument {
-        if (properties == null) {
-            return this
-        }
-        var entry: Any? = null
-        val enumeration: Enumeration<*> = properties.keys()
-        while (enumeration.hasMoreElements() && enumeration.nextElement().also { entry = it } != null) {
-            insert(entry.toString(), properties.getProperty(entry.toString()))
-        }
-        return this
-    }
-
-    override fun insert(key: String, properties: Properties): DefaultDocument {
-        return insert(key, DefaultDocument().insert(properties))
-    }
-
     override fun insert(key: String, bytes: ByteArray): DefaultDocument {
         return if (key == null || bytes == null) {
             this
@@ -259,7 +244,7 @@ open class DefaultDocument: Document {
         }
         val jsonElement: JsonElement = jsonObject.get(key)
         return if (jsonElement.isJsonObject()) {
-            Optional.of(DefaultDocument(jsonElement))
+            Optional.of(DefaultDocument(key, jsonElement))
         } else {
             Optional.ofNullable(null)
         }
@@ -275,7 +260,7 @@ open class DefaultDocument: Document {
             val Documents: MutableCollection<Document> = ArrayList()
             for (element in array) {
                 if (element.isJsonObject()) {
-                    Documents.add(DefaultDocument(element.getAsJsonObject()))
+                    Documents.add(DefaultDocument(key, element.getAsJsonObject()))
                 }
             }
             return Optional.of(Documents)
@@ -439,15 +424,6 @@ open class DefaultDocument: Document {
         }
     }
 
-    override fun getProperties(key: String): Optional<Properties> {
-        val properties = Properties()
-        for ((key1, value) in jsonObject.entrySet()) {
-            properties.setProperty(key1, value.toString())
-        }
-        return Optional.ofNullable(properties)
-    }
-
-
     override fun getBinary(key: String): Optional<ByteArray> {
         if (!contains(key)) {
             Optional.ofNullable(null)
@@ -590,13 +566,6 @@ open class DefaultDocument: Document {
         return this[key, clazz].get()
     }
 
-    override fun getProperties(key: String, def: Properties): Properties {
-        if (!this.contains(key)) {
-            this.insert(key, def)
-        }
-        return this.getProperties(key).get()
-    }
-
     override fun getBigInteger(key: String, def: BigInteger): BigInteger {
         if (!this.contains(key)) {
             this.insert(key, def)
@@ -675,10 +644,10 @@ open class DefaultDocument: Document {
             }
 
             @Throws(IOException::class)
-            override fun read(jsonReader: JsonReader?): DefaultDocument? {
+            override fun read(jsonReader: JsonReader): DefaultDocument? {
                 val jsonElement: JsonElement = TypeAdapters.JSON_ELEMENT.read(jsonReader)
                 return if (jsonElement != null && jsonElement.isJsonObject()) {
-                    DefaultDocument(jsonElement)
+                    DefaultDocument(jsonElement.hashCode().toString(), jsonElement)
                 } else {
                     null
                 }

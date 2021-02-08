@@ -35,108 +35,14 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.concurrent.AsyncTask
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.lang.Nameable
-import java.util.*
-import java.util.function.BiConsumer
+/**
+ * @param T is the Class the requests will return
+ * @param K is the Key type of the Database
+ */
+interface Database<T, K> {
 
-interface Database<T> : Nameable {
-
-    fun insert(key: String, obj: T): Boolean
-
-    fun get(key: String): Optional<T>
-
-    fun get(field: String, value: String): Collection<T>
-
-    fun getAllObjects(): MutableMap<String, T>
-
-    fun keys(): Collection<String>
-
-    fun update(key: String, newObj: T): Boolean
-
-    fun delete(key: String): Boolean
-
-    fun contains(key: String): Boolean
-
-    fun clear(): Boolean
-
-    fun getDocumentsCount(): Long
-
-    fun forEach(consumer: BiConsumer<String, T>): Boolean
-
-    fun insertAsync(key: String, obj: T): AsyncTask<Boolean>
-
-    fun getAsync(key: String): AsyncTask<Optional<T>>
-
-    fun getAsync(field: String, value: String): AsyncTask<Collection<T>>
-
-    fun getAllObjectsAsync(): AsyncTask<MutableMap<String, T>>
-
-    fun keysAsync(): AsyncTask<Collection<String>>
-
-    fun updateAsync(key: String, newObj: T): AsyncTask<Boolean>
-
-    fun deleteAsync(key: String): AsyncTask<Boolean>
-
-    fun containsAsync(key: String): AsyncTask<Boolean>
-
-    fun clearAsync(): AsyncTask<Boolean>
-
-    fun getDocumentsCountAsync(): AsyncTask<Long>
-
-    fun forEachAsync(consumer: BiConsumer<String, T>): AsyncTask<Boolean>
-
-
-}
-
-abstract class AbstractDatabase<T>(override val name: String) : Database<T> {
-    override fun insertAsync(key: String, obj: T): AsyncTask<Boolean> {
-        return scheduleAsync { this.insert(key, obj) }
-    }
-
-    override fun getAsync(key: String): AsyncTask<Optional<T>> {
-        return scheduleAsync { this.get(key) }
-    }
-
-    override fun getAsync(field: String, value: String): AsyncTask<Collection<T>> {
-        return scheduleAsync { this.get(field, value) }
-    }
-
-    override fun getAllObjectsAsync(): AsyncTask<MutableMap<String, T>> {
-        return scheduleAsync { this.getAllObjects() }
-    }
-
-    override fun keysAsync(): AsyncTask<Collection<String>> {
-        return scheduleAsync { this.keys() }
-    }
-
-    override fun updateAsync(key: String, newObj: T): AsyncTask<Boolean> {
-        return scheduleAsync { this.update(key, newObj) }
-    }
-
-    override fun deleteAsync(key: String): AsyncTask<Boolean> {
-        return scheduleAsync { this.delete(key) }
-    }
-
-    override fun containsAsync(key: String): AsyncTask<Boolean> {
-        return scheduleAsync { this.contains(key) }
-    }
-
-    override fun clearAsync(): AsyncTask<Boolean> {
-        return scheduleAsync { this.clear() }
-    }
-
-    override fun getDocumentsCountAsync(): AsyncTask<Long> {
-        return scheduleAsync { this.getDocumentsCount() }
-    }
-
-    override fun forEachAsync(consumer: BiConsumer<String, T>): AsyncTask<Boolean> {
-        return scheduleAsync { this.forEach(consumer) }
-    }
 
 
 }

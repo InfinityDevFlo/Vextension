@@ -37,29 +37,6 @@
 
 package eu.vironlab.vextension.database
 
-import java.util.concurrent.TimeUnit
-import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.RoundEnvironment
-import javax.annotation.processing.SupportedAnnotationTypes
-import javax.lang.model.element.TypeElement
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class NewDatabaseObject(val caching: Boolean = false, val cacheTime: Long = 10, val cacheTimeUnit: TimeUnit = TimeUnit.MINUTES)
 
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseName(val name: String)
-
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Ignored
-
-@SupportedAnnotationTypes("eu.vironlab.vextension.database.NewDatabaseObject")
-class DatabaseObjectProcessor : AbstractProcessor() {
-
-    override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        TODO("Add Constructor to Objects")
-        return true
-    }
-
+abstract class AbstractDatabase<T, K> : Database<T, K> {
 }

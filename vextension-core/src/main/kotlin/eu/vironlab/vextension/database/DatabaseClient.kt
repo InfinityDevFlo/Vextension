@@ -35,11 +35,11 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.document.Document
 
 /**
  * Client to Connect to the Database <p>
@@ -48,11 +48,6 @@ import eu.vironlab.vextension.concurrent.scheduleAsync
  *
  * An instance of this class is to connect your Projekt to a Database. For Sql and Mongo Databases
  * you can use the Following Clients: <p>
- *
- *
- * @sample eu.vironlab.vextension.database.old_mongodb.MongoDatabaseClient
- *
- * @sample eu.vironlab.vextension.database.sql.SqlDatabaseClient <p>
  *
  */
 interface DatabaseClient {
@@ -72,7 +67,7 @@ interface DatabaseClient {
      *
      * @return The Database instance, wich will be created if the Database does not exists
      */
-    fun <T> getDatabase(name: String, parsedClass: Class<T>): Database<T>
+    fun <T, K> getDatabase(name: String, parsedClass: Class<T>): Database<T, K>
 
     /**
      * Get a Database with the Document
@@ -83,19 +78,19 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase
      */
-    fun getBasicDatabase(name: String): Database<BasicDatabaseObject>
+    fun getBasicDatabase(name: String): Database<Document, String>
 
     /**
      * Async Method for
      * @see DatabaseClient.getDatabase
      */
-    fun <T> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T>>
+    fun <T, K> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T, K>>
 
     /**
      * Async Method for
      * @see DatabaseClient.getBasicDatabase
      */
-    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<BasicDatabaseObject>>
+    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<Document, String>>
 
     /**
      * Check if a Database with the given name exists
@@ -112,16 +107,4 @@ interface DatabaseClient {
      * @param name is the Name of the Database
      */
     fun drop(name: String)
-}
-
-abstract class AbstractDatabaseClient : DatabaseClient {
-
-    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<BasicDatabaseObject>> {
-        return scheduleAsync { this.getBasicDatabase(name) }
-    }
-
-    override fun <T> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T>> {
-        return scheduleAsync { this.getDatabase(name, parsedClass) }
-    }
-
 }

@@ -35,9 +35,23 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.database.annotation
 
-import eu.vironlab.vextension.document.DefaultDocument
+import java.util.concurrent.TimeUnit
+
+@Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class NewDatabaseObject(val caching: Boolean = false, val cacheTime: Long = 10, val cacheTimeUnit: TimeUnit = TimeUnit.MINUTES)
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DatabaseName(val name: String)
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Ignored
 
 
-class BasicDatabaseObject(val key: String, val document: DefaultDocument)
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DatabaseKey

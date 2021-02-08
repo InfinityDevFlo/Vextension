@@ -40,9 +40,7 @@ package eu.vironlab.vextension.sponge
 import com.google.inject.Inject
 import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.database.ClientNotInitializedException
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.DatabaseClientType
 import org.slf4j.Logger
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameStartedServerEvent
@@ -67,12 +65,7 @@ class VextensionSponge : Vextension  {
     }
 
     override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
-    }
-
-
-    override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
-        TODO("Not yet implemented")
+        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
 }

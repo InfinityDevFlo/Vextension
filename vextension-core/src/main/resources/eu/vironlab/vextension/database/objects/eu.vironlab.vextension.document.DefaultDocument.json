@@ -1,0 +1,16 @@
+{
+  "keyField": "name",
+  "key": "name",
+  "ignoredFields": [],
+  "specificNames": [
+    {
+      "field": "name",
+      "name": "__name__"
+    }
+  ],
+  "caching": {
+    "enabled": true,
+    "cacheTime": 30,
+    "cacheUnit": "MINUTES"
+  }
+}

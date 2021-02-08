@@ -130,20 +130,6 @@ interface Document {
      */
     fun insert(jsonObject: JsonObject): Document
 
-    /**
-     * Insert Properties into the Document
-     * @param properties are the properties to insert
-     * @return the current Document instance
-     */
-    fun insert(properties: Properties): Document
-
-    /**
-     * Insert Properties into the Document identified by a Key
-     * @param key is the key for identify the Properties
-     * @param properties are the properties to insert
-     * @return the current Document instance
-     */
-    fun insert(key: String, properties: Properties): Document
 
     /**
      * Insert a byte Array identified by a key
@@ -272,13 +258,6 @@ interface Document {
      * @return the JsonObject if exists
      */
     fun getJsonObject(key: String): Optional<JsonObject>
-
-    /**
-     * Get Properties of a specific Key
-     * @param key is the Key to get the Properties
-     * @return the Properties if exists
-     */
-    fun getProperties(key: String): Optional<Properties>
 
     /**
      * Get a ByteArray of a specific Key
@@ -447,14 +426,6 @@ interface Document {
      */
     fun getBinary(key: String, def: ByteArray): ByteArray
 
-    /**
-     * Get Properties and insert a value if the key does not exist
-     *
-     * @param key is the Key to get the Value
-     * @param def is the Default value to set if the key does not exist
-     * @return the value if exists otherwise it will return the default value
-     */
-    fun getProperties(key: String, def: Properties): Properties
 
     /**
      * Get a BigInteger and insert a value if the key does not exist

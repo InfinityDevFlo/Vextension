@@ -39,7 +39,7 @@ package eu.vironlab.vextension.scoreboard.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.concurrent.AsyncUtil
+import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
@@ -74,7 +74,7 @@ class BukkitSidebar(
             val color = ScoreboardUtil.getAvailableColor(usedColors)
             this.lines.put(line.name, DataPair(color, line))
             this.usedColors.add(color)
-            AsyncUtil.schedule {
+            scheduleAsync {
                 this.players.forEach {
                     val scoreboard = it.scoreboard
                     val team: Team = scoreboard.registerNewTeam(line.name)
@@ -92,7 +92,7 @@ class BukkitSidebar(
     }
 
     override fun updateLine(name: String, line: SidebarLine) {
-        AsyncUtil.schedule {
+        scheduleAsync {
             players.forEach {
                 val scoreboard = it.scoreboard
                 val team: Team? = scoreboard.getTeam(name)
@@ -110,7 +110,7 @@ class BukkitSidebar(
     }
 
     override fun set(player: UUID) {
-        AsyncUtil.schedule {
+        scheduleAsync {
             val p: Player? = Bukkit.getPlayer(player)
             if (p != null) {
                 val scoreboard = p.scoreboard

@@ -35,57 +35,13 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.mongo
+package eu.vironlab.vextension.database.info
 
-import eu.vironlab.vextension.database.AbstractDatabase
-import java.util.*
-import java.util.function.BiConsumer
+import java.util.concurrent.TimeUnit
 
 
-class MongoDatabase<T>(override val name: String, val mongoClient: MongoClient, parsedClass: Class<T>) :
-    AbstractDatabase<T>(name) {
-    override fun insert(key: String, obj: T): Boolean {
-        TODO("Not yet implemented")
-    }
+class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableCollection<SpecificNameInformation>, val caching: CachingInformation)
 
-    override fun get(key: String): Optional<T> {
-        TODO("Not yet implemented")
-    }
+class CachingInformation(val enabled: Boolean, val cacheTime: Int, val cacheUnit: TimeUnit)
 
-    override fun get(field: String, value: String): Collection<T> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAllObjects(): MutableMap<String, T> {
-        TODO("Not yet implemented")
-    }
-
-    override fun keys(): Collection<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun update(key: String, newObj: T): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(key: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun contains(key: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun clear(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDocumentsCount(): Long {
-        TODO("Not yet implemented")
-    }
-
-    override fun forEach(consumer: BiConsumer<String, T>): Boolean {
-        TODO("Not yet implemented")
-    }
-
-}
+class SpecificNameInformation(val field: String, val name: String)
