@@ -35,52 +35,18 @@
  *<p>
  */
 
-package eu.vironlab.vextension.scoreboard.sponge
+package eu.vironlab.vextension.velocity.extension
 
-import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.scoreboard.Sidebar
-import eu.vironlab.vextension.scoreboard.SidebarLine
-import java.util.*
+import com.velocitypowered.api.proxy.Player
+import eu.vironlab.vextension.bungee.extension.injectPipeline
+import io.netty.channel.Channel
+import java.lang.reflect.Field
 
-
-class SpongeSidebar(
-    override val lines: MutableMap<String, DataPair<String, SidebarLine>>,
-    val usedColors: MutableCollection<String>,
-    override var title: String
-) : Sidebar {
-    override fun addLine(line: SidebarLine) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateLine(name: String, line: SidebarLine) {
-        TODO("Not yet implemented")
-    }
-
-    override fun set(player: UUID) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setAll() {
-        TODO("Not yet implemented")
-    }
-
-    override fun setAllAndListen() {
-        TODO("Not yet implemented")
-    }
-
-    override fun cancelListening() {
-        TODO("Not yet implemented")
-    }
-
-    override fun removeAll() {
-        TODO("Not yet implemented")
-    }
-
-    override fun remove(player: UUID) {
-        TODO("Not yet implemented")
-    }
-
-    override fun updateTitle(title: String) {
-        TODO("Not yet implemented")
-    }
+fun Player.injectPipeline(): Channel {
+    val minecraftConnectionField = this::class.java.getDeclaredField("connection")
+    minecraftConnectionField.isAccessible = true
+    val minecraftConnection = minecraftConnectionField.get(this)
+    val channelField = minecraftConnection::class.java.getDeclaredField("channel")
+    channelField.isAccessible = true
+    return channelField.get(minecraftConnection) as Channel
 }
