@@ -41,6 +41,7 @@ import com.google.gson.GsonBuilder
 import eu.vironlab.vextension.database.info.CachingInformation
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.database.info.SpecificNameInformation
+import java.io.Writer
 import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
 import javax.annotation.processing.*
@@ -50,6 +51,8 @@ import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
+import javax.tools.FileObject
+import javax.tools.StandardLocation
 
 
 class DatabaseProcessor : AbstractProcessor() {
@@ -116,6 +119,11 @@ class DatabaseProcessor : AbstractProcessor() {
                         specificNames,
                         cachingInformation
                     )
+                    val fileObject: FileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "eu/vironlab/vextension/database/objects/${targetClassName}.json")
+                    val writer: Writer = fileObject.openWriter()
+                    writer.write(GSON.toJson(objectInfo))
+                    writer.flush()
+                    writer.close()
                     println("Finished Processing ${targetClassName} in ${(System.currentTimeMillis() - time)} Millis (${TimeUnit.MILLISECONDS.toSeconds((System.currentTimeMillis() - time))} Seconds)")
                 }
                 println("________________________________________________________________________________")
