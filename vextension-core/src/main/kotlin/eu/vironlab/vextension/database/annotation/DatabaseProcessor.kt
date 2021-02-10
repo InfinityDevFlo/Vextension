@@ -38,9 +38,7 @@
 package eu.vironlab.vextension.database.annotation
 
 import com.google.gson.GsonBuilder
-import eu.vironlab.vextension.database.info.CachingInformation
 import eu.vironlab.vextension.database.info.ObjectInformation
-import eu.vironlab.vextension.database.info.SpecificNameInformation
 import java.io.Writer
 import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
@@ -98,26 +96,22 @@ class DatabaseProcessor : AbstractProcessor() {
                         keyName = key.getAnnotation(DatabaseName::class.java).name
                     }
                     val ignoredFields: MutableList<String> = mutableListOf()
-                    val specificNames: MutableList<SpecificNameInformation> = mutableListOf()
+                    val specificNames: MutableMap<String, String> = mutableMapOf()
                     element.enclosedElements.forEach {
                         if (it.kind.equals(ElementKind.FIELD)) {
                             if (it.getAnnotation(DatabaseName::class.java) != null) {
-                                specificNames.add(SpecificNameInformation(it.simpleName.toString(), it.getAnnotation(DatabaseName::class.java).name))
+                                specificNames.put(it.simpleName.toString(), it.getAnnotation(DatabaseName::class.java).name)
                             }
                             if (it.getAnnotation(Ignored::class.java) != null) {
                                 ignoredFields.add(it.simpleName.toString())
                             }
                         }
                     }
-                    val obj = element.getAnnotation(NewDatabaseObject::class.java)
-                    val cachingInformation: CachingInformation =
-                        CachingInformation(obj.caching, obj.cacheTime, obj.cacheTimeUnit)
                     val objectInfo: ObjectInformation = ObjectInformation(
                         keyName ?: key.simpleName.toString(),
                         key.simpleName.toString(),
                         ignoredFields,
                         specificNames,
-                        cachingInformation
                     )
                     val fileObject: FileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "eu/vironlab/vextension/database/objects/${targetClassName}.json")
                     val writer: Writer = fileObject.openWriter()

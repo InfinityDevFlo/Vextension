@@ -78,7 +78,7 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase
      */
-    fun getBasicDatabase(name: String): Database<Document, String>
+    fun getBasicDatabase(name: String): Database<out Document, String>
 
     /**
      * Async Method for
@@ -90,7 +90,7 @@ interface DatabaseClient {
      * Async Method for
      * @see DatabaseClient.getBasicDatabase
      */
-    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<Document, String>>
+    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<out Document, String>>
 
     /**
      * Check if a Database with the given name exists
@@ -106,5 +106,5 @@ interface DatabaseClient {
      *
      * @param name is the Name of the Database
      */
-    fun drop(name: String)
+    fun drop(name: String): Boolean
 }

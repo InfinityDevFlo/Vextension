@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class NewDatabaseObject(val caching: Boolean = false, val cacheTime: Long = 10, val cacheTimeUnit: TimeUnit = TimeUnit.MINUTES)
+annotation class NewDatabaseObject()
 
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)

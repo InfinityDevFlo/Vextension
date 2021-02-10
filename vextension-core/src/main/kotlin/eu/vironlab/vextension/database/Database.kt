@@ -37,14 +37,63 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.lang.Nameable
+import java.util.*
+import java.util.concurrent.TimeUnit
+
 /**
  * A Wrapper for Multiple Database Types
  *
  * @param T is the Class the requests will return
  * @param K is the Key type of the Database
  */
-interface Database<T, K> {
+interface Database<T, K> : Nameable {
+
+    val cachingEnabled: Boolean
+
+    val cacheTime: Long
+
+    val cacheUnit: TimeUnit
+
+    val classInfo: ObjectInformation
 
 
+    fun get(key: K): Optional<T>
+
+    fun get(key: String, value: Any): Collection<T>
+
+    fun insert(key: K, value: T): Boolean
+
+    fun delete(key: K): Boolean
+
+    fun contains(key: K): Boolean
+
+    fun contains(key: String, value: Any): Boolean
+
+    fun keys(): Collection<K>
+
+    fun clear(): Boolean
+
+    fun forEach(func: (K, T) -> Unit)
+
+    fun getAsync(key: K): AsyncTask<Optional<T>>
+
+    fun getAsync(key: String, value: Any): AsyncTask<Collection<T>>
+
+    fun insertAsync(key: K, value: T): AsyncTask<Boolean>
+
+    fun deleteAsync(key: K): AsyncTask<Boolean>
+
+    fun containsAsync(key: K): AsyncTask<Boolean>
+
+    fun keysAsync(): AsyncTask<Collection<K>>
+
+    fun containsAsync(key: String, value: Any): AsyncTask<Boolean>
+
+    fun forEachAsync(func: (K, T) -> Unit)
+
+    fun clearAsync(): AsyncTask<Boolean>
 
 }

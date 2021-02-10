@@ -284,6 +284,15 @@ interface Document {
     }
 
     /**
+     * Get a Map of specific generic types
+     * @param key is the key of the Map
+     * @return the Map
+     */
+    fun <K, V> getMap(key: String): Optional<MutableMap<K, V>> {
+        return get(key, object : TypeToken<MutableMap<K, V>>() {}.type)
+    }
+
+    /**
      * Get a JsonElement by a key
      * @param key is the key of the element
      * @return the JsonElement

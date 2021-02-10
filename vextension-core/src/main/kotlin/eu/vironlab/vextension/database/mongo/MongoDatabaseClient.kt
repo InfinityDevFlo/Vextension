@@ -35,9 +35,46 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.info
+package eu.vironlab.vextension.database.mongo
 
-import java.util.concurrent.TimeUnit
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoClients
+import eu.vironlab.vextension.database.*
+import eu.vironlab.vextension.document.DefaultDocument
+import eu.vironlab.vextension.document.Document
 
 
-class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableMap<String, String>)
+class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDatabaseClient() {
+
+    lateinit var mongoClient: MongoClient
+    lateinit var database: com.mongodb.client.MongoDatabase
+
+    override fun init() {
+        this.mongoClient = MongoClients.create(connectionData.toMongo())
+        this.database = this.mongoClient.getDatabase(connectionData.database)
+    }
+
+    override fun <T, K> getDatabase(name: String, parsedClass: Class<T>): Database<T, K> {
+        DatabaseUtil.getInfo(parsedClass)
+            .orElseThrow { IllegalStateException("Cannot load Database from Unknown Object") }
+        return MongoDatabase<T, K>(name, parsedClass, database)
+    }
+
+    override fun getBasicDatabase(name: String): Database<out Document, String> {
+        return getDatabase(name, DefaultDocument::class.java)
+    }
+
+    override fun exists(name: String): Boolean {
+        return this.database.listCollectionNames().contains(name)
+    }
+
+    override fun drop(name: String): Boolean {
+        return if (!exists(name)) {
+            false
+        } else {
+            this.database.getCollection(name).drop()
+            return true
+        }
+    }
+
+}

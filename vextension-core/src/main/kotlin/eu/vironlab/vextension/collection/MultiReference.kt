@@ -46,4 +46,4 @@ data class DataPair<F, S>(var first: F, var second: S)
 /**
  * Put three objects in the same class instance
  */
-data class DataTriple<F, S, T>(var first: F, var second: S, var third: F)
+data class DataTriple<F, S, T>(var first: F, var second: S, var third: T)
