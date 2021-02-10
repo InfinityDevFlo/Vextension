@@ -35,32 +35,56 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.database.mongo
 
+import eu.vironlab.vextension.database.DatabaseUtil
+import eu.vironlab.vextension.database.RemoteConnectionData
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
-import java.util.*
 
+fun RemoteConnectionData.toMongo(): String {
+    return "mongodb://${user}:${password}@${host}:${port}/${database}"
+}
 
-object DatabaseUtil {
+fun org.bson.Document.toDocument(name: String): Document {
+    return DocumentManagement.newJsonDocument(name, this.toJson())
+}
 
-    @JvmStatic
-    fun <T> getInfo(clazz: Class<T>): Optional<ObjectInformation> {
-        try {
-            val document: Document =
-                DocumentManagement.jsonStorage()
-                    .read(clazz.canonicalName, clazz.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.canonicalName}.json"))
-            return Optional.of(ObjectInformation(
-                document.getString("keyField").get(),
-                document.getString("key").get(),
-                document.getList<String>("ignoredFields").get(),
-                document.getMap<String, String>("specificNames").get(),
-            ))
-        } catch (e: Exception) {
-            return Optional.empty()
+fun <T> org.bson.Document.parse(clazz: Class<T>, instance: T): org.bson.Document {
+    val info = DatabaseUtil.getInfo(clazz).orElseThrow { IllegalStateException("Cannot parse unregistered Class") }
+    if (instance != null) {
+        instance!!::class.java.declaredFields.forEach {
+            if (!info.ignoredFields.contains(it.name) && it.name != info.keyField) {
+                val name = if (info.specificNames.containsKey(it.name)) {
+                    info.specificNames.get(it.name)!!
+                } else {
+                    it.name
+                }
+                it.isAccessible = true
+                this.append(name, it.get(instance))
+            }
         }
     }
+    return this
+}
 
+fun <T> org.bson.Document.toInstance(clazz: Class<T>, info: ObjectInformation): T {
+    val instance = clazz.getConstructor().newInstance()
+    instance!!::class.java.declaredFields.forEach {
+        if (!info.ignoredFields.contains(it.name)) {
+            val name = if (info.specificNames.containsKey(it.name)) {
+                info.specificNames.get(it.name)!!
+            } else {
+                it.name
+            }
+            it.isAccessible = true
+            it.set(instance, this.get(name)!!)
+        }
+    }
+    return instance
+}
 
+fun Document.toBson(): org.bson.Document {
+    return org.bson.Document.parse(this.toJson())
 }

@@ -44,7 +44,7 @@ import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 
 
-class VextensionBungee : Plugin() , Vextension, Listener {
+class VextensionBungee : Plugin(), Vextension, Listener {
     private var databaseClient: DatabaseClient? = null
 
 

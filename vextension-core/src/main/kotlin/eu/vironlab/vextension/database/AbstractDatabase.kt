@@ -37,6 +37,66 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.database.info.ObjectInformation
+import java.util.*
+import java.util.concurrent.TimeUnit
 
-abstract class AbstractDatabase<T, K> : Database<T, K> {
+/**
+ * This class implements the Async methods of the Database and have already the given Information by the Class
+ */
+abstract class AbstractDatabase<T, K>(val parsedClass: Class<T>) : Database<T, K> {
+
+    override val classInfo: ObjectInformation
+        get() = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
+
+    override fun contains(key: K): Boolean {
+        return contains(this.classInfo.key, key!!)
+    }
+
+    override fun get(key: K): Optional<T> {
+        return if (contains(key)) {
+            Optional.of(get(this.classInfo.key, key!!).first())
+        }else {
+            Optional.empty()
+        }
+    }
+
+    override fun getAsync(key: K): AsyncTask<Optional<T>> {
+        return scheduleAsync { get(key) }
+    }
+
+    override fun getAsync(key: String, value: Any): AsyncTask<Collection<T>> {
+        return scheduleAsync { get(key, value) }
+    }
+
+    override fun insertAsync(key: K, value: T): AsyncTask<Boolean> {
+        return scheduleAsync { insert(key, value) }
+    }
+
+    override fun deleteAsync(key: K): AsyncTask<Boolean> {
+        return scheduleAsync { delete(key) }
+    }
+
+    override fun containsAsync(key: K): AsyncTask<Boolean> {
+        return scheduleAsync { contains(key) }
+    }
+
+    override fun containsAsync(key: String, value: Any): AsyncTask<Boolean> {
+        return scheduleAsync { contains(key, value) }
+    }
+
+    override fun keysAsync(): AsyncTask<Collection<K>> {
+        return scheduleAsync { this.keys() }
+    }
+
+    override fun clearAsync(): AsyncTask<Boolean> {
+        return scheduleAsync { this.clear() }
+    }
+
+    override fun forEachAsync(func: (K, T) -> Unit) {
+        scheduleAsync { forEach(func) }
+    }
+
 }

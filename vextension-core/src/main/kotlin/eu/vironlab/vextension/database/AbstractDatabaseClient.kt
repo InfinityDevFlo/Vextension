@@ -41,9 +41,12 @@ import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.document.Document
 
+/**
+ * This class implements the Async methods of the Client
+ */
 abstract class AbstractDatabaseClient : DatabaseClient {
 
-    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<Document, String>> {
+    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<out Document, String>> {
         return scheduleAsync { this.getBasicDatabase(name) }
     }
 

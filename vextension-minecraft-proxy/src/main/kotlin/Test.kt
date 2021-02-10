@@ -1,3 +1,8 @@
+import eu.vironlab.vextension.database.annotation.DatabaseKey
+import eu.vironlab.vextension.database.annotation.DatabaseName
+import eu.vironlab.vextension.database.annotation.Ignored
+import eu.vironlab.vextension.database.annotation.NewDatabaseObject
+
 /**
  *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
  * <p>
@@ -35,9 +40,5 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.info
-
-import java.util.concurrent.TimeUnit
-
-
-class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableMap<String, String>)
+@NewDatabaseObject
+class Test(@DatabaseKey val test1: String, @DatabaseName("test") val test2: String, @Ignored val test3: String)
