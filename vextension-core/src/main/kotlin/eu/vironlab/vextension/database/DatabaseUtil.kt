@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.database.info.CachingInformation
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
@@ -57,7 +56,6 @@ object DatabaseUtil {
                 document.getString("key").get(),
                 document.getList<String>("ignoredFields").get(),
                 document.getMap<String, String>("specificNames").get(),
-                document.get("caching", CachingInformation::class.java).get()
             ))
         } catch (e: Exception) {
             return Optional.empty()

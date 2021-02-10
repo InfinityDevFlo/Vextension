@@ -51,12 +51,6 @@ import java.util.concurrent.TimeUnit
  */
 interface Database<T, K> : Nameable {
 
-    val cachingEnabled: Boolean
-
-    val cacheTime: Long
-
-    val cacheUnit: TimeUnit
-
     val classInfo: ObjectInformation
 
 
