@@ -49,7 +49,7 @@ class VextensionBungee : Plugin(), Vextension, Listener {
 
 
     override fun onLoad() {
-        VextensionAPI.instance = this
+        VextensionAPI.initialize(this)
         proxy.pluginManager.registerListener(this, this)
     }
 

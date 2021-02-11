@@ -57,7 +57,7 @@ class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger
 
 
     init {
-        VextensionAPI.instance = this
+        VextensionAPI.initialize(this)
     }
 
     override fun getDatabaseClient(): DatabaseClient {

@@ -67,6 +67,8 @@ allprojects {
         coords_mongo = "org.mongodb:mongodb-driver-sync:3.12.7"
         coords_gson = "com.google.code.gson:gson:2.8.6"
         coords_snakeyml = "org.yaml:snakeyaml:1.27"
+        coords_jackson_xml = "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1"
+        coords_jackson = "com.fasterxml.jackson.core:jackson-databind:2.12.1"
 
         //Minecraft APIs
         coords_bukkit = "com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT"
@@ -127,12 +129,19 @@ subprojects {
                 groupId = "eu.vironlab.vextension"
                 artifactId = project.name
                 version = project_version
-                inceptionYear "2021"
+                inceptionYear = "2021"
                 licenses {
                     license {
-                        name 'GNU General Public License v3.0'
-                        url 'http://www.gnu.de/documents/gpl.de.html'
-                        distribution 'repo'
+                        name = "GNU General Public License v3.0"
+                        url = "http://www.gnu.de/documents/gpl.de.html"
+                        distribution "repo"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "Infinity_dev"
+                        name = "Florin Dornig"
+                        email = "florin.dornig@vironlab.eu"
                     }
                 }
             }
