@@ -76,7 +76,6 @@ open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, datab
                         } else {
                             it.name
                         }
-                        it.isAccessible = true
                         it.set(instance, bson.get(name)!!)
                     }
                 }

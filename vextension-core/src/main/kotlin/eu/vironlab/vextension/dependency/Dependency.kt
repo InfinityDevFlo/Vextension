@@ -1,8 +1,3 @@
-import eu.vironlab.vextension.database.annotation.DatabaseKey
-import eu.vironlab.vextension.database.annotation.DatabaseName
-import eu.vironlab.vextension.database.annotation.Ignored
-import eu.vironlab.vextension.database.annotation.NewDatabaseObject
-
 /**
  *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
  * <p>
@@ -40,5 +35,12 @@ import eu.vironlab.vextension.database.annotation.NewDatabaseObject
  *<p>
  */
 
-@NewDatabaseObject
-class Test(@DatabaseKey val test1: String, @DatabaseName("test") val test2: String, @Ignored val test3: String)
+package eu.vironlab.vextension.dependency
+
+
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS)
+@Repeatable
+annotation class RequireDependency(val group: String, val artifact: String, val version: String, val repository: String = DependencyLoader.Repository.MAVEN_CENTRAL)
+
+data class Dependency(val group: String, val artifact: String, val version: String)

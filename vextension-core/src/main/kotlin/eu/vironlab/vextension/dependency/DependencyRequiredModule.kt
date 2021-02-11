@@ -35,34 +35,16 @@
  *<p>
  */
 
-package eu.vironlab.vextension.velocity
+package eu.vironlab.vextension.dependency
 
-import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
-import com.velocitypowered.api.proxy.ProxyServer
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.*
-import org.slf4j.Logger
-
-@Plugin(
-    name = "Vextension-Velocity",
-    authors = arrayOf("VironLab"),
-    id = "vextension_velocity",
-    description = "Vextension for Velocity",
-    version = "1.0.0-SNAPSHOT"
-)
-class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
-    private var databaseClient: DatabaseClient? = null
-
+abstract class DependencyRequiredModule() {
 
     init {
-        VextensionAPI.instance = this
+        if (this::class.java.isAnnotationPresent(RequireDependency::class.java)) {
+            this::class.java.getAnnotationsByType(RequireDependency::class.java).forEach {
+                DependencyLoader.require(it.repository, Dependency(it.group, it.artifact, it.version))
+            }
+        }
     }
-
-    override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
-    }
-
 
 }
