@@ -51,6 +51,12 @@ abstract class AbstractDatabase<T, K>(val parsedClass: Class<T>) : Database<T, K
     override val classInfo: ObjectInformation
         get() = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
 
+    init {
+        parsedClass.declaredFields.forEach {
+            it.isAccessible = true
+        }
+    }
+
     override fun contains(key: K): Boolean {
         return contains(this.classInfo.key, key!!)
     }

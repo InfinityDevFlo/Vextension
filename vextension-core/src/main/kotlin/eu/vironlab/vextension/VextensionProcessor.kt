@@ -35,25 +35,30 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.annotation
+package eu.vironlab.vextension
 
 import com.google.gson.GsonBuilder
+import eu.vironlab.vextension.database.annotation.DatabaseKey
+import eu.vironlab.vextension.database.annotation.DatabaseName
+import eu.vironlab.vextension.database.annotation.Ignored
+import eu.vironlab.vextension.database.annotation.NewDatabaseObject
 import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.dependency.Dependency
 import java.io.Writer
-import java.lang.StringBuilder
 import java.util.concurrent.TimeUnit
-import javax.annotation.processing.*
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.Filer
+import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
-import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic
 import javax.lang.model.element.ElementKind
-import javax.lang.model.element.Modifier
+import javax.lang.model.element.TypeElement
 import javax.tools.FileObject
 import javax.tools.StandardLocation
 
 
-class DatabaseProcessor : AbstractProcessor() {
+class VextensionProcessor : AbstractProcessor() {
 
     val GSON = GsonBuilder().serializeNulls().setPrettyPrinting().create()
     private var running: Boolean = false
@@ -72,11 +77,11 @@ class DatabaseProcessor : AbstractProcessor() {
             if (!running) {
                 println("________________________________________________________________________________")
                 println("                      _                      _               \n" +
-                            " /\\   /\\   ___ __  __| |_   ___  _ __   ___ (_)  ___   _ __  \n" +
-                            " \\ \\ / /  / _ \\\\ \\/ /| __| / _ \\| '_ \\ / __|| | / _ \\ | '_ \\ \n" +
-                            "  \\ V /  |  __/ >  < | |_ |  __/| | | |\\__ \\| || (_) || | | |\n" +
-                            "   \\_/    \\___|/_/\\_\\ \\__| \\___||_| |_||___/|_| \\___/ |_| |_|\n" +
-                            "                                                             \n"
+                        " /\\   /\\   ___ __  __| |_   ___  _ __   ___ (_)  ___   _ __  \n" +
+                        " \\ \\ / /  / _ \\\\ \\/ /| __| / _ \\| '_ \\ / __|| | / _ \\ | '_ \\ \n" +
+                        "  \\ V /  |  __/ >  < | |_ |  __/| | | |\\__ \\| || (_) || | | |\n" +
+                        "   \\_/    \\___|/_/\\_\\ \\__| \\___||_| |_||___/|_| \\___/ |_| |_|\n" +
+                        "                                                             \n"
                 )
                 println("Starting Vextension Database Processor")
                 this.running = true
@@ -129,7 +134,7 @@ class DatabaseProcessor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(NewDatabaseObject::class.java.canonicalName)
+        return mutableSetOf(NewDatabaseObject::class.java.canonicalName, Dependency::class.java.canonicalName)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion? {
