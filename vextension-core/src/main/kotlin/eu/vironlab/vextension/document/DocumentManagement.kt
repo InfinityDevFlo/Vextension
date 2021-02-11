@@ -43,6 +43,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.JsonDocumentStorage
+import eu.vironlab.vextension.document.storage.XMLDocumentStorage
 import eu.vironlab.vextension.document.storage.YamlDocumentStorage
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
@@ -60,6 +61,11 @@ object DocumentManagement {
      * Get the YamlStorage of the Documents
      */
     private val YAML: DocumentStorage = YamlDocumentStorage()
+
+    /**
+     * Get the XMLStorage of the Documents
+     */
+    private val XML: DocumentStorage = XMLDocumentStorage()
 
     /**
      * Create a new Empty Document
@@ -188,6 +194,13 @@ object DocumentManagement {
      */
     fun newYamlDocument(name: String,input: String): DefaultDocument {
         return yamlStorage().read(name, input)
+    }
+
+    /**
+     * @return the XMLStorage
+     */
+    fun xmlStorage(): DocumentStorage {
+        return XML
     }
 
     /**

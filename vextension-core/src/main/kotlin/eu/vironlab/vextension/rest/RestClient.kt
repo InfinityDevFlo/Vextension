@@ -55,8 +55,12 @@ class RestClient(val agent: String) {
         return getJsonArray(url, mutableMapOf())
     }
 
-    fun getDocument(url: String): Optional<Document> {
-        return getDocument(url, mutableMapOf())
+    fun getJsonDocument(url: String): Optional<Document> {
+        return getJsonDocument(url, mutableMapOf())
+    }
+
+    fun getXmlDocument(url: String): Optional<Document> {
+        return getXmlDocument(url, mutableMapOf())
     }
 
     fun <T> getClassInstance(url: String, clazz: Class<T>): Optional<T> {
@@ -92,7 +96,29 @@ class RestClient(val agent: String) {
         }
     }
 
-    fun getDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
+    fun getXmlDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
+        try {
+            val url = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.GET.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (!properties.isEmpty()) {
+                properties.forEach { k, v ->
+                    connection.setRequestProperty(k, v)
+                }
+            }
+            connection.connect()
+            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
+            val document = DocumentManagement.xmlStorage().read(urlStr, input)
+            connection.disconnect()
+            return Optional.of(document)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Optional.ofNullable(null)
+        }
+    }
+
+    fun getJsonDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
         try {
             val url = URL(urlStr)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection

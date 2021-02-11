@@ -40,6 +40,7 @@ package eu.vironlab.vextension.sponge
 import com.google.inject.Inject
 import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
+import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
 import org.slf4j.Logger
 import org.spongepowered.api.event.Listener
@@ -61,6 +62,7 @@ class VextensionSponge : Vextension  {
 
     @Listener
     fun init(event: GameStartedServerEvent) {
+        VextensionAPI.initialize(this)
         logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
 

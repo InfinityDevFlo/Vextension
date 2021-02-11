@@ -1,5 +1,7 @@
 dependencies {
     implementation(coords_mongo)
     implementation(coords_gson)
+    implementation(coords_jackson_xml)
+    implementation(coords_jackson)
     implementation(coords_snakeyml)
 }

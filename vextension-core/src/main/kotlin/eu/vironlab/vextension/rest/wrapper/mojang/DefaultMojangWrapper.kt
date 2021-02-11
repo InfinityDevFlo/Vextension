@@ -48,7 +48,7 @@ import java.util.*
 
 class DefaultMojangWrapper : AbstractMojangWrapper() {
     override fun getPlayer(uuid: UUID): Optional<MojangUser> {
-        val profileRequest = CLIENT.getDocument(PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
+        val profileRequest = CLIENT.getJsonDocument(PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
         var result: MojangUser? = null
         profileRequest.ifPresent {
             val name = it.getString("name").get()
@@ -61,7 +61,7 @@ class DefaultMojangWrapper : AbstractMojangWrapper() {
     }
 
     override fun getUUID(name: String): Optional<UUID> {
-        val request = CLIENT.getDocument(UUID_REQUEST_URL + name)
+        val request = CLIENT.getJsonDocument(UUID_REQUEST_URL + name)
         var result: UUID? = null
         request.ifPresent {
             result = it.getString("id").get().appendToUUID()

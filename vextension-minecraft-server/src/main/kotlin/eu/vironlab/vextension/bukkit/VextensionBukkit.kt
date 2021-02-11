@@ -39,7 +39,11 @@ package eu.vironlab.vextension.bukkit
 
 import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
+import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
+import eu.vironlab.vextension.database.RemoteConnectionData
+import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
+import eu.vironlab.vextension.dependency.DependencyLoader
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -54,6 +58,7 @@ class VextensionBukkit : JavaPlugin(), Vextension {
 
     override fun onLoad() {
         instance = this
+        VextensionAPI.initialize(this)
     }
 
     override fun getDatabaseClient(): DatabaseClient {

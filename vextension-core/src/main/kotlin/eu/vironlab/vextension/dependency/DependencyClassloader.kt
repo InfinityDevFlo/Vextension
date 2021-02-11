@@ -82,7 +82,7 @@ class DependencyClassloader() {
 
     fun addJarToClasspath(paramPath: File) {
         try {
-            addUrl.invoke(classLoader, arrayOf<Any>(paramPath.toURI().toURL()))
+            addUrl.invoke(classLoader, paramPath.toURI().toURL())
         } catch (e: IllegalAccessException) {
             throw RuntimeException(e)
         } catch (e: InvocationTargetException) {
