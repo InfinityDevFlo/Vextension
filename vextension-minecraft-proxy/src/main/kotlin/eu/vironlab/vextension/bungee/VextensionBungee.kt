@@ -45,18 +45,12 @@ import net.md_5.bungee.api.plugin.Plugin
 
 
 class VextensionBungee : Plugin(), Vextension, Listener {
-    private var databaseClient: DatabaseClient? = null
+    override lateinit var databaseClient: DatabaseClient
 
 
     override fun onLoad() {
         VextensionAPI.initialize(this)
         proxy.pluginManager.registerListener(this, this)
     }
-
-
-    override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
-    }
-
 
 }

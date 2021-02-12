@@ -134,7 +134,7 @@ class VextensionProcessor : AbstractProcessor() {
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return mutableSetOf(NewDatabaseObject::class.java.canonicalName, Dependency::class.java.canonicalName)
+        return mutableSetOf(NewDatabaseObject::class.java.canonicalName)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion? {
