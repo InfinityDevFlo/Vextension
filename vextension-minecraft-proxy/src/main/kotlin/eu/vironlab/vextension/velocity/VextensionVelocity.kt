@@ -53,15 +53,11 @@ import org.slf4j.Logger
     version = "1.0.0-SNAPSHOT"
 )
 class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
-    private var databaseClient: DatabaseClient? = null
+    override lateinit var databaseClient: DatabaseClient
 
 
     init {
         VextensionAPI.initialize(this)
-    }
-
-    override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
 

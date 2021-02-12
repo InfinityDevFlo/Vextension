@@ -38,7 +38,6 @@
 package eu.vironlab.vextension.sponge
 
 import com.google.inject.Inject
-import eu.vironlab.vextension.DatabaseConnectionData
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
@@ -56,7 +55,7 @@ import org.spongepowered.api.plugin.Plugin
 )
 class VextensionSponge : Vextension  {
 
-    private var databaseClient: DatabaseClient? = null
+    override lateinit var databaseClient: DatabaseClient
     @Inject
     private lateinit var logger: Logger
 
@@ -65,9 +64,4 @@ class VextensionSponge : Vextension  {
         VextensionAPI.initialize(this)
         logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
-
-    override fun getDatabaseClient(): DatabaseClient {
-        return this.databaseClient!!// ?: throw ClientNotInitializedException("You have to init the client first")
-    }
-
 }

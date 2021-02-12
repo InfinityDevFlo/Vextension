@@ -50,8 +50,9 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
     lateinit var database: com.mongodb.client.MongoDatabase
 
     override fun init() {
-        DependencyLoader.require("org.mongodb:mongodb-driver-sync:3.12.7")
-        System.out.println("HALLLLLOOO")
+        DependencyLoader.require("org.mongodb:mongodb-driver-sync:4.2.0")
+        DependencyLoader.require("org.mongodb:mongodb-driver-core:4.2.0")
+        DependencyLoader.require("org.mongodb:bson:4.2.0")
         this.mongoClient = MongoClients.create(connectionData.toMongo())
         this.database = this.mongoClient.getDatabase(connectionData.database)
     }
