@@ -141,7 +141,7 @@ subprojects {
                     developer {
                         id = "Infinity_dev"
                         name = "Florin Dornig"
-                        email = "florin.dornig@vironlab.eu"
+                        email = "infinitydev@vironlab.eu"
                     }
                 }
             }
