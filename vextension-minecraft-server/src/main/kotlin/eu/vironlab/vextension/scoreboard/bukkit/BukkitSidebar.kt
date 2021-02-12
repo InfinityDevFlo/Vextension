@@ -127,12 +127,9 @@ class BukkitSidebar(
                         scoreboard.getTeam(name)!!.unregister()
                     }
                     val team: Team = scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
-                    Bukkit.getConsoleSender().sendMessage("1")
                     if (pair.second.proceed != null) {
-                        Bukkit.getConsoleSender().sendMessage("2")
                         pair.second.proceed!!.invoke(pair.second, player)
                     }
-                    Bukkit.getConsoleSender().sendMessage("3")
                     val splittetLine = ScoreboardUtil.splitContent(pair.second.content)
                     team.prefix = splittetLine.first
                     team.suffix = splittetLine.second
@@ -164,8 +161,10 @@ class BukkitSidebar(
     }
 
     override fun removeAll() {
-        players.forEach {
-            remove(it.uniqueId)
+        scheduleAsync {
+            players.forEach {
+                remove(it.uniqueId)
+            }
         }
     }
 
@@ -180,8 +179,10 @@ class BukkitSidebar(
 
     override fun updateTitle(title: String) {
         this.title = title
-        players.forEach {
-            it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName = title
+        scheduleAsync {
+            players.forEach {
+                it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName = title
+            }
         }
     }
 
