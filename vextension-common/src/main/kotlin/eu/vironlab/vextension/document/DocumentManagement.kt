@@ -41,6 +41,7 @@ package eu.vironlab.vextension.document
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.JsonDocumentStorage
 import eu.vironlab.vextension.document.storage.XMLDocumentStorage
@@ -52,6 +53,17 @@ import java.nio.file.Path
  * Create new Documents and store existing ones
  */
 object DocumentManagement {
+
+    fun initialize() {
+        DependencyLoader.require("com.google.code.gson:gson:2.8.6")
+        DependencyLoader.require("org.yaml:snakeyaml:1.27")
+        DependencyLoader.require("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
+        DependencyLoader.require("com.fasterxml.jackson.core:jackson-databind:2.12.1")
+        DependencyLoader.require("com.fasterxml.jackson.core:jackson-core:2.12.1")
+        DependencyLoader.require("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
+        DependencyLoader.require("org.codehaus.woodstox:stax2-api:4.2.1")
+    }
+
     /**
      * Get the JsonStorage for the Documents
      */

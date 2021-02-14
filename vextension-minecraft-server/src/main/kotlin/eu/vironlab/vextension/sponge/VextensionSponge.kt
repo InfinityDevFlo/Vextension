@@ -40,7 +40,6 @@ package eu.vironlab.vextension.sponge
 import com.google.inject.Inject
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.database.DatabaseClient
 import org.slf4j.Logger
 import org.spongepowered.api.event.Listener

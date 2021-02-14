@@ -1,12 +1,12 @@
 dependencies {
-    implementation project(":vextension-core")
+    implementation project(":vextension-common")
     implementation(coords_bukkit)
     implementation(coords_sponge)
     kapt(coords_sponge)
 }
 
 jar {
-    def proj = ':vextension-core'
+    def proj = ':vextension-common'
 
     dependsOn "$proj:build"
 

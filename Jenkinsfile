@@ -41,15 +41,15 @@ pipeline {
                             artifacts:
                                     [
                                             [
-                                                    artifactId: "vextension-core",
+                                                    artifactId: "vextension-common",
                                                     classifier: '',
-                                                    file      : "vextension-core/build/libs/vextension-core.jar",
+                                                    file      : "vextension-common/build/libs/vextension-core.jar",
                                                     type      : "jar"
                                             ],
                                             [
-                                                    artifactId: "vextension-core",
+                                                    artifactId: "vextension-common",
                                                     classifier: '',
-                                                    file      : "vextension-core/build/pom/pom.xml",
+                                                    file      : "vextension-common/build/pom/pom.xml",
                                                     type      : "pom"
                                             ],
                                             [

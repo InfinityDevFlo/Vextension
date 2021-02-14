@@ -1,13 +1,13 @@
 dependencies {
-    implementation project(":vextension-core")
-    kapt project(":vextension-core")
+    implementation project(":vextension-common")
+    kapt project(":vextension-common")
     implementation(coords_waterfall)
     implementation(coords_velocity)
     kapt(coords_velocity)
 }
 
 jar {
-    def proj = ':vextension-core'
+    def proj = ':vextension-common'
 
     dependsOn "$proj:build"
 

@@ -19,8 +19,8 @@ maven {
     url = "https://repo.vironlab.eu/repository/snapshot/"
 }
 
-//Dependency - Core 
-compile("eu.vironlab.vextension:vextension-core:1.0.0-SNAPSHOT")
+//Dependency - Common
+compile("eu.vironlab.vextension:vextension-common:1.0.0-SNAPSHOT")
 
 //Dependency - Minecraft - Server
 compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
@@ -33,49 +33,6 @@ compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
 
 ### Database
 
-```kotlin
-fun initDatabase(config: Document) {
-    VextensionAPI.initialize()
-    VextensionAPI.instance.initDatabase(
-        DatabaseClientType.MONGO, DatabaseConnectionData(
-            config.getString("host", "localhost"),
-            config.getString("port", "27017"),
-            config.getString("user", "admin"),
-            config.getString("password", "password"),
-            config.getString("database", "example")
-        )
-    )
-}
-
-class PersonObject() : DatabaseObject {
-    var name: String = ""
-    var age: Int = 0
-
-    constructor(name: String, age: Int) : this() {
-        this.name = name
-        this.age = age
-    }
-
-    override fun init(document: Document) {
-        this.age = document.getInt("age").get()
-        this.name = document.getString("name").get()
-    }
-
-    override fun toDocument(): Document {
-        return DocumentManagement.newDocument().insert("age", this.age).insert("name", this.name)
-    }
-}
-
-fun getPerson(name: String): PersonObject {
-    return VextensionAPI.instance.getDatabaseClient().getDatabase<PersonObject>("persons", PersonObject::class.java)
-        .get(name).get()
-}
-
-fun createPerson(person: PersonObject) {
-    VextensionAPI.instance.getDatabaseClient().getDatabase<PersonObject>("persons", PersonObject::class.java)
-        .insertAsync(person.name, person)
-}
-```
 
 ### Bukkit
 
