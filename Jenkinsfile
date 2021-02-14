@@ -21,6 +21,13 @@ pipeline {
             steps {
                 sh "./gradlew jar";
             }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
+                }
+            }
         }
         stage("Sources") {
             steps {
