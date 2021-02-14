@@ -119,9 +119,6 @@ subprojects {
 
     jar {
         archiveFileName.set("${project.name}.jar")
-        from {
-            configurations.compile.collect {it.isDirectory() ? it : zipTree(it) }
-        }
     }
 
     jar.doLast {
