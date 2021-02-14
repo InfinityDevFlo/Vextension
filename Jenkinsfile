@@ -43,7 +43,7 @@ pipeline {
                                             [
                                                     artifactId: "vextension-common",
                                                     classifier: '',
-                                                    file      : "vextension-common/build/libs/vextension-core.jar",
+                                                    file      : "vextension-common/build/libs/vextension-common.jar",
                                                     type      : "jar"
                                             ],
                                             [
