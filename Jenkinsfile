@@ -70,7 +70,7 @@ pipeline {
                                                     type      : "jar"
                                             ],
                                             [
-                                                    artifactId: "vextension-common-sources",
+                                                    artifactId: "vextension-common",
                                                     classifier: 'sources',
                                                     file      : "vextension-common/build/libs/vextension-common-sources.jar",
                                                     type      : "jar"
@@ -88,7 +88,7 @@ pipeline {
                                                     type      : "jar"
                                             ],
                                             [
-                                                    artifactId: "vextension-minecraft-server-sources",
+                                                    artifactId: "vextension-minecraft-server",
                                                     classifier: 'sources',
                                                     file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar",
                                                     type      : "jar"
@@ -106,7 +106,7 @@ pipeline {
                                                     type      : "jar"
                                             ],
                                             [
-                                                    artifactId: "vextension-minecraft-proxy-sources",
+                                                    artifactId: "vextension-minecraft-proxy",
                                                     classifier: 'sources',
                                                     file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-sources.jar",
                                                     type      : "jar"
