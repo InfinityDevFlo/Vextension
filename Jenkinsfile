@@ -29,9 +29,25 @@ pipeline {
                 }
             }
         }
+        stage("Docs") {
+            steps {
+                sh "./gradlew dokkaHtml";
+                sh "rm -r /var/www/docs/vextension"
+                sh "cp -r vextension-common/build/dokka/html /var/www/docs/vextension/common"
+                sh "cp -r vextension-minecraft-server/build/dokka/html /var/www/docs/vextension/minecraft-server"
+                sh "cp -r vextension-minecraft-proxy/build/dokka/html /var/www/docs/vextension/minecraft-proxy"
+            }
+        }
         stage("Sources") {
             steps {
-                sh "./gradlew sourceJar";
+                sh "./gradlew sourcesJar";
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-sources.jar', fingerprint: true
+                }
             }
         }
         stage("Publish") {
@@ -54,6 +70,12 @@ pipeline {
                                                     type      : "jar"
                                             ],
                                             [
+                                                    artifactId: "vextension-common-sources",
+                                                    classifier: 'sources',
+                                                    file      : "vextension-common/build/libs/vextension-common-sources.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
                                                     artifactId: "vextension-common",
                                                     classifier: '',
                                                     file      : "vextension-common/build/pom/pom.xml",
@@ -66,6 +88,12 @@ pipeline {
                                                     type      : "jar"
                                             ],
                                             [
+                                                    artifactId: "vextension-minecraft-server-sources",
+                                                    classifier: 'sources',
+                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
                                                     file      : "vextension-minecraft-server/build/pom/pom.xml",
@@ -75,6 +103,12 @@ pipeline {
                                                     artifactId: "vextension-minecraft-proxy",
                                                     classifier: '',
                                                     file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-minecraft-proxy-sources",
+                                                    classifier: 'sources',
+                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-sources.jar",
                                                     type      : "jar"
                                             ],
                                             [

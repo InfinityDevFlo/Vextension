@@ -3,6 +3,7 @@ plugins {
     id "maven"
     id "org.jetbrains.kotlin.jvm" version "1.4.21"
     id "org.jetbrains.kotlin.kapt" version "1.4.21"
+    id "org.jetbrains.dokka" version "1.4.20"
 }
 
 defaultTasks "clean", "build", "jar"
@@ -84,6 +85,7 @@ subprojects {
     apply plugin: "maven"
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "org.jetbrains.kotlin.kapt"
+    apply plugin: "org.jetbrains.dokka"
 
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -119,6 +121,10 @@ subprojects {
 
     jar {
         archiveFileName.set("${project.name}.jar")
+    }
+
+    sourcesJar {
+        archiveFileName.set("${project.name}-sources.jar")
     }
 
     jar.doLast {
