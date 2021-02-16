@@ -45,6 +45,9 @@ import java.util.*
 
 object DatabaseUtil {
 
+    /**
+     * Get the Information of the DatabaseObject wich is stored in a File wich will be normally created by the Annotation Processor
+     */
     @JvmStatic
     fun <T> getInfo(clazz: Class<T>): Optional<ObjectInformation> {
         try {

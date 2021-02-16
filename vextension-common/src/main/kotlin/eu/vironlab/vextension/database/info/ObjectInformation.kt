@@ -39,5 +39,7 @@ package eu.vironlab.vextension.database.info
 
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * Gives Information about a Database Object
+ */
 class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableMap<String, String>)

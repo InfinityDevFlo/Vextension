@@ -48,7 +48,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
-
+/**
+ * Client for HTTP Requests
+ */
 class RestClient(val agent: String) {
 
     fun getJsonArray(url: String): Optional<JsonArray> {

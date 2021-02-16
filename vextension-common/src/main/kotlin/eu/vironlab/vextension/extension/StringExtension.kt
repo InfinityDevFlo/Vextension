@@ -39,7 +39,9 @@ package eu.vironlab.vextension.extension
 
 import java.net.URL
 
-
+/**
+ * Check if the String is an Integer
+ */
 fun String.isInt(): Boolean {
     try {
         this.toInt()
@@ -49,6 +51,9 @@ fun String.isInt(): Boolean {
     }
 }
 
+/**
+ * Check if the String is a Boolean
+ */
 fun String.isBoolean(): Boolean {
     try {
         this.toBoolean()
@@ -58,6 +63,10 @@ fun String.isBoolean(): Boolean {
     }
 }
 
+
+/**
+ * Check if the String is an URL
+ */
 fun String.isUrl(): Boolean {
     try {
         URL(this)

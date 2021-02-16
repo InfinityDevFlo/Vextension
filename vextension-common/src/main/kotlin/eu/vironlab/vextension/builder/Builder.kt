@@ -37,8 +37,14 @@
 
 package eu.vironlab.vextension.builder
 
+/**
+ * This class if used for Builder to Build a specific class instance
+ */
 interface Builder<T> {
 
+    /**
+     * This method will be called when building the instance with the Builder
+     */
     fun build(): T
 
 }

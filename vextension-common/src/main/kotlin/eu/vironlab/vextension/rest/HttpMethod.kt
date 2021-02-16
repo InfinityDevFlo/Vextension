@@ -37,6 +37,9 @@
 
 package eu.vironlab.vextension.rest
 
+/**
+ * Supported Methods for HTTP Requests
+ */
 enum class HttpMethod {
     GET, POST, DELETE;
 }

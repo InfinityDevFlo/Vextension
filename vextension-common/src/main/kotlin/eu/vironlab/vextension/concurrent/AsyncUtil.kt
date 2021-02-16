@@ -3,6 +3,9 @@ package eu.vironlab.vextension.concurrent
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
+/**
+ * Get the Async Task of a Callable
+ */
 fun <T> scheduleAsync(callable: Callable<T>): AsyncTask<T> {
     val task: AsyncTask<T> = DefaultAsyncTask(callable)
     Executors.newSingleThreadExecutor().execute {

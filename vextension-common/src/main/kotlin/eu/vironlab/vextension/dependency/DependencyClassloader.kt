@@ -47,7 +47,9 @@ import java.io.File
 import java.lang.reflect.Method
 import java.net.URL
 
-
+/**
+ * Class Loader used by the DependencyLoader
+ */
 class DependencyClassloader() {
 
     private var addUrl: Method

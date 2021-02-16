@@ -24,6 +24,9 @@ object DependencyLoader {
         dataPath.mkdirs()
     }
 
+    /**
+     * Get the [dependency] from [server]
+     */
     @JvmStatic
     fun require(server: String = Repository.MAVEN_CENTRAL, dependency: Dependency) {
         if (!server.endsWith("/")) {
@@ -54,11 +57,17 @@ object DependencyLoader {
         }
     }
 
+    /**
+     * Get the Dependency with [coords] from Maven Central Server
+     */
     @JvmStatic
     fun require(coords: String) {
         require(server = Repository.MAVEN_CENTRAL, coords = coords)
     }
 
+    /**
+     * Get the Dependency with [coords] from [server]
+     */
     @JvmStatic
     fun require(server: String, coords: String) {
         val split = coords.split(":".toRegex()).toTypedArray()

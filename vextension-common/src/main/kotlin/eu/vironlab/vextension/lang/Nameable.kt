@@ -38,8 +38,14 @@
 
 package eu.vironlab.vextension.lang
 
+/**
+ * Use this if your class instance have a specific name
+ */
 interface Nameable {
 
+    /**
+     * Get the name of the current class instance
+     */
     val name: String
 
 }

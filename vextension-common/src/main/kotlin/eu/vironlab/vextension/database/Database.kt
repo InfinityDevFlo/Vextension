@@ -51,43 +51,133 @@ import java.util.concurrent.TimeUnit
  */
 interface Database<T, K> : Nameable {
 
+    /**
+     * The Information about the Class given by the InformationFile
+     */
     val classInfo: ObjectInformation
 
-
+    /**
+     * Get the Value of [key] in the Database as Optional instance
+     *
+     * @return the Optional instance
+     */
     fun get(key: K): Optional<T>
 
+    /**
+     * Get all Values of a non unique Field with [key] and [value]
+     *
+     * @return all Values with the Key and Value
+     */
     fun get(key: String, value: Any): Collection<T>
 
+    /**
+     * Insert [value] into the Database identified by [key]
+     *
+     * @return if the Value can be inserted or the was an Error or the Key already exists
+     */
     fun insert(key: K, value: T): Boolean
 
+    /**
+     * Delete the Value of [key]
+     *
+     * @return if the Value can be deleted
+     */
     fun delete(key: K): Boolean
 
+    /**
+     * Check if the Database contains [key]
+     *
+     * @return the result of the Check
+     */
     fun contains(key: K): Boolean
 
+    /**
+     * Check if [value] is the the Database identified by [key]
+     *
+     * @return the result of the Check
+     */
     fun contains(key: String, value: Any): Boolean
 
+    /**
+     * Get all keys of the Database
+     *
+     * @return all keys as Collection
+     */
     fun keys(): Collection<K>
 
+    /**
+     * Clear the whole Database
+     *
+     * @return if there was an Error while deleting the Data
+     */
     fun clear(): Boolean
 
+    /**
+     * Execute a Unit for all Elements in the Database
+     */
     fun forEach(func: (K, T) -> Unit)
 
+    /**
+     * @see Database.get([key]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun getAsync(key: K): AsyncTask<Optional<T>>
 
+    /**
+     * @see Database.get([key], [value]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun getAsync(key: String, value: Any): AsyncTask<Collection<T>>
 
+    /**
+     * @see Database.insert([key], [value]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun insertAsync(key: K, value: T): AsyncTask<Boolean>
 
+    /**
+     * @see Database.delete([key]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun deleteAsync(key: K): AsyncTask<Boolean>
 
+    /**
+     * @see Database.contains([key]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun containsAsync(key: K): AsyncTask<Boolean>
 
+    /**
+     * @see Database.keys as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun keysAsync(): AsyncTask<Collection<K>>
 
+    /**
+     * @see Database.contains([key], [value]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun containsAsync(key: String, value: Any): AsyncTask<Boolean>
 
+    /**
+     * @see Database.forEach([func]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun forEachAsync(func: (K, T) -> Unit)
 
+    /**
+     * @see Database.clear as Async method
+     *
+     * @return the Result as AsyncTask
+     */
     fun clearAsync(): AsyncTask<Boolean>
 
 }

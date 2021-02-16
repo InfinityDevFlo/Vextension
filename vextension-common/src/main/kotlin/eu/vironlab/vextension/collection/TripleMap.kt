@@ -39,43 +39,75 @@ package eu.vironlab.vextension.collection
 
 import java.util.*
 
-
+/**
+ * Get a map with one key [K] and two values [F] and [S]
+ */
 class TripleMap<K, F, S> {
 
+    /**
+     * Cached Storage of the Map
+     */
     var wrapped: MutableMap<K, DataPair<F, S>> = mutableMapOf()
 
+    /**
+     * Get a Set with all entries
+     */
     fun entrySet(): Set<Map.Entry<K, DataPair<F, S>>> {
         return wrapped.entries
     }
 
+    /**
+     * Clear the whole Map
+     */
     fun clear() {
         wrapped.clear()
     }
 
+    /**
+     * Get the size of entries in the Map
+     */
     fun size(): Int {
         return wrapped.size
     }
 
+    /**
+     * Add the value [valueF] and [valueS] to [key]
+     */
     fun add(key: K, valueF: F, valueS: S) {
         wrapped[key] = DataPair(valueF, valueS)
     }
 
+    /**
+     * Remove the Values identified by [key]
+     */
     fun remove(key: K) {
         wrapped.remove(key)
     }
 
+    /**
+     * Get all Keys of the Map
+     */
     fun keySet(): Set<K> {
         return wrapped.keys
     }
 
+    /**
+     * Check if the map instance contains [key]
+     */
     operator fun contains(key: K): Boolean {
         return wrapped.containsKey(key)
     }
 
+    /**
+     * Get the Optional value of [key]
+     */
     operator fun get(key: K): Optional<DataPair<F, S>> {
         return Optional.ofNullable(wrapped[key])
     }
 
+    /**
+     * Get the First Value of [key]
+     */
     fun getFirst(key: K): Optional<F> {
         if (wrapped.containsKey(key)) {
             return Optional.ofNullable(wrapped[key]!!.first)
@@ -84,6 +116,9 @@ class TripleMap<K, F, S> {
         }
     }
 
+    /**
+     * Get the Second Value of [key]
+     */
     fun getSecond(key: K): Optional<S> {
         if (wrapped.containsKey(key)) {
             return Optional.ofNullable(wrapped[key]!!.second)
@@ -92,18 +127,27 @@ class TripleMap<K, F, S> {
         }
     }
 
+    /**
+     * Replace the first value of [key] to [value]
+     */
     fun replaceFirst(key: K, value: F) {
         if (wrapped.containsKey(key)) {
             wrapped[key]!!.first = value
         }
     }
 
+    /**
+     * Replace the second value of [key] to [value]
+     */
     fun replaceSecond(key: K, value: S) {
         if (wrapped.containsKey(key)) {
             wrapped[key]!!.second = value
         }
     }
 
+    /**
+     * Replace the values of [key] to [valueF] and [valueS]
+     */
     fun replace(key: K, valueF: F, valueS: S) {
         if (wrapped.containsKey(key)) {
             wrapped[key]!!.first = valueF
