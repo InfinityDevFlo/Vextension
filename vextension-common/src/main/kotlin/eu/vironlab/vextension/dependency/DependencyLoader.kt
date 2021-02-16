@@ -9,7 +9,9 @@ import java.lang.IllegalStateException
 import java.net.URL
 import java.nio.file.Files
 
-
+/**
+ * WARNING: UNSAFE WHEN GETTING SNAPSHOTS
+ */
 object DependencyLoader {
 
     var dataPath: File = File(".libs")
