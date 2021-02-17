@@ -63,7 +63,7 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
         return MongoDatabase<T, K>(name, parsedClass, database)
     }
 
-    override fun getBasicDatabase(name: String): Database<out Document, String> {
+    override fun getBasicDatabase(name: String): Database<DefaultDocument,  String> {
         return getDatabase(name, DefaultDocument::class.java)
     }
 
