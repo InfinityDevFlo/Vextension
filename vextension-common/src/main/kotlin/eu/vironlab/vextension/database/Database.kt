@@ -78,6 +78,13 @@ interface Database<T, K> : Nameable {
     fun insert(key: K, value: T): Boolean
 
     /**
+     * Update a the value of [key] to [newValue]
+     *
+     * @return if the Value can be replaces
+     */
+    fun update(key: K, newValue: T): Boolean
+
+    /**
      * Delete the Value of [key]
      *
      * @return if the Value can be deleted
@@ -179,5 +186,12 @@ interface Database<T, K> : Nameable {
      * @return the Result as AsyncTask
      */
     fun clearAsync(): AsyncTask<Boolean>
+
+    /**
+     * @see Database.update([key], [value]) as Async method
+     *
+     * @return the Result as AsyncTask
+     */
+    fun updateAsync(key: K, value: T): AsyncTask<Boolean>
 
 }

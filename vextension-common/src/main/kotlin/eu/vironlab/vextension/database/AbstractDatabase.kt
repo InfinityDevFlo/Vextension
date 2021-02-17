@@ -105,4 +105,8 @@ abstract class AbstractDatabase<T, K>(val parsedClass: Class<T>) : Database<T, K
         scheduleAsync { forEach(func) }
     }
 
+    override fun updateAsync(key: K, value: T): AsyncTask<Boolean> {
+        return scheduleAsync { update(key, value) }
+    }
+
 }

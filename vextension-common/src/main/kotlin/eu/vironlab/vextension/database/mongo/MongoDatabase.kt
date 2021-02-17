@@ -139,4 +139,12 @@ open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, datab
         return true
     }
 
+    override fun update(key: K, newValue: T): Boolean {
+        if (!contains(key)) {
+            return false
+        }
+        this.collection.updateOne(BasicDBObject(this.classInfo.key, key), Document().parse(parsedClass, newValue))
+        return true
+    }
+
 }

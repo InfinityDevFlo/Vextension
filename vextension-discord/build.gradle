@@ -1,0 +1,22 @@
+dependencies {
+    implementation project(":vextension-common")
+    kapt project(":vextension-common")
+    implementation(coords_jda)
+}
+
+jar {
+    def proj = ':vextension-common'
+
+    dependsOn "$proj:build"
+
+    def buildDir = project(proj).buildDir.path
+    from("$buildDir/classes/java/main") {
+        include '**'
+    }
+    from("$buildDir/classes/kotlin/main") {
+        include '**'
+    }
+    from("$buildDir/resources/main") {
+        include '**'
+    }
+}
