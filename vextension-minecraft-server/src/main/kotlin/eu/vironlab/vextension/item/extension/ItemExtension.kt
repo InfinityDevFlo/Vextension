@@ -50,17 +50,17 @@ import org.bukkit.inventory.meta.Damageable
 fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
     if (ServerUtil.getServerType() != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
-
     val item: org.bukkit.inventory.ItemStack =
         org.bukkit.inventory.ItemStack(Material.matchMaterial(this.material.toString())!!, this.amount)
-    item.lore = this.lore
     val meta = item.itemMeta
     if (meta is Damageable) meta.damage = this.damage
     if (material.name.toLowerCase() != name)
         meta.setDisplayName(this.name)
     else
         meta.setDisplayName(null)
+    meta.lore = this.lore
     meta.isUnbreakable = this.unbreakable
+    item.itemMeta = meta
     return item
 }
 
