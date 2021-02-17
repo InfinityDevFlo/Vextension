@@ -147,6 +147,11 @@ subprojects {
                         name = "Florin Dornig"
                         email = "infinitydev@vironlab.eu"
                     }
+                    developer {
+                        id = "SteinGaming"
+                        name = "Danial Daryab"
+                        email = "steingaming@vironlab.eu"
+                    }
                 }
             }
         }.writeTo("build/pom/pom.xml")
