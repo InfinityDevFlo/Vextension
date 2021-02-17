@@ -38,8 +38,12 @@ package eu.vironlab.vextension.item.builder
 
 
 import eu.vironlab.vextension.builder.Builder
+import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
+import eu.vironlab.vextension.util.ServerType
+import eu.vironlab.vextension.util.ServerUtil
+import eu.vironlab.vextension.utils.StringUtil
 import java.util.*
 import java.util.function.BiConsumer
 
@@ -60,6 +64,17 @@ class ItemBuilder(
     private var clickHandler: BiConsumer<ItemStack, UUID>? = null
 
     override fun build(): ItemStack {
+        var key: String = StringUtil.randomString(64)
+        when (ServerUtil.getServerType()) {
+            ServerType.SPONGE -> {
+                TODO("MAKEN")
+            }
+            ServerType.BUKKIT -> {
+                while (VextensionBukkit.instance.items.containsKey(key)) {
+                    key = StringUtil.randomString(64)
+                }
+            }
+        }
         return ItemStack(
             material,
             name,
@@ -67,9 +82,28 @@ class ItemBuilder(
             damage,
             lore,
             unbreakable,
+            blockDrop,
             blockInteract,
             blockClick,
+            key,
+            dropHandler,
+            interactHandler,
+            clickHandler
+        )
+    }
+
+    fun build(key: String): ItemStack {
+        return ItemStack(
+            material,
+            name,
+            amount,
+            damage,
+            lore,
+            unbreakable,
             blockDrop,
+            blockInteract,
+            blockClick,
+            key,
             dropHandler,
             interactHandler,
             clickHandler

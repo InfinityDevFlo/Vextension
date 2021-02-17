@@ -6,13 +6,13 @@ object ServerUtil {
 
     @JvmStatic
     fun getServerType(): ServerType {
-        try {
+        return try {
             Class.forName("org.bukkit.Bukkit", false, this::class.java.classLoader)
-            return ServerType.BUKKIT
+            ServerType.BUKKIT
         }catch (e: Exception) {
             try {
                 Class.forName("org.spongepowered.api.Sponge", false, this::class.java.classLoader)
-                return ServerType.SPONGE
+                ServerType.SPONGE
             } catch (e: Exception) {
                 throw UnsupportedServerTypeException("Please use one of the Following Types of Servers: Bukkit")
             }

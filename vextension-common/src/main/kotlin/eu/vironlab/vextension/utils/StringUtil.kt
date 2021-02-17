@@ -51,7 +51,7 @@ object StringUtil {
      * Get a Random String with [length] chars
      */
     @JvmStatic
-    fun randomString(length: Int): String? {
+    fun randomString(length: Int): String {
         val stringBuilder = StringBuilder()
         synchronized(StringUtil::class.java) {
             for (i in 0 until length) {

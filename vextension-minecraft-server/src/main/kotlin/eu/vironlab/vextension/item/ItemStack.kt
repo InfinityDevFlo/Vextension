@@ -39,17 +39,18 @@ package eu.vironlab.vextension.item
 import java.util.*
 import java.util.function.BiConsumer
 
-class ItemStack(
+data class ItemStack(
     var material: Material,
     var name: String,
     var amount: Int,
     var damage: Int,
     var lore: MutableList<String>,
     var unbreakable: Boolean,
+    var blockDrop: Boolean,
     var blockInteract: Boolean,
     var blockClick: Boolean,
-    var blockDrop: Boolean,
+    val identifier: String,
     var dropHandler: BiConsumer<ItemStack, UUID>?,
     var interactHandler: BiConsumer<ItemStack, UUID>?,
     var clickHandler: BiConsumer<ItemStack, UUID>?
-    )
+)
