@@ -51,7 +51,7 @@ fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
     if (ServerUtil.getServerType() != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
     val item: org.bukkit.inventory.ItemStack =
-        org.bukkit.inventory.ItemStack(Material.matchMaterial(this.material.toString())!!, this.amount)
+        org.bukkit.inventory.ItemStack(Material.valueOf(this.material.toString()), this.amount)
     val meta = item.itemMeta
     if (meta is Damageable) meta.damage = this.damage
     if (material.name.toLowerCase() != name)
