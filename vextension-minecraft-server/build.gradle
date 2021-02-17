@@ -1,6 +1,8 @@
 dependencies {
     implementation project(":vextension-core")
     implementation(coords_bukkit)
+    implementation(coords_sponge)
+    kapt(coords_sponge)
 }
 
 jar {

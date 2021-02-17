@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "maven"
     id "org.jetbrains.kotlin.jvm" version "1.4.21"
+    id "org.jetbrains.kotlin.kapt" version "1.4.21"
 }
 
 defaultTasks "clean", "build", "jar"
@@ -69,6 +70,7 @@ allprojects {
 
         //Minecraft APIs
         coords_bukkit = "com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT"
+        coords_sponge = "org.spongepowered:spongeapi:7.2.0"
         coords_waterfall = "io.github.waterfallmc:waterfall-api:1.16-R0.4-SNAPSHOT"
         coords_velocity = "com.velocitypowered:velocity-api:1.1.0"
     }
@@ -78,6 +80,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "maven"
     apply plugin: "org.jetbrains.kotlin.jvm"
+    apply plugin: "org.jetbrains.kotlin.kapt"
 
 
     task sourcesJar(type: Jar, dependsOn: classes) {

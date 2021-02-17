@@ -27,10 +27,6 @@ class DefaultVextension : Vextension {
         return this.databaseClient ?: throw ClientNotInitializedException("You have to init the client first")
     }
 
-    override fun getVironLabAPI(): VironLabAPI {
-        TODO("Not yet implemented")
-    }
-
 
     override fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData) {
         when(type) {
@@ -47,8 +43,6 @@ class DefaultVextension : Vextension {
 interface Vextension {
 
     fun getDatabaseClient(): DatabaseClient
-
-    fun getVironLabAPI(): VironLabAPI
 
     fun initDatabase(type: DatabaseClientType, connectionData: DatabaseConnectionData)
 
