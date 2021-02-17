@@ -136,8 +136,8 @@ subprojects {
                 inceptionYear = "2021"
                 licenses {
                     license {
-                        name = "GNU General Public License v3.0"
-                        url = "http://www.gnu.de/documents/gpl.de.html"
+                        name = "Apache License 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0"
                         distribution "repo"
                     }
                 }

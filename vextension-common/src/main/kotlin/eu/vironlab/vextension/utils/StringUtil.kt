@@ -37,6 +37,28 @@
 
 package eu.vironlab.vextension.utils
 
+import java.lang.StringBuilder
+import java.util.*
 
-class StringUtil {
+
+object StringUtil {
+
+    private val DEFAULT_ALPHABET_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray()
+
+    private val RANDOM: Random = Random()
+
+    /**
+     * Get a Random String with [length] chars
+     */
+    @JvmStatic
+    fun randomString(length: Int): String? {
+        val stringBuilder = StringBuilder()
+        synchronized(StringUtil::class.java) {
+            for (i in 0 until length) {
+                stringBuilder.append(DEFAULT_ALPHABET_UPPERCASE[RANDOM.nextInt(DEFAULT_ALPHABET_UPPERCASE.size)])
+            }
+        }
+        return stringBuilder.toString()
+    }
+
 }

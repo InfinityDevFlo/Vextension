@@ -39,10 +39,13 @@ package eu.vironlab.vextension.bukkit
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 
 
-class VextensionBukkit : JavaPlugin(), Vextension {
+class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
 
     override lateinit var databaseClient: DatabaseClient
 
@@ -54,8 +57,16 @@ class VextensionBukkit : JavaPlugin(), Vextension {
     override fun onLoad() {
         instance = this
         VextensionAPI.initialize(this)
+        getCommand("reload")!!.setExecutor(this)
     }
 
+
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        if (sender.hasPermission("bukkit.command.reload")) {
+            sender.sendMessage("§cReload is Disabled on this Server")
+        }
+        return true
+    }
 
 
 }

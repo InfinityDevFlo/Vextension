@@ -2,3 +2,8 @@ name: Vextension-Server
 main: eu.vironlab.vextension.bukkit.VextensionBukkit
 version: 0.0.1-SNAPSHOT
 description: Vextension for Bukkit
+commands:
+  reload:
+    description: This Command is Disabled
+    aliases:
+      - rl

@@ -1,5 +1,7 @@
 package eu.vironlab.vextension.document.storage
 
+import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.core.JsonFactoryBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.JsonParser
@@ -28,7 +30,7 @@ class XMLDocumentStorage : DocumentStorage {
         }
     }
 
-    override fun write(Document: Document, writer: Writer) {
+    override fun write(document: Document, writer: Writer) {
         throw UnsupportedOperationException("Writing a Document is not supportet with XML yet")
     }
 

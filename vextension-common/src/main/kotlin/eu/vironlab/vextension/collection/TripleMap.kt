@@ -111,7 +111,7 @@ class TripleMap<K, F, S> {
     fun getFirst(key: K): Optional<F> {
         if (wrapped.containsKey(key)) {
             return Optional.ofNullable(wrapped[key]!!.first)
-        }else {
+        } else {
             return Optional.ofNullable(null)
         }
     }
@@ -122,7 +122,7 @@ class TripleMap<K, F, S> {
     fun getSecond(key: K): Optional<S> {
         if (wrapped.containsKey(key)) {
             return Optional.ofNullable(wrapped[key]!!.second)
-        }else {
+        } else {
             return Optional.ofNullable(null)
         }
     }
