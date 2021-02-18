@@ -43,9 +43,10 @@ import com.mongodb.client.MongoDatabase
 import eu.vironlab.vextension.database.AbstractDatabase
 import org.bson.Document
 import com.mongodb.client.FindIterable
+import kotlin.reflect.KClass
 
 
-open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, database: MongoDatabase) :
+open class MongoDatabase<T : Any, K>(override val name: String, clazz: KClass<T>, database: MongoDatabase) :
     AbstractDatabase<T, K>(clazz) {
 
     val collection: MongoCollection<Document>
@@ -66,7 +67,7 @@ open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, datab
         val rs = mutableListOf<T>()
         while (cursor.hasNext()) {
             val bson = cursor.next()
-            val instance: T? = this.parsedClass.getConstructor().newInstance()
+            val instance: T? = this.parsedClass.java.getConstructor().newInstance()
             val info = this.classInfo
             if (instance != null) {
                 instance!!::class.java.declaredFields.forEach {
@@ -109,7 +110,7 @@ open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, datab
             func.invoke(
                 it.get(
                     this.classInfo.key,
-                    this.parsedClass.getDeclaredField(this.classInfo.keyField).type as Class<K>
+                    this.parsedClass.java.getDeclaredField(this.classInfo.keyField).type as Class<K>
                 ),
                 it.toInstance(parsedClass, this.classInfo)
             )
@@ -127,7 +128,7 @@ open class MongoDatabase<T, K>(override val name: String, clazz: Class<T>, datab
             rs.add(
                 (i as Document).get(
                     this.classInfo.key,
-                    this.parsedClass.getDeclaredField(this.classInfo.keyField).type as Class<K>
+                    this.parsedClass.java.getDeclaredField(this.classInfo.keyField).type as Class<K>
                 )
             )
         }

@@ -41,6 +41,7 @@ import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
+import kotlin.reflect.KClass
 
 /**
  * Client to Connect to the Database <p>
@@ -68,10 +69,10 @@ interface DatabaseClient {
      *
      * @return The Database instance, wich will be created if the Database does not exists
      */
-    fun <T, K> getDatabase(name: String, parsedClass: Class<T>): Database<T, K>
+    fun <T : Any, K> getDatabase(name: String, parsedClass: KClass<T>): Database<T, K>
 
     /**
-     * Get a Database with the Document
+     *Get a Database with the Document
      *
      * @param name is the Name of the Database
      *
@@ -79,19 +80,19 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase
      */
-    fun getBasicDatabase(name: String): Database<DefaultDocument, String>
+    fun getBasicDatabase(name: String): Database<DefaultDocument,  String>
 
     /**
      * Async Method for
      * @see DatabaseClient.getDatabase
      */
-    fun <T, K> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T, K>>
+    fun <T : Any, K> getDatabaseAsync(name: String, parsedClass: KClass<T>): AsyncTask<Database<T, K>>
 
     /**
      * Async Method for
      * @see DatabaseClient.getBasicDatabase
      */
-    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<out Document, String>>
+    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<DefaultDocument,  String>>
 
     /**
      * Check if a Database with the given name exists

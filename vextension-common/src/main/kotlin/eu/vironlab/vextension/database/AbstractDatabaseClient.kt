@@ -39,19 +39,23 @@ package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
+import kotlin.reflect.KClass
 
 /**
  * This class implements the Async methods of the Client
  */
 abstract class AbstractDatabaseClient : DatabaseClient {
 
-    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<out Document, String>> {
+    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<DefaultDocument,  String>> {
         return scheduleAsync { this.getBasicDatabase(name) }
     }
 
-    override fun <T, K> getDatabaseAsync(name: String, parsedClass: Class<T>): AsyncTask<Database<T, K>> {
+    override fun <T : Any, K> getDatabaseAsync(name: String, parsedClass: KClass<T>): AsyncTask<Database<T, K>> {
         return scheduleAsync { this.getDatabase(name, parsedClass) }
     }
+
+    override fun getBasicDatabase(name: String): Database<DefaultDocument, String> = getDatabase(name, DefaultDocument::class)
 
 }

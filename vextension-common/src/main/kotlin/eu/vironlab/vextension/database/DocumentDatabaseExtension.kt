@@ -35,11 +35,38 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.extension
+package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.discord.user.VextensionUser
-import net.dv8tion.jda.api.entities.User
+import com.sun.org.apache.xpath.internal.operations.Bool
+import eu.vironlab.vextension.document.DefaultDocument
+import eu.vironlab.vextension.document.Document
+import java.util.*
 
-fun User.toVextension(): VextensionUser {
-    return VextensionUser(this)
+fun Database<DefaultDocument, String>.get(key: String): Optional<Document> {
+    return this.get(key).cast()
+}
+
+fun Database<DefaultDocument, String>.getOrDefault(key: String, definition: Document): Document {
+    return this.getOrDefault(key, definition.cast())
+}
+
+fun Database<DefaultDocument, String>.insert(key: String, value: Document): Boolean {
+    return this.insert(key, value.cast())
+}
+
+fun Database<DefaultDocument, String>.update(key: String, new: Document): Boolean {
+    return this.update(key, new.cast())
+}
+private fun Document.cast(): DefaultDocument {
+   return this as DefaultDocument
+}
+
+private fun <F : S, S> Optional<F>.cast(): Optional<S> {
+    if (!this.isPresent) {
+        return Optional.empty()
+    }else {
+        val value = this.get()
+        val new = value as S
+        return Optional.of(new)
+    }
 }

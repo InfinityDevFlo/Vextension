@@ -35,11 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.extension
+package eu.vironlab.vextension.discord.member
 
-import eu.vironlab.vextension.discord.user.VextensionUser
-import net.dv8tion.jda.api.entities.User
 
-fun User.toVextension(): VextensionUser {
-    return VextensionUser(this)
-}
+data class MemberPermissionInfo(val permission: String, val timeout: Long)

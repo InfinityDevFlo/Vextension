@@ -41,7 +41,6 @@ import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * A Wrapper for Multiple Database Types
@@ -69,6 +68,11 @@ interface Database<T, K> : Nameable {
      * @return all Values with the Key and Value
      */
     fun get(key: String, value: Any): Collection<T>
+
+    /**
+     * Get a value or set a Default
+     */
+    fun getOrDefault(key: K, definition: T): T
 
     /**
      * Insert [value] into the Database identified by [key]

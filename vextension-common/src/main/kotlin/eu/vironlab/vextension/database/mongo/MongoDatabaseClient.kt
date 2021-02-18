@@ -41,8 +41,7 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import eu.vironlab.vextension.database.*
 import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
+import kotlin.reflect.KClass
 
 class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDatabaseClient() {
 
@@ -57,14 +56,10 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
         this.database = this.mongoClient.getDatabase(connectionData.database)
     }
 
-    override fun <T, K> getDatabase(name: String, parsedClass: Class<T>): Database<T, K> {
+    override fun <T : Any, K> getDatabase(name: String, parsedClass: KClass<T>): Database<T, K> {
         DatabaseUtil.getInfo(parsedClass)
             .orElseThrow { IllegalStateException("Cannot load Database from Unknown Object") }
-        return MongoDatabase<T, K>(name, parsedClass, database)
-    }
-
-    override fun getBasicDatabase(name: String): Database<DefaultDocument,  String> {
-        return getDatabase(name, DefaultDocument::class.java)
+        return MongoDatabase(name, parsedClass, database)
     }
 
     override fun exists(name: String): Boolean {
@@ -77,7 +72,8 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
         } else {
             this.database.getCollection(name).drop()
             return true
-        }
-    }
 
+        }
+
+    }
 }

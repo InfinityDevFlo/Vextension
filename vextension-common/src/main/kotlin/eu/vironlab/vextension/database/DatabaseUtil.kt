@@ -35,12 +35,15 @@
  *<p>
  */
 
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
 import java.util.*
+import kotlin.reflect.KClass
 
 
 object DatabaseUtil {
@@ -49,11 +52,11 @@ object DatabaseUtil {
      * Get the Information of the DatabaseObject wich is stored in a File wich will be normally created by the Annotation Processor
      */
     @JvmStatic
-    fun <T> getInfo(clazz: Class<T>): Optional<ObjectInformation> {
+    fun <T : Any> getInfo(clazz: KClass<T>): Optional<ObjectInformation> {
         try {
             val document: Document =
                 DocumentManagement.jsonStorage()
-                    .read(clazz.canonicalName, clazz.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.canonicalName}.json"))
+                    .read(clazz.java.canonicalName, clazz.java.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.java.canonicalName}.json"))
             return Optional.of(ObjectInformation(
                 document.getString("keyField").get(),
                 document.getString("key").get(),

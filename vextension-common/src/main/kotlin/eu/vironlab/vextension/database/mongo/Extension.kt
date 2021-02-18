@@ -42,6 +42,7 @@ import eu.vironlab.vextension.database.RemoteConnectionData
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
+import kotlin.reflect.KClass
 
 fun RemoteConnectionData.toMongo(): String {
     return "mongodb://${user}:${password}@${host}:${port}/${database}"
@@ -51,7 +52,7 @@ fun org.bson.Document.toDocument(name: String): Document {
     return DocumentManagement.newJsonDocument(name, this.toJson())
 }
 
-fun <T> org.bson.Document.parse(clazz: Class<T>, instance: T): org.bson.Document {
+fun <T : Any> org.bson.Document.parse(clazz: KClass<T>, instance: T): org.bson.Document {
     val info = DatabaseUtil.getInfo(clazz).orElseThrow { IllegalStateException("Cannot parse unregistered Class") }
     if (instance != null) {
         instance!!::class.java.declaredFields.forEach {
@@ -69,8 +70,8 @@ fun <T> org.bson.Document.parse(clazz: Class<T>, instance: T): org.bson.Document
     return this
 }
 
-fun <T> org.bson.Document.toInstance(clazz: Class<T>, info: ObjectInformation): T {
-    val instance = clazz.getConstructor().newInstance()
+fun <T : Any> org.bson.Document.toInstance(clazz: KClass<T>, info: ObjectInformation): T {
+    val instance = clazz.java.getConstructor().newInstance()
     instance!!::class.java.declaredFields.forEach {
         if (!info.ignoredFields.contains(it.name)) {
             val name = if (info.specificNames.containsKey(it.name)) {

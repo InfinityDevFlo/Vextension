@@ -35,11 +35,29 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.extension
+package eu.vironlab.vextension.discord.user
 
-import eu.vironlab.vextension.discord.user.VextensionUser
+import eu.vironlab.vextension.database.update
+import eu.vironlab.vextension.discord.DiscordUtil
+import eu.vironlab.vextension.document.DefaultDocument
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
 import net.dv8tion.jda.api.entities.User
 
-fun User.toVextension(): VextensionUser {
-    return VextensionUser(this)
+
+class VextensionUser(jdaUser: User) : User by jdaUser {
+
+    var properties: Document
+
+    init {
+        /**
+         * Lol
+         */
+        this.properties = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
+    }
+
+    fun update() {
+        DiscordUtil.userDatabase.update(this.id, this.properties)
+    }
+
 }

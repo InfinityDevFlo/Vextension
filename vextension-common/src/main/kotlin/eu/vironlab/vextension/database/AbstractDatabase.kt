@@ -40,19 +40,22 @@ package eu.vironlab.vextension.database
 import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.document.DefaultDocument
+import eu.vironlab.vextension.document.Document
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
 /**
  * This class implements the Async methods of the Database and have already the given Information by the Class
  */
-abstract class AbstractDatabase<T, K>(val parsedClass: Class<T>) : Database<T, K> {
+abstract class AbstractDatabase<T : Any, K>(var parsedClass: KClass<T>) : Database<T, K> {
 
     override val classInfo: ObjectInformation
         get() = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
 
     init {
-        parsedClass.declaredFields.forEach {
+        parsedClass.java.declaredFields.forEach {
             it.isAccessible = true
         }
     }
@@ -107,6 +110,15 @@ abstract class AbstractDatabase<T, K>(val parsedClass: Class<T>) : Database<T, K
 
     override fun updateAsync(key: K, value: T): AsyncTask<Boolean> {
         return scheduleAsync { update(key, value) }
+    }
+
+    override fun getOrDefault(key: K, definition: T): T {
+        if (contains(key)) {
+            return get(key).get()
+        }else {
+            insert(key, definition)
+            return definition
+        }
     }
 
 }

@@ -96,7 +96,7 @@ class BukkitItemEventConsumer : Listener {
                     VextensionBukkit.instance.items[e.item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                         ?: return
                 if (item.blockClick) e.isCancelled = true
-                if (item.clickHandler != null) item.clickHandler!!.accept(item, e.initiator.viewers..uniqueId)
+                //if (item.clickHandler != null) item.clickHandler!!.accept(item, e.initiator.viewers..uniqueId)
             }
         }
     }

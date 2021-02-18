@@ -14,7 +14,7 @@ import java.nio.file.Files
 object DiscordUtil {
 
     @JvmStatic
-    val propertyDatabase: Database<DefaultDocument, String> = VextensionAPI.instance.databaseClient.getBasicDatabase("discord_user_properties")
+    var userDatabase: Database<DefaultDocument, String> = VextensionAPI.instance.databaseClient.getBasicDatabase("discord_users")
 
     /**
      * Download the Latest JDA File

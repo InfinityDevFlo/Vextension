@@ -35,11 +35,53 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.extension
+package eu.vironlab.vextension.discord.member
 
-import eu.vironlab.vextension.discord.user.VextensionUser
-import net.dv8tion.jda.api.entities.User
+import com.google.gson.JsonArray
+import eu.vironlab.vextension.database.update
+import eu.vironlab.vextension.discord.DiscordUtil
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
+import java.util.concurrent.TimeUnit
+import net.dv8tion.jda.api.entities.Member
 
-fun User.toVextension(): VextensionUser {
-    return VextensionUser(this)
+
+class VextensionMember(member: Member) : Member by member {
+
+    var properties: Document = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
+        .getDocument(this.guild.id, DocumentManagement.newDocument(this.guild.id))
+    val permissions: MutableList<MemberPermissionInfo> =
+        properties.getList("permissions", mutableListOf())
+
+    fun hasPermission(permission: String): Boolean {
+        val info = permissions.first {
+            it.permission == permission
+        }
+        if (info.timeout == 0L) {
+            return true
+        }else {
+            if(System.currentTimeMillis() > info.timeout) {
+                permissions.remove(info)
+                update()
+                return false
+            }else {
+                return true
+            }
+        }
+    }
+
+    fun addPermission(permission: String) = addPermission(permission, 0)
+
+    fun addPermission(permission: String, timeout: Long, timeUnit: TimeUnit) = addPermission(permission, timeUnit.toMillis(timeout))
+
+    fun addPermission(permission: String, timeout: Long) {
+        this.permissions.add(MemberPermissionInfo(permission, timeout))
+    }
+
+    fun update() {
+        this.properties.delete("permissions")
+        this.properties.insert("permissions", permissions)
+        DiscordUtil.userDatabase.update(this.id, properties)
+    }
+
 }

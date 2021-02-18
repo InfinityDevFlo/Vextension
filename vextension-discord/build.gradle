@@ -2,6 +2,7 @@ dependencies {
     implementation project(":vextension-common")
     kapt project(":vextension-common")
     implementation(coords_jda)
+    implementation(coords_gson)
 }
 
 jar {

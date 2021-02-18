@@ -382,6 +382,34 @@ interface Document {
     fun getFloat(key: String, def: Float): Float
 
     /**
+     * Get a List of a specific generic type
+     * @param key is the key of the List
+     * @return the List
+     */
+    fun <T> getList(key: String, def: MutableList<T>): MutableList<T> {
+        if (contains(key)) {
+            return getList<T>(key).get()
+        }else {
+            insert(key, def)
+            return def
+        }
+    }
+
+    /**
+     * Get a Map of specific generic types
+     * @param key is the key of the Map
+     * @return the Map
+     */
+    fun <K, V> getMap(key: String, def: MutableMap<K, V>): MutableMap<K, V> {
+        if (contains(key)) {
+            return getMap<K, V>(key).get()
+        }else {
+            insert(key, def)
+            return def
+        }
+    }
+
+    /**
      * Get a String and insert a value if the key does not exist
      *
      * @param key is the Key to get the Value
