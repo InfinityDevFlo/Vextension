@@ -35,34 +35,30 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.annotation
+package eu.vironlab.vextension.discord.command
 
-import java.util.concurrent.TimeUnit
+import eu.vironlab.vextension.collection.DataPair
+import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 
-/**
- * Mark a Class wich will be a DatabaseObject to activate the Annotation Processor to the Class
- */
-@Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class NewDatabaseObject()
+interface CommandManager {
 
-/**
- * If you dont want the Name of the Field as Column Name in the Database use this annotation to set [name] as Column Name
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseName(val name: String)
+    /**
+     * Register the [command] with the [executor] to the Manager and all [aliases] to Public Server chats
+     */
+    fun registerCommand(command: String, executor: CommandExecutor, description: String, target: DefaultCommandManager.CommandTarget, vararg aliases: String)
 
-/**
- * With this Annotation the Field will be ignored by the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Ignored
+    /**
+     * Unregister a Command and all aliases
+     */
+    fun unregister(command: String)
 
-/**
- * This annotation is to show that the Field is Used as Key in the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseKey
+    var noPrivateChannelMessage: SimpleEmbedConfiguration
+
+    var commandNotFoundMessage: SimpleEmbedConfiguration
+
+    /**
+     * Get all registered Commands
+     */
+    val commands: Map<String, Command>
+
+}

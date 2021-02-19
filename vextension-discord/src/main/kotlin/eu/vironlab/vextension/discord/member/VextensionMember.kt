@@ -85,3 +85,5 @@ class VextensionMember(member: Member) : Member by member {
     }
 
 }
+
+fun Member.toVextension(): VextensionMember = VextensionMember(this)

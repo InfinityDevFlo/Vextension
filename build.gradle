@@ -79,6 +79,7 @@ allprojects {
         coords_waterfall = "io.github.waterfallmc:waterfall-api:1.16-R0.4-SNAPSHOT"
         coords_velocity = "com.velocitypowered:velocity-api:1.1.0"
     }
+
 }
 
 subprojects {
@@ -87,7 +88,6 @@ subprojects {
     apply plugin: "org.jetbrains.kotlin.jvm"
     apply plugin: "org.jetbrains.kotlin.kapt"
     apply plugin: "org.jetbrains.dokka"
-
 
     task sourcesJar(type: Jar, dependsOn: classes) {
         archiveClassifier.set('sources')

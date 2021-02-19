@@ -35,34 +35,18 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.annotation
+package eu.vironlab.vextension.discord.command
 
-import java.util.concurrent.TimeUnit
+import eu.vironlab.vextension.discord.member.VextensionMember
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.TextChannel
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
-/**
- * Mark a Class wich will be a DatabaseObject to activate the Annotation Processor to the Class
- */
-@Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class NewDatabaseObject()
+interface CommandExecutor {
 
-/**
- * If you dont want the Name of the Field as Column Name in the Database use this annotation to set [name] as Column Name
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseName(val name: String)
+    /**
+     * This method will be called when the Command is executed on a Server
+     */
+    fun execute(member: VextensionMember, message: Message, args: Array<String>, channel: TextChannel, event: GuildMessageReceivedEvent)
 
-/**
- * With this Annotation the Field will be ignored by the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Ignored
-
-/**
- * This annotation is to show that the Field is Used as Key in the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseKey
+}

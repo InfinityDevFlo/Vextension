@@ -4,8 +4,10 @@ import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.dependency.DependencyClassloader
 import eu.vironlab.vextension.dependency.DependencyLoader
+import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
+import java.awt.Color
 import java.io.File
 import java.net.URL
 import java.nio.file.Files
@@ -15,6 +17,11 @@ object DiscordUtil {
 
     @JvmStatic
     var userDatabase: Database<DefaultDocument, String> = VextensionAPI.instance.databaseClient.getBasicDatabase("discord_users")
+
+    const val EMBED_FOOTER = "Vextension - JVM Utility"
+
+    @JvmStatic
+    var noPermsMessage: SimpleEmbedConfiguration = SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED)
 
     /**
      * Download the Latest JDA File
