@@ -32,13 +32,10 @@ pipeline {
         }
         stage("Docs") {
             steps {
-                sh "./gradlew dokkaHtml";
+                sh "./gradlew dokkaHtmlMultiModule";
                 sh "rm -r /var/www/docs/vextension"
                 sh "mkdir /var/www/docs/vextension"
-                sh "cp -r vextension-common/build/dokka/html /var/www/docs/vextension/common"
-                sh "cp -r vextension-minecraft-server/build/dokka/html /var/www/docs/vextension/minecraft-server"
-                sh "cp -r vextension-minecraft-proxy/build/dokka/html /var/www/docs/vextension/minecraft-proxy"
-                sh "cp -r vextension-discord/build/dokka/html /var/www/docs/vextension/discord"
+                sh "cp -r build/vextension /var/www/docs/vextension/"
             }
         }
         stage("Sources") {
