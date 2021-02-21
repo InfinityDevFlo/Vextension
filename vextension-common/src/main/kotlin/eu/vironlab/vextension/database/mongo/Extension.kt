@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.database.mongo
 
-import eu.vironlab.vextension.database.DatabaseUtil
 import eu.vironlab.vextension.database.RemoteConnectionData
 import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
@@ -45,7 +44,6 @@ import eu.vironlab.vextension.document.DocumentManagement
 import kotlin.reflect.KClass
 
 fun RemoteConnectionData.toMongo(): String {
-    println("mongodb://${user}:${password}@${host}:${port}/${database}")
     return "mongodb://${user}:${password}@${host}:${port}/${database}"
 }
 
@@ -53,39 +51,6 @@ fun org.bson.Document.toDocument(name: String): Document {
     return DocumentManagement.newJsonDocument(name, this.toJson())
 }
 
-fun <T : Any> org.bson.Document.parse(clazz: KClass<T>, instance: T): org.bson.Document {
-    val info = DatabaseUtil.getInfo(clazz).orElseThrow { IllegalStateException("Cannot parse unregistered Class") }
-    if (instance != null) {
-        instance!!::class.java.declaredFields.forEach {
-            if (!info.ignoredFields.contains(it.name) && it.name != info.keyField) {
-                val name = if (info.specificNames.containsKey(it.name)) {
-                    info.specificNames.get(it.name)!!
-                } else {
-                    it.name
-                }
-                it.isAccessible = true
-                this.append(name, it.get(instance))
-            }
-        }
-    }
-    return this
-}
-
-fun <T : Any> org.bson.Document.toInstance(clazz: KClass<T>, info: ObjectInformation): T {
-    val instance = clazz.java.getConstructor().newInstance()
-    instance!!::class.java.declaredFields.forEach {
-        if (!info.ignoredFields.contains(it.name)) {
-            val name = if (info.specificNames.containsKey(it.name)) {
-                info.specificNames.get(it.name)!!
-            } else {
-                it.name
-            }
-            it.isAccessible = true
-            it.set(instance, this.get(name)!!)
-        }
-    }
-    return instance
-}
 
 fun Document.toBson(): org.bson.Document {
     return org.bson.Document.parse(this.toJson())

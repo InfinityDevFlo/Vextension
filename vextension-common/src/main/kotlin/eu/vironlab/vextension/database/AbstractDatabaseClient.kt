@@ -48,14 +48,8 @@ import kotlin.reflect.KClass
  */
 abstract class AbstractDatabaseClient : DatabaseClient {
 
-    override fun getBasicDatabaseAsync(name: String): AsyncTask<Database<DefaultDocument,  String>> {
-        return scheduleAsync { this.getBasicDatabase(name) }
+    override fun getDatabaseAsync(name: String): AsyncTask<Database> {
+        return scheduleAsync { getDatabase(name) }
     }
-
-    override fun <T : Any, K> getDatabaseAsync(name: String, parsedClass: KClass<T>): AsyncTask<Database<T, K>> {
-        return scheduleAsync { this.getDatabase(name, parsedClass) }
-    }
-
-    override fun getBasicDatabase(name: String): Database<DefaultDocument, String> = getDatabase(name, DefaultDocument::class)
 
 }

@@ -39,68 +39,56 @@ package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.database.info.ObjectInformation
+import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 
 /**
  * A Wrapper for Multiple Database Types
- *
- * @param T is the Class the requests will return
- * @param K is the Key type of the Database
  */
-interface Database<T, K> : Nameable {
-
-    /**
-     * The Information about the Class given by the InformationFile
-     */
-    val classInfo: ObjectInformation
+interface Database : Nameable {
 
     /**
      * Get the Value of [key] in the Database as Optional instance
      *
      * @return the Optional instance
      */
-    fun get(key: K): Optional<T>
+    fun get(key: String): Optional<Document>
 
-    /**
-     * Get all Values of a non unique Field with [key] and [value]
-     *
-     * @return all Values with the Key and Value
-     */
-    fun get(key: String, value: Any): Collection<T>
+    fun get(key: String, value: Any): Collection<Document>
 
     /**
      * Get a value or set a Default
      */
-    fun getOrDefault(key: K, definition: T): T
+    fun getOrDefault(key: String, definition: Document): Document
 
     /**
      * Insert [value] into the Database identified by [key]
      *
      * @return if the Value can be inserted or the was an Error or the Key already exists
      */
-    fun insert(key: K, value: T): Boolean
+    fun insert(key: String, value: Document): Boolean
 
     /**
      * Update a the value of [key] to [newValue]
      *
      * @return if the Value can be replaces
      */
-    fun update(key: K, newValue: T): Boolean
+    fun update(key: String, newValue: Document): Boolean
 
     /**
      * Delete the Value of [key]
      *
      * @return if the Value can be deleted
      */
-    fun delete(key: K): Boolean
+    fun delete(key: String): Boolean
 
     /**
      * Check if the Database contains [key]
      *
      * @return the result of the Check
      */
-    fun contains(key: K): Boolean
+    fun contains(key: String): Boolean
 
     /**
      * Check if [value] is the the Database identified by [key]
@@ -114,7 +102,7 @@ interface Database<T, K> : Nameable {
      *
      * @return all keys as Collection
      */
-    fun keys(): Collection<K>
+    fun keys(): Collection<String>
 
     /**
      * Clear the whole Database
@@ -126,49 +114,49 @@ interface Database<T, K> : Nameable {
     /**
      * Execute a Unit for all Elements in the Database
      */
-    fun forEach(func: (K, T) -> Unit)
+    fun forEach(func: (String, Document) -> Unit)
 
     /**
      * @see Database.get([key]) as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun getAsync(key: K): AsyncTask<Optional<T>>
+    fun getAsync(key: String): AsyncTask<Optional<Document>>
 
     /**
      * @see Database.get([key], [value]) as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun getAsync(key: String, value: Any): AsyncTask<Collection<T>>
+    fun getAsync(key: String, value: Any): AsyncTask<Collection<Document>>
 
     /**
      * @see Database.insert([key], [value]) as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun insertAsync(key: K, value: T): AsyncTask<Boolean>
+    fun insertAsync(key: String, value: Document): AsyncTask<Boolean>
 
     /**
      * @see Database.delete([key]) as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun deleteAsync(key: K): AsyncTask<Boolean>
+    fun deleteAsync(key: String): AsyncTask<Boolean>
 
     /**
      * @see Database.contains([key]) as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun containsAsync(key: K): AsyncTask<Boolean>
+    fun containsAsync(key: String): AsyncTask<Boolean>
 
     /**
      * @see Database.keys as Async method
      *
      * @return the Result as AsyncTask
      */
-    fun keysAsync(): AsyncTask<Collection<K>>
+    fun keysAsync(): AsyncTask<Collection<String>>
 
     /**
      * @see Database.contains([key], [value]) as Async method
@@ -182,7 +170,7 @@ interface Database<T, K> : Nameable {
      *
      * @return the Result as AsyncTask
      */
-    fun forEachAsync(func: (K, T) -> Unit)
+    fun forEachAsync(func: (String, Document) -> Unit)
 
     /**
      * @see Database.clear as Async method
@@ -196,6 +184,6 @@ interface Database<T, K> : Nameable {
      *
      * @return the Result as AsyncTask
      */
-    fun updateAsync(key: K, value: T): AsyncTask<Boolean>
+    fun updateAsync(key: String, Documentvalue: Document): AsyncTask<Boolean>
 
 }

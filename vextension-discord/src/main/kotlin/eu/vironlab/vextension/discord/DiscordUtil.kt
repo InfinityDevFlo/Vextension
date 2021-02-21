@@ -16,7 +16,7 @@ import java.nio.file.Files
 object DiscordUtil {
 
     @JvmStatic
-    lateinit var userDatabase: Database<DefaultDocument, String>
+    lateinit var userDatabase: Database
 
     @JvmStatic
     var EMBED_FOOTER = "Vextension - JVM Utility"

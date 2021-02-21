@@ -1,8 +1,0 @@
-{
-  "keyField": "name",
-  "key": "name",
-  "ignoredFields": [],
-  "specificNames": {
-    "name": "__name__"
-  }
-}

@@ -49,45 +49,25 @@ import kotlin.reflect.KClass
 /**
  * This class implements the Async methods of the Database and have already the given Information by the Class
  */
-abstract class AbstractDatabase<T : Any, K>(var parsedClass: KClass<T>) : Database<T, K> {
+abstract class AbstractDatabase(override val name: String) : Database {
 
-    override val classInfo: ObjectInformation = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
-
-    init {
-        parsedClass.java.declaredFields.forEach {
-            it.isAccessible = true
-        }
-    }
-
-    override fun contains(key: K): Boolean {
-        return contains(this.classInfo.key, key!!)
-    }
-
-    override fun get(key: K): Optional<T> {
-        return if (contains(key)) {
-            Optional.of(get(this.classInfo.key, key!!).first())
-        }else {
-            Optional.empty()
-        }
-    }
-
-    override fun getAsync(key: K): AsyncTask<Optional<T>> {
+    override fun getAsync(key: String): AsyncTask<Optional<Document>> {
         return scheduleAsync { get(key) }
     }
 
-    override fun getAsync(key: String, value: Any): AsyncTask<Collection<T>> {
+    override fun getAsync(key: String, value: Any): AsyncTask<Collection<Document>> {
         return scheduleAsync { get(key, value) }
     }
 
-    override fun insertAsync(key: K, value: T): AsyncTask<Boolean> {
+    override fun insertAsync(key: String, value: Document): AsyncTask<Boolean> {
         return scheduleAsync { insert(key, value) }
     }
 
-    override fun deleteAsync(key: K): AsyncTask<Boolean> {
+    override fun deleteAsync(key: String): AsyncTask<Boolean> {
         return scheduleAsync { delete(key) }
     }
 
-    override fun containsAsync(key: K): AsyncTask<Boolean> {
+    override fun containsAsync(key: String): AsyncTask<Boolean> {
         return scheduleAsync { contains(key) }
     }
 
@@ -95,7 +75,7 @@ abstract class AbstractDatabase<T : Any, K>(var parsedClass: KClass<T>) : Databa
         return scheduleAsync { contains(key, value) }
     }
 
-    override fun keysAsync(): AsyncTask<Collection<K>> {
+    override fun keysAsync(): AsyncTask<Collection<String>> {
         return scheduleAsync { this.keys() }
     }
 
@@ -103,17 +83,22 @@ abstract class AbstractDatabase<T : Any, K>(var parsedClass: KClass<T>) : Databa
         return scheduleAsync { this.clear() }
     }
 
-    override fun forEachAsync(func: (K, T) -> Unit) {
+    override fun forEachAsync(func: (String, Document) -> Unit) {
         scheduleAsync { forEach(func) }
     }
 
-    override fun updateAsync(key: K, value: T): AsyncTask<Boolean> {
+    override fun updateAsync(key: String, value: Document): AsyncTask<Boolean> {
         return scheduleAsync { update(key, value) }
     }
 
-    override fun getOrDefault(key: K, definition: T): T {
+    override fun getOrDefault(key: String, definition: Document): Document {
         if (contains(key)) {
-            return get(key).get()
+            val rs = get(key)
+            return if(rs.isPresent) {
+                rs.get()
+            }else {
+                throw NullPointerException("There was an Error while getting the Data")
+            }
         }else {
             insert(key, definition)
             return definition

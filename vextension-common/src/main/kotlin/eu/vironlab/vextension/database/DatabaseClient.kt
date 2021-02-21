@@ -62,37 +62,20 @@ interface DatabaseClient {
     /**
      * Use this Method to get a Database instance from the Client <p>
      *
-     * If you dont want to parse the Data to a specific Class instance you can use the getBasicDatabase() method <p>
-     *
-     * @param parsedClass is the Class wich instances will be used by parse Data from the Database or Insert them. The class has to extend the
-     * { @link eu.vironlab.vextension.database.DatabaseObject } class
+     * @param name is the Name of the Database
      *
      * @return The Database instance, wich will be created if the Database does not exists
      */
-    fun <T : Any, K> getDatabase(name: String, parsedClass: KClass<T>): Database<T, K>
+    fun getDatabase(name: String): Database
 
-    /**
-     *Get a Database with the Document
-     *
-     * @param name is the Name of the Database
-     *
-     * @return a Database with a Document as DatabaseObject
-     *
-     * @see DatabaseClient.getDatabase
-     */
-    fun getBasicDatabase(name: String): Database<DefaultDocument,  String>
 
     /**
      * Async Method for
      * @see DatabaseClient.getDatabase
      */
-    fun <T : Any, K> getDatabaseAsync(name: String, parsedClass: KClass<T>): AsyncTask<Database<T, K>>
+    fun getDatabaseAsync(name: String): AsyncTask<Database>
 
-    /**
-     * Async Method for
-     * @see DatabaseClient.getBasicDatabase
-     */
-    fun getBasicDatabaseAsync(name: String): AsyncTask<Database<DefaultDocument,  String>>
+
 
     /**
      * Check if a Database with the given name exists

@@ -56,6 +56,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
 
     init {
         jda.addEventListener(this)
+        println("Initialized CommandManager")
     }
 
     override fun register(commandExecutor: CommandExecutor) {
@@ -73,19 +74,27 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
+        println("message")
         val message: String = event.message.contentDisplay
         if (message.startsWith(prefix)) {
+            println("Get prefix")
             val args = message.split(" ")
             if (args.size > 1) {
-                val cmdName = args[0]
+                println("lol")
+                val cmdName = args[0].substring(1)
                 var cmd: CommandData? = null
-                if (commands.containsKey(cmd)) {
-                    cmd = commands.get(cmd)
+                println(aliases.toString())
+                println(commands.toString())
+                if (commands.containsKey(cmdName)) {
+                    println(1)
+                    cmd = commands.get(cmdName)
                 } else if (aliases.containsKey(cmdName)) {
+                    println(2)
                     cmd = commands.get(aliases.get(cmdName))
                 }
                 if (cmd != null) {
-                    val finalArgs = Arrays.asList(args).removeFirst().toTypedArray()
+                    println(3)
+                    val finalArgs = args.drop(0)
                     if (finalArgs.size > 1)
                         if (cmd.executor.subCommands.containsKey(args[0])) {
                             cmd.executor.subCommands.get(args[0])!!.execute(
@@ -93,7 +102,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                                 event.author.toVextension(),
                                 event.channel,
                                 event.message,
-                                Arrays.asList(finalArgs).removeFirst(),
+                                finalArgs.drop(1).toTypedArray(),
                                 event.isFromGuild,
                                 event.guild,
                                 this.jda
@@ -103,19 +112,20 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                         event.author.toVextension(),
                         event.channel,
                         event.message,
-                        Arrays.asList(args).removeFirst().toTypedArray(),
+                        finalArgs.drop(1).toTypedArray(),
                         event.isFromGuild,
                         event.guild,
                         this.jda
 
                     )
                 } else {
+                    println(4)
                     event.channel.sendMessage(
                         this.commandNotFoundMessage.toEmbed(
                             event.author.avatarUrl!!,
                             DocumentManagement.newDocument("message", "cmd", cmdName)
                         )
-                    )
+                    ).queue()
                 }
             }
         }

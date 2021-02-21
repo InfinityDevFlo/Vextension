@@ -40,16 +40,17 @@ package eu.vironlab.vextension.database.mongo
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
+import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.database.AbstractDatabase
-import org.bson.Document
-import com.mongodb.client.FindIterable
-import kotlin.reflect.KClass
+import eu.vironlab.vextension.document.Document
+import java.util.*
 
 
-open class MongoDatabase<T : Any, K>(override val name: String, clazz: KClass<T>, database: MongoDatabase) :
-    AbstractDatabase<T, K>(clazz) {
+open class MongoDatabase(override val name: String, database: MongoDatabase) :
+    AbstractDatabase(name) {
 
-    val collection: MongoCollection<Document>
+    val collection: MongoCollection<org.bson.Document>
+    val COLLECTION_KEY = "__key__"
 
     init {
         if (!database.listCollectionNames().contains(name)) {
@@ -58,79 +59,63 @@ open class MongoDatabase<T : Any, K>(override val name: String, clazz: KClass<T>
         this.collection = database.getCollection(name)
     }
 
-    override fun get(key: String, value: Any): Collection<T> {
-        if (!contains(key, value!!)) {
-            return mutableListOf()
-        }
-        val queryObject: BasicDBObject = BasicDBObject(this.classInfo.key, key)
-        val cursor = this.collection.find(queryObject).cursor()
-        val rs = mutableListOf<T>()
-        while (cursor.hasNext()) {
-            val bson = cursor.next()
-            val instance: T? = this.parsedClass.java.getConstructor().newInstance()
-            val info = this.classInfo
-            if (instance != null) {
-                instance!!::class.java.declaredFields.forEach {
-                    if (!info.ignoredFields.contains(it.name)) {
-                        val name = if (info.specificNames.containsKey(it.name)) {
-                            info.specificNames.get(it.name)!!
-                        } else {
-                            it.name
-                        }
-                        it.set(instance, bson.get(name)!!)
-                    }
-                }
-                rs.add(instance)
+    override fun get(key: String): Optional<Document> {
+        if (!contains(key)) {
+            return Optional.empty()
+        }else {
+            val cursor = this.collection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
+            if (!cursor.hasNext()) {
+                return Optional.empty()
             }
+            val doc = cursor.next()
+            return Optional.of(doc.toDocument(doc.getString(COLLECTION_KEY)))
+        }
+    }
+
+    override fun get(key: String, value: Any): Collection<Document> {
+        val rs = mutableListOf<Document>()
+        val cursor = this.collection.find(BasicDBObject(key, value)).cursor()
+        while (cursor.hasNext()) {
+            val doc = cursor.next()
+            rs.add(doc.toDocument(doc.getString(COLLECTION_KEY)))
         }
         return rs
     }
 
-    override fun insert(key: K, value: T): Boolean {
+    override fun insert(key: String, value: Document): Boolean {
         if (contains(key)) {
-            throw IllegalStateException("Cannot insert the same key twice - ${key}")
+            return false
         }
-        val queryObject = BasicDBObject(this.classInfo.key, key)
-        val bson: Document = Document(this.classInfo.key, key).parse(parsedClass, value)
-        this.collection.insertOne(bson)
+        this.collection.insertOne(value.insert(COLLECTION_KEY, key).toBson())
         return true
     }
 
-    override fun delete(key: K): Boolean {
-        return if (contains(key)) {
-            this.collection.deleteOne(BasicDBObject(this.classInfo.key, key!!))
-            true
-        } else {
-            false
-        }
+    override fun update(key: String, newValue: Document): Boolean {
+        this.collection.updateOne(BasicDBObject(COLLECTION_KEY, key), newValue.toBson())
+        return true
     }
 
-    override fun forEach(func: (K, T) -> Unit) {
-        this.collection.find(BasicDBObject()).cursor().forEachRemaining {
-            func.invoke(
-                it.get(
-                    this.classInfo.key,
-                    this.parsedClass.java.getDeclaredField(this.classInfo.keyField).type as Class<K>
-                ),
-                it.toInstance(parsedClass, this.classInfo)
-            )
+    override fun delete(key: String): Boolean {
+        if (!contains(key)) {
+            return false
         }
+        this.collection.deleteOne(BasicDBObject(COLLECTION_KEY, key))
+        return true
+    }
+
+    override fun contains(key: String): Boolean {
+        return this.collection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
     }
 
     override fun contains(key: String, value: Any): Boolean {
         return this.collection.find(BasicDBObject(key, value)).cursor().hasNext()
     }
 
-    override fun keys(): Collection<K> {
-        val rs: MutableCollection<K> = mutableListOf()
-        val findIterable: FindIterable<*> = this.collection.find()
-        findIterable.cursor().forEachRemaining { i: Any ->
-            rs.add(
-                (i as Document).get(
-                    this.classInfo.key,
-                    this.parsedClass.java.getDeclaredField(this.classInfo.keyField).type as Class<K>
-                )
-            )
+    override fun keys(): Collection<String> {
+        val rs: MutableCollection<String> = mutableListOf()
+        val cursor = this.collection.find(BasicDBObject()).cursor()
+        while (cursor.hasNext()) {
+            rs.add(cursor.next().getString(COLLECTION_KEY))
         }
         return rs
     }
@@ -140,12 +125,13 @@ open class MongoDatabase<T : Any, K>(override val name: String, clazz: KClass<T>
         return true
     }
 
-    override fun update(key: K, newValue: T): Boolean {
-        if (!contains(key)) {
-            return false
+    override fun forEach(func: (String, Document) -> Unit) {
+        scheduleAsync {
+            keys().forEach {
+                func.invoke(it, get(it).get())
+            }
         }
-        this.collection.updateOne(BasicDBObject(this.classInfo.key, key), Document().parse(parsedClass, newValue))
-        return true
     }
+
 
 }

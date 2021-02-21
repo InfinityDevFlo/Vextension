@@ -37,7 +37,7 @@
 
 package eu.vironlab.vextension.discord.user
 
-import eu.vironlab.vextension.database.update
+
 import eu.vironlab.vextension.discord.DiscordUtil
 import eu.vironlab.vextension.discord.command.CommandSource
 import eu.vironlab.vextension.document.DefaultDocument
@@ -46,7 +46,7 @@ import eu.vironlab.vextension.document.DocumentManagement
 import net.dv8tion.jda.api.entities.User
 
 
-class VextensionUser(jdaUser: User): CommandSource(jdaUser) {
+class VextensionUser(jdaUser: User) : CommandSource(jdaUser) {
 
     override lateinit var properties: Document
 

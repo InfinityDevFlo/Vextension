@@ -56,10 +56,8 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
         this.database = this.mongoClient.getDatabase(connectionData.database)
     }
 
-    override fun <T : Any, K> getDatabase(name: String, parsedClass: KClass<T>): Database<T, K> {
-        DatabaseUtil.getInfo(parsedClass)
-            .orElseThrow { IllegalStateException("Cannot load Database from Unknown Object") }
-        return MongoDatabase(name, parsedClass, database)
+    override fun getDatabase(name: String): Database {
+        return MongoDatabase(name, this.database)
     }
 
     override fun exists(name: String): Boolean {
