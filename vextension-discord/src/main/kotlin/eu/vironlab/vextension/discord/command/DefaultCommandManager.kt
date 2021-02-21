@@ -92,6 +92,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                                 cmd.name,
                                 event.author.toVextension(),
                                 event.channel,
+                                event.message,
                                 Arrays.asList(finalArgs).removeFirst(),
                                 event.isFromGuild,
                                 event.guild,
@@ -101,6 +102,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                     cmd.executor.execute(
                         event.author.toVextension(),
                         event.channel,
+                        event.message,
                         Arrays.asList(args).removeFirst().toTypedArray(),
                         event.isFromGuild,
                         event.guild,

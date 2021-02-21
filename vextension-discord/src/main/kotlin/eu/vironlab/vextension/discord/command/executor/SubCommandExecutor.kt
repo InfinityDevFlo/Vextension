@@ -40,11 +40,12 @@ package eu.vironlab.vextension.discord.command.executor
 import eu.vironlab.vextension.discord.command.CommandSource
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel
 
 
 interface SubCommandExecutor {
 
-    fun execute(command: String, source: CommandSource, channel: MessageChannel, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
+    fun execute(command: String, source: CommandSource, channel: MessageChannel, message: Message, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
 
 }
