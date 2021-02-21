@@ -6,9 +6,6 @@ dependencies {
 }
 
 jar {
-    from {
-        configurations.compile.collect {it.isDirectory() ? it : zipTree(it) }
-    }
     def proj = ':vextension-common'
 
     dependsOn "$proj:build"
