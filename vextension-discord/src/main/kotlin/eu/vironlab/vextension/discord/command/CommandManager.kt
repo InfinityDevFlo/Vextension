@@ -37,28 +37,10 @@
 
 package eu.vironlab.vextension.discord.command
 
-import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
-
 interface CommandManager {
 
-    /**
-     * Register the [command] with the [executor] to the Manager and all [aliases] to Public Server chats
-     */
-    fun registerCommand(command: String, executor: CommandExecutor, description: String, target: DefaultCommandManager.CommandTarget, vararg aliases: String)
+    val commands: MutableMap<String, Command>
 
-    /**
-     * Unregister a Command and all aliases
-     */
-    fun unregister(command: String)
-
-    var noPrivateChannelMessage: SimpleEmbedConfiguration
-
-    var commandNotFoundMessage: SimpleEmbedConfiguration
-
-    /**
-     * Get all registered Commands
-     */
-    val commands: Map<String, Command>
+    val prefix: String
 
 }

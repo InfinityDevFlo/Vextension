@@ -35,40 +35,17 @@
  *<p>
  */
 
-@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+package eu.vironlab.vextension.discord.command.executor
 
-package eu.vironlab.vextension.database
-
-import eu.vironlab.vextension.database.info.ObjectInformation
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import java.util.*
-import kotlin.NoSuchElementException
-import kotlin.reflect.KClass
+import eu.vironlab.vextension.discord.command.CommandSource
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.MessageChannel
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 
 
-object DatabaseUtil {
+interface CommandExecutor {
 
-    /**
-     * Get the Information of the DatabaseObject wich is stored in a File wich will be normally created by the Annotation Processor
-     */
-    @JvmStatic
-    fun <T : Any> getInfo(clazz: KClass<T>): Optional<ObjectInformation> {
-        try {
-            val document: Document =
-                DocumentManagement.jsonStorage()
-                    .read(clazz.java.canonicalName, clazz.java.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.java.canonicalName}.json"))
-            return Optional.of(ObjectInformation(
-                document.getString("keyField").orElseThrow { NoSuchElementException("Cannot find 'keyField' in Object File") },
-                document.getString("key").orElseThrow { NoSuchElementException("Cannot find 'key' in Object File") },
-                document.getList<String>("ignoredFields", mutableListOf<String>()),
-                document.getMap<String, String>("specificNames").orElseThrow { NoSuchElementException("Cannot find 'specificNames' in Object File") },
-            ))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return Optional.empty()
-        }
-    }
-
+    fun execute(source: CommandSource, channel: MessageChannel, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
 
 }

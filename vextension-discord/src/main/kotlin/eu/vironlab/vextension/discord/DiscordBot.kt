@@ -35,24 +35,51 @@
  *<p>
  */
 
-package eu.vironlab.vextension.bungee
+package eu.vironlab.vextension.discord
 
+import com.google.gson.reflect.TypeToken
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.RemoteConnectionData
-import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.plugin.Listener
-import net.md_5.bungee.api.plugin.Plugin
+import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
+import eu.vironlab.vextension.dependency.DependencyLoader
+import eu.vironlab.vextension.discord.command.CommandManager
+import eu.vironlab.vextension.discord.command.DefaultCommandManager
+import eu.vironlab.vextension.document.ConfigDocument
+import eu.vironlab.vextension.document.initDocumentManagement
+import java.io.File
+import net.dv8tion.jda.api.JDA
 
 
-class VextensionBungee : Plugin(), Vextension, Listener {
-    override lateinit var databaseClient: DatabaseClient
+abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
 
+    abstract var jda: JDA
+    abstract var commandManager: CommandManager
+    protected val token: String
+    protected val connectionData: RemoteConnectionData
+    protected val config: ConfigDocument
+    final override var databaseClient: DatabaseClient
 
-    override fun onLoad() {
+    init {
+        initDocumentManagement()
+        DependencyLoader.init()
+        if (loadJda) {
+            DiscordUtil.loadJDA()
+        }
+        this.config = ConfigDocument(File("config.json"))
+        this.config.loadConfig()
+        this.token = this.config.getString("token", "Please enter Token here")
+        this.connectionData = this.config.get(
+            "database",
+            object : TypeToken<RemoteConnectionData>() {}.type,
+            RemoteConnectionData("localhost", 27017, "discord", "discord", "password")
+        )
+        config.saveConfig()
+        this.databaseClient = MongoDatabaseClient(this.connectionData)
+        this.databaseClient.init()
+        DiscordUtil.userDatabase = this.databaseClient.getBasicDatabase("discord_users")
         VextensionAPI.initialize(this)
-        proxy.pluginManager.registerListener(this, this)
     }
 
 }

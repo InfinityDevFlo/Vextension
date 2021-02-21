@@ -306,7 +306,7 @@ interface Document {
      * @param <T> is the Class to parse the Value
      * @return the parsed Value if exist
     </T> */
-    operator fun <T> get(key: String, clazz: Class<T>): Optional<T>
+    fun <T> get(key: String, clazz: Class<T>): Optional<T>
 
     /**
      * Get a Value of a Type by the key
@@ -315,7 +315,16 @@ interface Document {
      * @param <T> is the Class to parse the Value
      * @return the parsed Value if exist
     </T> */
-    operator fun <T> get(key: String, type: Type): Optional<T>
+    fun <T> get(key: String, type: Type): Optional<T>
+
+    /**
+     * Get a Value of a Type by the key with default value
+     * @param key is the Key to get the Value
+     * @param type is the Type of the Value
+     * @param <T> is the Class to parse the Value
+     * @return the parsed Value if exist or definiton
+    </T> */
+    fun <T> get(key: String, type: Type, def: T): T
 
     /**
      * Get a Value of an specific Class by adding a Gson parser to get the Class
@@ -387,8 +396,9 @@ interface Document {
      * @return the List
      */
     fun <T> getList(key: String, def: MutableList<T>): MutableList<T> {
-        if (contains(key)) {
-            return getList<T>(key).get()
+        val rs = getList<T>(key)
+        if (rs.isPresent) {
+            return rs.get()
         }else {
             insert(key, def)
             return def
@@ -560,4 +570,5 @@ interface Document {
     }
 
 
+    fun <T> get(key: String, clazz: Class<T>, def: T): T
 }

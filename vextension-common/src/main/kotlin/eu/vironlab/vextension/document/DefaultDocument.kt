@@ -42,6 +42,7 @@ import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import eu.vironlab.vextension.database.annotation.NewDatabaseObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import eu.vironlab.vextension.document.storage.WrappedSpecificDocumentStorage
@@ -59,6 +60,7 @@ import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+@NewDatabaseObject()
 open class DefaultDocument(override val name: String) : Document, Nameable {
     private var jsonObject: JsonObject
 
@@ -431,7 +433,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         return Optional.ofNullable(Base64.getDecoder().decode(this.getString(key).get()))
     }
 
-    override fun <T> get(key: String, clazz: Class<T>): Optional<T> {
+    override operator fun <T> get(key: String, clazz: Class<T>): Optional<T> {
         return this[key, GSON, clazz]
     }
 
@@ -464,7 +466,11 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         if (!contains(key)) {
             return Optional.ofNullable(null)
         }
-        return Optional.ofNullable(getJsonObject(key).get().asJsonObject)
+        val obj = getJsonObject(key)
+        if (!obj.isPresent) {
+            return Optional.empty()
+        }
+        return Optional.ofNullable(obj.get())
     }
 
 
@@ -552,14 +558,14 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         return this.getBinary(key).get()
     }
 
-    fun <T> get(key: String, type: Type, def: T): T {
+    override fun <T> get(key: String, type: Type, def: T): T {
         if (!this.contains(key)) {
             this.insert(key, def as Any)
         }
         return get<T>(key, type).get()
     }
 
-    fun <T> get(key: String, clazz: Class<T>, def: T): T {
+    override fun <T> get(key: String, clazz: Class<T>, def: T): T {
         if (!this.contains(key)) {
             this.insert(key, def as Any)
         }

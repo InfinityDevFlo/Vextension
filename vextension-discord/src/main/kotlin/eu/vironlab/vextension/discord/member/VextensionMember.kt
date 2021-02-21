@@ -50,10 +50,10 @@ class VextensionMember(member: Member) : Member by member {
 
     var properties: Document = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
         .getDocument(this.guild.id, DocumentManagement.newDocument(this.guild.id))
-    val permissions: MutableList<MemberPermissionInfo> =
-        properties.getList("permissions", mutableListOf())
+    //val permissions: MutableList<MemberPermissionInfo> =
+        //properties.getList("permissions", mutableListOf())
 
-    fun hasPermission(permission: String): Boolean {
+    /*fun hasPermission(permission: String): Boolean {
         val info = permissions.first {
             it.permission == permission
         }
@@ -82,7 +82,7 @@ class VextensionMember(member: Member) : Member by member {
         this.properties.delete("permissions")
         this.properties.insert("permissions", permissions)
         DiscordUtil.userDatabase.update(this.id, properties)
-    }
+    }*/
 
 }
 

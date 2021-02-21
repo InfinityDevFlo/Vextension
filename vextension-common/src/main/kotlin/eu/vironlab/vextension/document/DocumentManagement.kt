@@ -1,4 +1,3 @@
-
 /**
  *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
  * <p>
@@ -54,16 +53,6 @@ import java.nio.file.Path
  */
 object DocumentManagement {
 
-    fun initialize() {
-        DependencyLoader.require("com.google.code.gson:gson:2.8.6")
-        DependencyLoader.require("org.yaml:snakeyaml:1.27")
-        DependencyLoader.require("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
-        DependencyLoader.require("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-        DependencyLoader.require("com.fasterxml.jackson.core:jackson-core:2.12.1")
-        DependencyLoader.require("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
-        DependencyLoader.require("org.codehaus.woodstox:stax2-api:4.2.1")
-    }
-
     /**
      * Get the JsonStorage for the Documents
      */
@@ -95,6 +84,7 @@ object DocumentManagement {
     fun newDocument(name: String, jsonElement: JsonElement): DefaultDocument {
         return DefaultDocument(name, jsonElement)
     }
+
     /**
      * Create a new Document by JsonObject
      * @param jsonObject is the JsonObject, used to create the Document
@@ -159,7 +149,7 @@ object DocumentManagement {
      * @param bytes is the array with the data to create the document
      * @return the created Document
      */
-    fun newJsonDocument(name: String,bytes: ByteArray): DefaultDocument {
+    fun newJsonDocument(name: String, bytes: ByteArray): DefaultDocument {
         return newJsonDocument(name, String(bytes, StandardCharsets.UTF_8))
     }
 
@@ -168,7 +158,7 @@ object DocumentManagement {
      * @param bytes is the array with the data to create the document
      * @return the created Document
      */
-    fun newYamlDocument(name: String,bytes: ByteArray): DefaultDocument {
+    fun newYamlDocument(name: String, bytes: ByteArray): DefaultDocument {
         return newYamlDocument(name, String(bytes, StandardCharsets.UTF_8))
     }
 
@@ -186,7 +176,7 @@ object DocumentManagement {
      * @param path is the Path of the Data for the Document
      * @return the created Document
      */
-    fun newYamlDocument(name: String,path: Path): DefaultDocument {
+    fun newYamlDocument(name: String, path: Path): DefaultDocument {
         return yamlStorage().read(name, path)
     }
 
@@ -195,7 +185,7 @@ object DocumentManagement {
      * @param input is the Json String for the Document
      * @return the created Document
      */
-    fun newJsonDocument(name: String,input: String): DefaultDocument{
+    fun newJsonDocument(name: String, input: String): DefaultDocument {
         return jsonStorage().read(name, input)
     }
 
@@ -204,7 +194,7 @@ object DocumentManagement {
      * @param input is the Yaml String for the Document
      * @return the created Document
      */
-    fun newYamlDocument(name: String,input: String): DefaultDocument {
+    fun newYamlDocument(name: String, input: String): DefaultDocument {
         return yamlStorage().read(name, input)
     }
 
@@ -228,4 +218,15 @@ object DocumentManagement {
     fun yamlStorage(): DocumentStorage {
         return YAML
     }
+}
+
+fun initDocumentManagement() {
+    DependencyLoader.require("com.google.code.gson:gson:2.8.6")
+    DependencyLoader.require("org.yaml:snakeyaml:1.27")
+    DependencyLoader.require("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
+    DependencyLoader.require("com.fasterxml.jackson.core:jackson-databind:2.12.1")
+    DependencyLoader.require("com.fasterxml.jackson.core:jackson-core:2.12.1")
+    DependencyLoader.require("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
+    DependencyLoader.require("org.codehaus.woodstox:stax2-api:4.2.1")
+
 }

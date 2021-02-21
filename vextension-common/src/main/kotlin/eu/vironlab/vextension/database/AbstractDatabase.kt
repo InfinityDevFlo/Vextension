@@ -51,8 +51,7 @@ import kotlin.reflect.KClass
  */
 abstract class AbstractDatabase<T : Any, K>(var parsedClass: KClass<T>) : Database<T, K> {
 
-    override val classInfo: ObjectInformation
-        get() = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
+    override val classInfo: ObjectInformation = DatabaseUtil.getInfo(parsedClass).orElseThrow { throw IllegalStateException("Cannot get Info of unregistered Object") }
 
     init {
         parsedClass.java.declaredFields.forEach {

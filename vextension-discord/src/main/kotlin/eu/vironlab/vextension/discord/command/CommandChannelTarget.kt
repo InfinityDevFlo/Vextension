@@ -37,16 +37,9 @@
 
 package eu.vironlab.vextension.discord.command
 
-import eu.vironlab.vextension.discord.member.VextensionMember
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
-interface CommandExecutor {
+enum class CommandChannelTarget {
 
-    /**
-     * This method will be called when the Command is executed on a Server
-     */
-    fun execute(member: VextensionMember, message: Message, args: Array<String>, channel: TextChannel, event: GuildMessageReceivedEvent)
+    GUILD, PRIVATE, ALL
 
 }

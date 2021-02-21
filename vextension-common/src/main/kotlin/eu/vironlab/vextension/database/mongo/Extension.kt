@@ -45,6 +45,7 @@ import eu.vironlab.vextension.document.DocumentManagement
 import kotlin.reflect.KClass
 
 fun RemoteConnectionData.toMongo(): String {
+    println("mongodb://${user}:${password}@${host}:${port}/${database}")
     return "mongodb://${user}:${password}@${host}:${port}/${database}"
 }
 

@@ -16,7 +16,7 @@ import java.nio.file.Files
 object DiscordUtil {
 
     @JvmStatic
-    var userDatabase: Database<DefaultDocument, String> = VextensionAPI.instance.databaseClient.getBasicDatabase("discord_users")
+    lateinit var userDatabase: Database<DefaultDocument, String>
 
     const val EMBED_FOOTER = "Vextension - JVM Utility"
 
@@ -29,7 +29,7 @@ object DiscordUtil {
     @JvmStatic
     fun loadJDA() {
         val jdaDirectDownload =
-            "https://github.com/DV8FromTheWorld/JDA/releases/download/v4.2.0/JDA-4.2.0_228-withDependencies-min.jar"
+            "https://github.com/DV8FromTheWorld/JDA/releases/download/v4.2.0/JDA-4.2.0_168-withDependencies-min.jar"
         try {
             val dest: File = File(DependencyLoader.dataPath, "JDA-with-dependencies.jar")
             if (!dest.exists()) {

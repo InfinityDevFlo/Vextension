@@ -44,6 +44,7 @@ import com.google.gson.JsonObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import java.io.File
+import java.io.FileWriter
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -56,6 +57,13 @@ class ConfigDocument(val file: File) : Document {
     private var wrapped: Document
 
     init {
+        if (!file.exists()) {
+            file.createNewFile()
+            val writer = FileWriter(file)
+            writer.write("{}")
+            writer.flush()
+            writer.close()
+        }
         this.wrapped = DocumentManagement.newDocument(file.name)
     }
 
@@ -256,8 +264,16 @@ class ConfigDocument(val file: File) : Document {
         return wrapped.get(key, type)
     }
 
+    override fun <T> get(key: String, type: Type, def: T): T {
+        return wrapped.get(key, type, def)
+    }
+
     override fun <T> get(key: String, gson: Gson, clazz: Class<T>): Optional<T> {
         return wrapped.get(key, gson, clazz)
+    }
+
+    override fun <T> get(key: String, clazz: Class<T>, def: T): T {
+        return wrapped.get(key, clazz, def)
     }
 
     override fun asJson(): SpecificDocumentStorage {

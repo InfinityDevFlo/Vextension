@@ -1,9 +1,5 @@
 package eu.vironlab.vextension.dependency
 
-import com.google.gson.Gson
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.rest.RestClient
-import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
 import java.lang.IllegalStateException
 import java.net.URL
@@ -18,9 +14,8 @@ object DependencyLoader {
     var dependencyClassloader: DependencyClassloader = DependencyClassloader()
     const val SUFFIX_JAR = ".jar"
     const val SUFFIX_POM = ".pom"
-    var restClient: RestClient = RestUtil.getDefaultClient()
 
-    init {
+    fun init() {
         dataPath.mkdirs()
     }
 

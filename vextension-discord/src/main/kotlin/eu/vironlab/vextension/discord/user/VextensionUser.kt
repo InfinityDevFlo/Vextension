@@ -39,24 +39,22 @@ package eu.vironlab.vextension.discord.user
 
 import eu.vironlab.vextension.database.update
 import eu.vironlab.vextension.discord.DiscordUtil
+import eu.vironlab.vextension.discord.command.CommandSource
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
 import net.dv8tion.jda.api.entities.User
 
 
-class VextensionUser(jdaUser: User) : User by jdaUser {
+class VextensionUser(jdaUser: User): CommandSource(jdaUser) {
 
-    var properties: Document
+    override lateinit var properties: Document
 
     init {
-        /**
-         * Lol
-         */
         this.properties = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
     }
 
-    fun update() {
+    override fun updateProperties() {
         DiscordUtil.userDatabase.update(this.id, this.properties)
     }
 

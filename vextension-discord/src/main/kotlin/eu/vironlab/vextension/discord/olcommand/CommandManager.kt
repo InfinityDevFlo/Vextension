@@ -35,40 +35,29 @@
  *<p>
  */
 
-@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+package eu.vironlab.vextension.discord.olcommand
 
-package eu.vironlab.vextension.database
+import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 
-import eu.vironlab.vextension.database.info.ObjectInformation
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import java.util.*
-import kotlin.NoSuchElementException
-import kotlin.reflect.KClass
-
-
-object DatabaseUtil {
+interface CommandManager {
 
     /**
-     * Get the Information of the DatabaseObject wich is stored in a File wich will be normally created by the Annotation Processor
+     * Register the [command] with the [executor] to the Manager and all [aliases] to Public Server chats
      */
-    @JvmStatic
-    fun <T : Any> getInfo(clazz: KClass<T>): Optional<ObjectInformation> {
-        try {
-            val document: Document =
-                DocumentManagement.jsonStorage()
-                    .read(clazz.java.canonicalName, clazz.java.classLoader.getResourceAsStream("eu/vironlab/vextension/database/objects/${clazz.java.canonicalName}.json"))
-            return Optional.of(ObjectInformation(
-                document.getString("keyField").orElseThrow { NoSuchElementException("Cannot find 'keyField' in Object File") },
-                document.getString("key").orElseThrow { NoSuchElementException("Cannot find 'key' in Object File") },
-                document.getList<String>("ignoredFields", mutableListOf<String>()),
-                document.getMap<String, String>("specificNames").orElseThrow { NoSuchElementException("Cannot find 'specificNames' in Object File") },
-            ))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return Optional.empty()
-        }
-    }
+    fun registerCommand(command: String, executor: CommandExecutor, description: String, target: DefaultCommandManager.CommandTarget, vararg aliases: String)
 
+    /**
+     * Unregister a Command and all aliases
+     */
+    fun unregister(command: String)
+
+    var noPrivateChannelMessage: SimpleEmbedConfiguration
+
+    var commandNotFoundMessage: SimpleEmbedConfiguration
+
+    /**
+     * Get all registered Commands
+     */
+    val commands: Map<String, Command>
 
 }
