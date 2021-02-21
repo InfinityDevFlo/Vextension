@@ -46,6 +46,8 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 
 interface CommandExecutor {
 
+    val subCommands: MutableMap<String, SubCommandExecutor>
+
     fun execute(source: CommandSource, channel: MessageChannel, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
 
 }

@@ -37,10 +37,16 @@
 
 package eu.vironlab.vextension.discord.command
 
+import eu.vironlab.vextension.discord.command.executor.CommandExecutor
+import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
+
 interface CommandManager {
 
-    val commands: MutableMap<String, Command>
+    val commands: MutableMap<String, CommandData>
 
     val prefix: String
 
+    fun register(commandExecutor: CommandExecutor)
+
+    var commandNotFoundMessage: SimpleEmbedConfiguration
 }

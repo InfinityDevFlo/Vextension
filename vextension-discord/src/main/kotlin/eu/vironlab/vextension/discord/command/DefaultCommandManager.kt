@@ -37,9 +37,87 @@
 
 package eu.vironlab.vextension.discord.command
 
+import eu.vironlab.vextension.discord.command.annotation.Command
+import eu.vironlab.vextension.discord.command.executor.CommandExecutor
+import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
+import eu.vironlab.vextension.discord.extension.toVextension
+import eu.vironlab.vextension.document.DocumentManagement
+import java.awt.Color
+import java.util.*
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-class DefaultCommandManager(override val prefix: String, jda: JDA) : CommandManager, ListenerAdapter() {
-    override val commands: MutableMap<String, Command> = mutableMapOf()
+class DefaultCommandManager(override val prefix: String, val jda: JDA) : CommandManager, ListenerAdapter() {
+    override val commands: MutableMap<String, CommandData> = mutableMapOf()
+    val aliases: MutableMap<String, String> = mutableMapOf()
+    override var commandNotFoundMessage: SimpleEmbedConfiguration =
+        SimpleEmbedConfiguration("Command not Found", "The Command %cmd% could not be found", Color.RED)
+
+    init {
+        jda.addEventListener(this)
+    }
+
+    override fun register(commandExecutor: CommandExecutor) {
+        if (!commandExecutor::class.java.isAnnotationPresent(Command::class.java)) {
+            throw UnsupportedOperationException("Cannot register command without ${Command::class.qualifiedName} Annotation")
+        }
+        val data = commandExecutor::class.java.getAnnotation(Command::class.java)
+        data.aliases.forEach {
+            this.aliases.put(data.name, it)
+        }
+        this.commands.put(
+            data.name,
+            CommandData(data.name, data.description, data.aliases, data.target, commandExecutor)
+        )
+    }
+
+    override fun onMessageReceived(event: MessageReceivedEvent) {
+        val message: String = event.message.contentDisplay
+        if (message.startsWith(prefix)) {
+            val args = message.split(" ")
+            if (args.size > 1) {
+                val cmdName = args[0]
+                var cmd: CommandData? = null
+                if (commands.containsKey(cmd)) {
+                    cmd = commands.get(cmd)
+                } else if (aliases.containsKey(cmdName)) {
+                    cmd = commands.get(aliases.get(cmdName))
+                }
+                if (cmd != null) {
+                    val finalArgs = Arrays.asList(args).removeFirst().toTypedArray()
+                    if (finalArgs.size > 1)
+                        if (cmd.executor.subCommands.containsKey(args[0])) {
+                            cmd.executor.subCommands.get(args[0])!!.execute(
+                                cmd.name,
+                                event.author.toVextension(),
+                                event.channel,
+                                Arrays.asList(finalArgs).removeFirst(),
+                                event.isFromGuild,
+                                event.guild,
+                                this.jda
+                            )
+                        }
+                    cmd.executor.execute(
+                        event.author.toVextension(),
+                        event.channel,
+                        Arrays.asList(args).removeFirst().toTypedArray(),
+                        event.isFromGuild,
+                        event.guild,
+                        this.jda
+
+                    )
+                } else {
+                    event.channel.sendMessage(
+                        this.commandNotFoundMessage.toEmbed(
+                            event.author.avatarUrl!!,
+                            DocumentManagement.newDocument("message", "cmd", cmdName)
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+
 }

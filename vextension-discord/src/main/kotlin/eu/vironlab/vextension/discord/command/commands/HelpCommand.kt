@@ -43,6 +43,7 @@ import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.CommandSource
 import eu.vironlab.vextension.discord.command.annotation.Command
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
+import eu.vironlab.vextension.discord.command.executor.SubCommandExecutor
 import java.awt.Color
 import java.lang.StringBuilder
 import java.time.OffsetDateTime
@@ -51,8 +52,9 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageChannel
 
-@Command("help", CommandChannelTarget.ALL, arrayOf("?", "hilfe"))
+@Command("help", CommandChannelTarget.ALL, "Gives Help", arrayOf("?", "hilfe"))
 class HelpCommand(val commandManager: CommandManager) : CommandExecutor {
+    override var subCommands: MutableMap<String, SubCommandExecutor> = mutableMapOf()
 
     override fun execute(
         source: CommandSource,
