@@ -18,7 +18,8 @@ object DiscordUtil {
     @JvmStatic
     lateinit var userDatabase: Database<DefaultDocument, String>
 
-    const val EMBED_FOOTER = "Vextension - JVM Utility"
+    @JvmStatic
+    var EMBED_FOOTER = "Vextension - JVM Utility"
 
     @JvmStatic
     var noPermsMessage: SimpleEmbedConfiguration = SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED)
