@@ -50,6 +50,7 @@ import java.time.OffsetDateTime
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel
 
 @Command("help", CommandChannelTarget.ALL, "Gives Help", arrayOf("?", "hilfe"))
@@ -59,6 +60,7 @@ class HelpCommand(val commandManager: CommandManager) : CommandExecutor {
     override fun execute(
         source: CommandSource,
         channel: MessageChannel,
+        message: Message,
         args: Array<String>,
         isGuild: Boolean,
         guild: Guild?,
