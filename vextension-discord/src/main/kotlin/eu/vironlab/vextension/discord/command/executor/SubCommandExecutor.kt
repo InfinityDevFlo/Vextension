@@ -45,6 +45,6 @@ import net.dv8tion.jda.api.entities.MessageChannel
 
 interface SubCommandExecutor {
 
-    fun execute(command: String, source: CommandSource, channel: MessageChannel, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA) {}
+    fun execute(command: String, source: CommandSource, channel: MessageChannel, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
 
 }
