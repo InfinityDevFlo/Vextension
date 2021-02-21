@@ -80,7 +80,6 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
         this.databaseClient = MongoDatabaseClient(this.connectionData)
         this.databaseClient.init()
         DiscordUtil.userDatabase = this.databaseClient.getBasicDatabase("discord_users")
-        this.jda.awaitReady()
         VextensionAPI.initialize(this)
     }
 
