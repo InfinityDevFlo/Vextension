@@ -76,4 +76,8 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
         }
 
     }
+
+    override fun close() {
+        this.mongoClient.close()
+    }
 }

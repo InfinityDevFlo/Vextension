@@ -109,4 +109,6 @@ interface DatabaseClient {
      * @param name is the Name of the Database
      */
     fun drop(name: String): Boolean
+
+    fun close()
 }
