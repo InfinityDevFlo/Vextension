@@ -40,7 +40,6 @@ package eu.vironlab.vextension.discord.command
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-
 class DefaultCommandManager(override val prefix: String, jda: JDA) : CommandManager, ListenerAdapter() {
     override val commands: MutableMap<String, Command> = mutableMapOf()
 }
