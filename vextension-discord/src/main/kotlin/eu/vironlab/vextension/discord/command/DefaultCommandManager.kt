@@ -74,30 +74,22 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
-        println("message")
         val message: String = event.message.contentDisplay
         if (message.startsWith(prefix)) {
-            println("Get prefix")
             val args = message.split(" ")
             if (args.size > 1) {
-                println("lol")
                 val cmdName = args[0].substring(1)
                 var cmd: CommandData? = null
-                println(aliases.toString())
-                println(commands.toString())
                 if (commands.containsKey(cmdName)) {
-                    println(1)
                     cmd = commands.get(cmdName)
                 } else if (aliases.containsKey(cmdName)) {
-                    println(2)
                     cmd = commands.get(aliases.get(cmdName))
                 }
                 if (cmd != null) {
-                    println(3)
-                    val finalArgs = args.drop(0)
-                    if (finalArgs.size > 1)
-                        if (cmd.executor.subCommands.containsKey(args[0])) {
-                            cmd.executor.subCommands.get(args[0])!!.execute(
+                    val finalArgs = args.drop(1)
+                    if (finalArgs.size > 1) {
+                        if (cmd.executor.subCommands.containsKey(finalArgs[0])) {
+                            cmd.executor.subCommands.get(finalArgs[0])!!.execute(
                                 cmd.name,
                                 event.author.toVextension(),
                                 event.channel,
@@ -107,19 +99,22 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                                 event.guild,
                                 this.jda
                             )
+                            println("Subcommand > ${finalArgs[0]} from Comand ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                            return
                         }
-                    cmd.executor.execute(
-                        event.author.toVextension(),
-                        event.channel,
-                        event.message,
-                        finalArgs.drop(1).toTypedArray(),
-                        event.isFromGuild,
-                        event.guild,
-                        this.jda
-
-                    )
+                    }
+                        cmd.executor.execute(
+                            event.author.toVextension(),
+                            event.channel,
+                            event.message,
+                            finalArgs.drop(1).toTypedArray(),
+                            event.isFromGuild,
+                            event.guild,
+                            this.jda
+                        )
+                    println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                    return
                 } else {
-                    println(4)
                     event.channel.sendMessage(
                         this.commandNotFoundMessage.toEmbed(
                             event.author.avatarUrl!!,
