@@ -44,13 +44,13 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
 
 
-data class SimpleEmbedConfiguration(var title: String, var message: String, var color: Color) {
+data class SimpleEmbedConfiguration(var title: String, var message: String, var color: String) {
 
     fun toEmbed(): MessageEmbed {
         val builder: EmbedBuilder = EmbedBuilder()
         builder.setTitle(this.title)
         builder.setDescription(this.message)
-        builder.setColor(this.color)
+        builder.setColor(Color.decode(color))
         builder.setFooter(DiscordUtil.EMBED_FOOTER)
         return builder.build()
     }
@@ -59,7 +59,7 @@ data class SimpleEmbedConfiguration(var title: String, var message: String, var 
         val builder: EmbedBuilder = EmbedBuilder()
         builder.setTitle(this.title)
         builder.setDescription(this.message)
-        builder.setColor(this.color)
+        builder.setColor(Color.decode(color))
         builder.setFooter(DiscordUtil.EMBED_FOOTER)
         builder.setThumbnail(thumbnail)
         return builder.build()
@@ -73,7 +73,7 @@ data class SimpleEmbedConfiguration(var title: String, var message: String, var 
         }
         builder.setTitle(this.title)
         builder.setDescription(this.message)
-        builder.setColor(this.color)
+        builder.setColor(Color.decode(color))
         builder.setFooter(DiscordUtil.EMBED_FOOTER)
         return builder.build()
     }
@@ -86,9 +86,13 @@ data class SimpleEmbedConfiguration(var title: String, var message: String, var 
         }
         builder.setTitle(this.title)
         builder.setDescription(this.message)
-        builder.setColor(this.color)
+        builder.setColor(Color.decode(color))
         builder.setFooter(DiscordUtil.EMBED_FOOTER)
         builder.setThumbnail(thumbnail)
         return builder.build()
     }
+}
+
+fun Color.toHex(): String {
+    return "#"+Integer.toHexString(this.getRGB()).substring(2);
 }

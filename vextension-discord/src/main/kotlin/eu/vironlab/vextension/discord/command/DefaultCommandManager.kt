@@ -40,6 +40,7 @@ package eu.vironlab.vextension.discord.command
 import eu.vironlab.vextension.discord.command.annotation.Command
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
+import eu.vironlab.vextension.discord.embed.toHex
 import eu.vironlab.vextension.discord.extension.toVextension
 import eu.vironlab.vextension.document.DocumentManagement
 import java.awt.Color
@@ -52,7 +53,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
     override val commands: MutableMap<String, CommandData> = mutableMapOf()
     val aliases: MutableMap<String, String> = mutableMapOf()
     override var commandNotFoundMessage: SimpleEmbedConfiguration =
-        SimpleEmbedConfiguration("Command not Found", "The Command %cmd% could not be found", Color.RED)
+        SimpleEmbedConfiguration("Command not Found", "The Command %cmd% could not be found", Color.RED.toHex())
 
     init {
         jda.addEventListener(this)

@@ -5,6 +5,7 @@ import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.dependency.DependencyClassloader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
+import eu.vironlab.vextension.discord.embed.toHex
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import java.awt.Color
@@ -22,7 +23,7 @@ object DiscordUtil {
     var EMBED_FOOTER = "Vextension - JVM Utility"
 
     @JvmStatic
-    var noPermsMessage: SimpleEmbedConfiguration = SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED)
+    var noPermsMessage: SimpleEmbedConfiguration = SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED.toHex())
 
     /**
      * Download the Latest JDA File
