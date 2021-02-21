@@ -126,11 +126,9 @@ open class MongoDatabase(override val name: String, database: MongoDatabase) :
     }
 
     override fun forEach(func: (String, Document) -> Unit) {
-        scheduleAsync {
             keys().forEach {
                 func.invoke(it, get(it).get())
             }
-        }
     }
 
 

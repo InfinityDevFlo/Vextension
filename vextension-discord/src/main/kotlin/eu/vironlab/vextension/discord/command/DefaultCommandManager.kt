@@ -75,7 +75,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
-        val message: String = event.message.contentDisplay
+        val message: String = event.message.contentRaw
         if (message.startsWith(prefix)) {
             val args = message.split(" ")
             if (args.size > 1) {

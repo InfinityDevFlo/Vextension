@@ -43,6 +43,7 @@ import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.RemoteConnectionData
 import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
+import eu.vironlab.vextension.database.sql.SqlDatabaseClient
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.DefaultCommandManager
@@ -71,13 +72,24 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
         this.config = ConfigDocument(File("config.json"))
         this.config.loadConfig()
         this.token = this.config.getString("token", "Please enter Token here")
+        val clientType: String = this.config.getString("databaseType", "mongodb")
         this.connectionData = this.config.get(
             "database",
             object : TypeToken<RemoteConnectionData>() {}.type,
             RemoteConnectionData("localhost", 27017, "discord", "discord", "password")
         )
         config.saveConfig()
-        this.databaseClient = MongoDatabaseClient(this.connectionData)
+        when(clientType.toLowerCase()) {
+            "mongodb" -> {
+                this.databaseClient = MongoDatabaseClient(this.connectionData)
+            }
+            "mysql" -> {
+                this.databaseClient = SqlDatabaseClient(this.connectionData)
+            }
+            else -> {
+                throw UnsupportedOperationException("Please type 'mongodb' or 'mysql' as databaseType")
+            }
+        }
         this.databaseClient.init()
         DiscordUtil.userDatabase = this.databaseClient.getDatabase("discord_users")
         VextensionAPI.initialize(this)
