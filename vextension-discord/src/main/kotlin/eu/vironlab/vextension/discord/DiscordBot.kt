@@ -46,6 +46,7 @@ import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.DefaultCommandManager
+import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.document.ConfigDocument
 import eu.vironlab.vextension.document.initDocumentManagement
 import java.io.File
@@ -80,6 +81,14 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
         this.databaseClient.init()
         DiscordUtil.userDatabase = this.databaseClient.getBasicDatabase("discord_users")
         VextensionAPI.initialize(this)
+    }
+
+    fun registerCommand(executor: CommandExecutor) {
+        this.commandManager.register(executor)
+    }
+
+    fun registerListener(listener: Any) {
+        this.jda.addEventListener(listener)
     }
 
 }
