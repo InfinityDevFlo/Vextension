@@ -43,6 +43,7 @@ import eu.vironlab.vextension.discord.command.CommandSource
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
+import java.util.*
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
@@ -62,6 +63,9 @@ class VextensionUser(jdaUser: User) : CommandSource(jdaUser) {
 
 }
 
-fun User.tryMember(guild: Guild): Member? {
-    return guild.getMemberById(this.id)
+fun User.tryMember(guild: Guild?): Optional<Member> {
+    if (guild == null) {
+        return Optional.empty()
+    }
+    return Optional.ofNullable(guild.getMemberById(this.id))
 }

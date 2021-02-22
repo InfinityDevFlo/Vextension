@@ -45,6 +45,7 @@ abstract class CommandSource(val user: User): User by user {
 
     abstract val properties: Document
 
+    
     abstract fun updateProperties()
 
 }
