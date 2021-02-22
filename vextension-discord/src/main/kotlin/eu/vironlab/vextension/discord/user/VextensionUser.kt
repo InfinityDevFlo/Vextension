@@ -67,5 +67,5 @@ fun User.tryMember(guild: Guild?): Optional<Member> {
     if (guild == null) {
         return Optional.empty()
     }
-    return Optional.ofNullable(guild.getMemberById(this.id))
+    return Optional.ofNullable(guild!!.retrieveMember(this).complete())
 }

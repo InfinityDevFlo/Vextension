@@ -59,18 +59,23 @@ class SqlDatabase(override val name: String, val client: SqlDatabaseClient) : Ab
         if (!contains(key)) {
             return Optional.empty()
         }
-        return Optional.of(this.client.executeQuery(
-            "SELECT `$TABLE_COLUMN_VALUE` FROM `$name` WHERE `$TABLE_COLUMN_KEY` =?",
-            object : IThrowableCallback<ResultSet, Document> {
-                override fun call(t: ResultSet): Document {
-                    return DocumentManagement.newJsonDocument(
-                        t.getString(TABLE_COLUMN_KEY),
-                        t.getString(TABLE_COLUMN_VALUE)
-                    )
-                }
-
-            }
-        )
+        return Optional.ofNullable(
+            this.client.executeQuery(
+                "SELECT * FROM `$name` WHERE `$TABLE_COLUMN_KEY` = ? ",
+                object : IThrowableCallback<ResultSet, Document?> {
+                    override fun call(t: ResultSet): Document? {
+                        return if (t.next()) {
+                            DocumentManagement.newJsonDocument(
+                                t.getString(TABLE_COLUMN_KEY),
+                                t.getString(TABLE_COLUMN_VALUE)
+                            )
+                        } else {
+                            null
+                        }
+                    }
+                },
+                key
+            )
         )
     }
 

@@ -12,6 +12,8 @@ import java.awt.Color
 import java.io.File
 import java.net.URL
 import java.nio.file.Files
+import java.time.OffsetDateTime
+import net.dv8tion.jda.api.EmbedBuilder
 
 
 object DiscordUtil {
@@ -23,7 +25,22 @@ object DiscordUtil {
     var EMBED_FOOTER = "Vextension - JVM Utility"
 
     @JvmStatic
-    var noPermsMessage: SimpleEmbedConfiguration = SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED.toHex())
+    var noPermsMessage: SimpleEmbedConfiguration =
+        SimpleEmbedConfiguration("No Permissions", "You dont have the Permission to do that", Color.RED.toHex())
+
+    @JvmStatic
+    var onlyGuild: SimpleEmbedConfiguration =
+        SimpleEmbedConfiguration("Wrong Channel", "You can use this command only on Guilds", Color.RED.toHex())
+
+    @JvmStatic
+    var onlyDirectMessage: SimpleEmbedConfiguration =
+        SimpleEmbedConfiguration("Wrong Channel", "You can use this command only on Private Message", Color.RED.toHex())
+
+    @JvmStatic
+    fun defaultBuilder(): EmbedBuilder =
+        EmbedBuilder().setFooter(DiscordUtil.EMBED_FOOTER).setColor(Color.CYAN).setTimestamp(
+            OffsetDateTime.now()
+        )
 
     /**
      * Download the Latest JDA File

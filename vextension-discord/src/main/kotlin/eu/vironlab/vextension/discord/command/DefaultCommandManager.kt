@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.discord.command
 
+import eu.vironlab.vextension.discord.DiscordUtil
 import eu.vironlab.vextension.discord.command.annotation.Command
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
@@ -78,15 +79,28 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
         val message: String = event.message.contentRaw
         if (message.startsWith(prefix)) {
             val args = message.split(" ")
-            if (args.size > 1) {
-                val cmdName = args[0].substring(1)
-                var cmd: CommandData? = null
-                if (commands.containsKey(cmdName)) {
-                    cmd = commands.get(cmdName)
-                } else if (aliases.containsKey(cmdName)) {
-                    cmd = commands.get(aliases.get(cmdName))
+            val cmdName = args[0].substring(1)
+            var cmd: CommandData? = null
+            if (commands.containsKey(cmdName)) {
+                cmd = commands.get(cmdName)
+            } else if (aliases.containsKey(cmdName)) {
+                cmd = commands.get(aliases.get(cmdName))
+            }
+            if (cmd != null) {
+                if (event.isFromGuild) {
+                    if (cmd.target == CommandChannelTarget.PRIVATE) {
+                        event.channel.sendMessage(DiscordUtil.onlyDirectMessage.toEmbed())
+                        println("${event.author.name} tried to use a Public command in Private Chat")
+                        return
+                    }
+                } else {
+                    if (cmd.target == CommandChannelTarget.GUILD) {
+                        event.channel.sendMessage(DiscordUtil.onlyGuild.toEmbed())
+                        println("${event.author.name} tried to use a Public command in Private Chat")
+                        return
+                    }
                 }
-                if (cmd != null) {
+                if (args.size >= 2) {
                     val finalArgs = args.drop(1)
                     if (finalArgs.size > 1) {
                         if (cmd.executor.subCommands.containsKey(finalArgs[0])) {
@@ -100,29 +114,30 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                                 event.guild,
                                 this.jda
                             )
-                            println("Subcommand > ${finalArgs[0]} from Comand ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                            println("Subcommand > ${finalArgs[0]} from Command ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
                             return
                         }
                     }
-                        cmd.executor.execute(
-                            event.author.toVextension(),
-                            event.channel,
-                            event.message,
-                            finalArgs.drop(1).toTypedArray(),
-                            event.isFromGuild,
-                            event.guild,
-                            this.jda
-                        )
-                    println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
-                    return
-                } else {
-                    event.channel.sendMessage(
-                        this.commandNotFoundMessage.toEmbed(
-                            event.author.avatarUrl!!,
-                            DocumentManagement.newDocument("message", "cmd", cmdName)
-                        )
-                    ).queue()
                 }
+                    cmd.executor.execute(
+                        event.author.toVextension(),
+                        event.channel,
+                        event.message,
+                        args.toTypedArray(),
+                        event.isFromGuild,
+                        event.guild,
+                        this.jda
+                    )
+                println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                return
+            } else {
+                println("${event.author.name} tried to use unknown Command: $cmdName")
+                event.channel.sendMessage(
+                    this.commandNotFoundMessage.toEmbed(
+                        event.author.avatarUrl!!,
+                        DocumentManagement.newDocument("message", "cmd", cmdName)
+                    )
+                ).queue()
             }
         }
     }
