@@ -2,6 +2,7 @@ package eu.vironlab.vextension.discord
 
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.Database
+import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.dependency.DependencyClassloader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
@@ -20,6 +21,8 @@ object DiscordUtil {
 
     @JvmStatic
     lateinit var userDatabase: Database
+
+    lateinit var databaseClient: DatabaseClient
 
     @JvmStatic
     var EMBED_FOOTER = "Vextension - JVM Utility"

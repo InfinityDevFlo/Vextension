@@ -35,33 +35,25 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.user
-
+package eu.vironlab.vextension.discord.role
 
 import eu.vironlab.vextension.discord.DiscordUtil
-import eu.vironlab.vextension.discord.command.CommandSource
-import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
-import java.util.*
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.Role
 
 
-class VextensionUser(jdaUser: User) : CommandSource(jdaUser) {
+class VextensionRole(jda: Role): Role by jda{
 
-    override var properties: Document = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
+    val properties: Document = DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").getOrDefault(this.id, DocumentManagement.newDocument(this.id))
 
-    override fun updateProperties() {
-        DiscordUtil.userDatabase.update(this.id, this.properties)
+
+    fun updateProperties() {
+        DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").update(this.id, this.properties)
     }
 
 }
 
-fun User.tryMember(guild: Guild?): Optional<Member> {
-    if (guild == null) {
-        return Optional.empty()
-    }
-    return Optional.ofNullable(guild!!.retrieveMember(this).complete())
+fun Role.toVextension(): VextensionRole {
+    return VextensionRole(this)
 }
