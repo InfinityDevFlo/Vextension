@@ -93,6 +93,81 @@ data class SimpleEmbedConfiguration(var title: String, var message: String, var 
     }
 }
 
+data class EmbedField(var title: String, var message: String, var inline: Boolean) {
+    fun toField(): MessageEmbed.Field {
+        return MessageEmbed.Field(title, message, inline)
+    }
+
+    fun toField(placeholder: Document): MessageEmbed.Field {
+        placeholder.forEach {
+            this.title = title.replace("%${it}%", placeholder.getString(it).get())
+            this.message = message.replace("%${it}%", placeholder.getString(it).get())
+        }
+        return MessageEmbed.Field(title, message, inline)
+    }
+}
+
+data class EmbedConfiguration(var title: String, var message: String, var color: String, var fields: MutableCollection<EmbedField>) {
+
+    fun toEmbed(): MessageEmbed {
+        val builder: EmbedBuilder = EmbedBuilder()
+        builder.setTitle(this.title)
+        builder.setDescription(this.message)
+        builder.setColor(Color.decode(color))
+        builder.setFooter(DiscordUtil.EMBED_FOOTER)
+        this.fields.forEach {
+            builder.addField(it.toField())
+        }
+        return builder.build()
+    }
+
+    fun toEmbed(thumbnail: String): MessageEmbed {
+        val builder: EmbedBuilder = EmbedBuilder()
+        builder.setTitle(this.title)
+        builder.setDescription(this.message)
+        builder.setColor(Color.decode(color))
+        builder.setFooter(DiscordUtil.EMBED_FOOTER)
+        builder.setThumbnail(thumbnail)
+        this.fields.forEach {
+            builder.addField(it.toField())
+        }
+        return builder.build()
+    }
+
+    fun toEmbed(placeholder: Document): MessageEmbed {
+        val builder: EmbedBuilder = EmbedBuilder()
+        placeholder.forEach {
+            this.title = title.replace("%${it}%", placeholder.getString(it).get())
+            this.message = message.replace("%${it}%", placeholder.getString(it).get())
+        }
+        builder.setTitle(this.title)
+        builder.setDescription(this.message)
+        builder.setColor(Color.decode(color))
+        builder.setFooter(DiscordUtil.EMBED_FOOTER)
+        this.fields.forEach {
+            builder.addField(it.toField(placeholder))
+        }
+        return builder.build()
+    }
+
+    fun toEmbed(thumbnail: String, placeholder: Document): MessageEmbed {
+        val builder: EmbedBuilder = EmbedBuilder()
+        placeholder.forEach {
+            this.title = title.replace("%${it}%", placeholder.getString(it).get())
+            this.message = message.replace("%${it}%", placeholder.getString(it).get())
+        }
+        builder.setTitle(this.title)
+        builder.setDescription(this.message)
+        builder.setColor(Color.decode(color))
+        builder.setFooter(DiscordUtil.EMBED_FOOTER)
+        builder.setThumbnail(thumbnail)
+        this.fields.forEach {
+            builder.addField(it.toField(placeholder))
+        }
+        return builder.build()
+    }
+}
+
 fun Color.toHex(): String {
     return "#"+Integer.toHexString(this.getRGB()).substring(2);
 }
