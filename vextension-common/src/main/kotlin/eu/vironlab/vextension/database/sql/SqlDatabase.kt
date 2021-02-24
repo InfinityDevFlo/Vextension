@@ -107,9 +107,10 @@ class SqlDatabase(override val name: String, val client: SqlDatabaseClient) : Ab
         ) != -1;
     }
 
+
     override fun update(key: String, newValue: Document): Boolean {
         return this.client.executeUpdate(
-            "UPDATE `" + this.name + "` SET `" + TABLE_COLUMN_VALUE + "` =? WHERE " + TABLE_COLUMN_KEY + "=?",
+            "UPDATE `" + this.name + "` SET `" + TABLE_COLUMN_VALUE + "` = ? WHERE `" + TABLE_COLUMN_KEY + "` = ?;",
             newValue.toJson(), key
         ) != -1;
     }
@@ -162,3 +163,4 @@ class SqlDatabase(override val name: String, val client: SqlDatabaseClient) : Ab
         }
     }
 }
+

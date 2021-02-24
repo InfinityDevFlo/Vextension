@@ -27,6 +27,7 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-cli/build/libs/vextension-cli.jar', fingerprint: true
                 }
             }
         }
@@ -47,6 +48,7 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-sources.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-cli/build/libs/vextension-cli-sources.jar', fingerprint: true
                 }
             }
         }
@@ -79,6 +81,24 @@ pipeline {
                                                     artifactId: "vextension-common",
                                                     classifier: '',
                                                     file      : "vextension-common/build/pom/pom.xml",
+                                                    type      : "pom"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-cli",
+                                                    classifier: '',
+                                                    file      : "vextension-cli/build/libs/vextension-cli.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-cli",
+                                                    classifier: 'sources',
+                                                    file      : "vextension-cli/build/libs/vextension-cli-sources.jar",
+                                                    type      : "jar"
+                                            ],
+                                            [
+                                                    artifactId: "vextension-cli",
+                                                    classifier: '',
+                                                    file      : "vextension-cli/build/pom/pom.xml",
                                                     type      : "pom"
                                             ],
                                             [

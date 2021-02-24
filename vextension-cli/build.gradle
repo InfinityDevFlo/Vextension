@@ -1,0 +1,5 @@
+dependencies {
+    implementation(coords_jline)
+    implementation(coords_jansi)
+    implementation project(":vextension-common")
+}
