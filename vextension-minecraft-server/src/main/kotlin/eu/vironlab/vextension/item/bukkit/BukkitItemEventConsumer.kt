@@ -76,28 +76,39 @@ class BukkitItemEventConsumer : Listener {
 
     @EventHandler
     fun click(e: InventoryClickEvent) {
-        if (e.currentItem != null) {
-            if (e.currentItem!!.hasItemMeta()) {
-                if (!e.currentItem!!.itemMeta.persistentDataContainer.isEmpty) {
-                    val item =
-                        VextensionBukkit.instance.items[e.currentItem!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+        if (e.action == InventoryAction.NOTHING)
+            return
+        var item =
+            if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null
+                ?: if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null
+                    ?: if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null
+                        ?: return
+        if (VextensionBukkit.instance.items[item?.itemMeta?.persistentDataContainer?.get(
+                VextensionBukkit.key,
+                PersistentDataType.STRING
+            )] == null
+        ) {
+            item = when (item) {
+                e.currentItem -> if (e.currentItem?.type != org.bukkit.Material.AIR) e.cursor else e.clickedInventory?.getItem(
+                    e.hotbarButton
+                ) ?: return
+                e.cursor -> if (e.cursor?.type != org.bukkit.Material.AIR) e.currentItem else e.clickedInventory?.getItem(
+                    e.hotbarButton
+                ) ?: return
+                else -> return
+            }
+        }
+        if (item != null) {
+            if (item.hasItemMeta()) {
+                if (!item.itemMeta.persistentDataContainer.isEmpty) {
+                    val itemm: eu.vironlab.vextension.item.ItemStack =
+                        VextensionBukkit.instance.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                             ?: return
-                    if (item.blockClick) e.isCancelled = true
-                    if (item.clickHandler != null) item.clickHandler!!.accept(item, e.whoClicked.uniqueId)
+                    if (itemm.blockClick) e.isCancelled = true
+                    if (itemm.clickHandler != null) itemm.clickHandler!!.accept(itemm, e.whoClicked.uniqueId)
                 }
             }
         }
     }
-    @EventHandler
-    fun a(e: InventoryMoveItemEvent) {
-        if (e.item.hasItemMeta()) {
-            if (!e.item.itemMeta.persistentDataContainer.isEmpty) {
-                val item =
-                    VextensionBukkit.instance.items[e.item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
-                        ?: return
-                if (item.blockClick) e.isCancelled = true
-                //if (item.clickHandler != null) item.clickHandler!!.accept(item, e.initiator.viewers..uniqueId)
-            }
-        }
-    }
+
 }
