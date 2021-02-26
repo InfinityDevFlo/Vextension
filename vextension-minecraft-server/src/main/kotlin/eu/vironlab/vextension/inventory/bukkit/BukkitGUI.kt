@@ -48,11 +48,12 @@ import java.util.*
 class BukkitGUI(override val lines: Int) : GUI {
     override var border: Boolean = false
     override var borderItem: ItemStack? = null
+    override var name: String? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
-        val inventory = Bukkit.createInventory(null, 9 * lines)
+        val inventory = Bukkit.createInventory(null, 9 * lines, name ?: "")
         if (border && borderItem != null) {
             //<editor-fold desc="Border creation" defaultstate="collapsed">
             for (i: Int in 0..8) {
@@ -105,6 +106,11 @@ class BukkitGUI(override val lines: Int) : GUI {
 
     fun addItem(item: ItemStack): BukkitGUI {
         this.contents[contents.count()] = item
+        return this
+    }
+
+    fun setName(name: String): BukkitGUI {
+        this.name = name
         return this
     }
 }

@@ -43,5 +43,6 @@ interface GUI {
     val lines: Int
     var border: Boolean
     var borderItem: ItemStack?
+    var name: String?
     fun open(player: UUID)
 }

@@ -20,4 +20,7 @@ jar {
     from("$buildDir/resources/main") {
         include '**'
     }
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
