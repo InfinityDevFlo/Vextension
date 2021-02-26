@@ -37,6 +37,7 @@
 package eu.vironlab.vextension.item
 
 enum class Material {
+    //<editor-fold desc="Material list" defaultstate="collapsed">
     AIR,
     STONE,
     GRANITE,
@@ -1114,4 +1115,5 @@ enum class Material {
     POTTED_WARPED_FUNGUS,
     POTTED_CRIMSON_ROOTS,
     POTTED_WARPED_ROOTS
+    //</editor-fold>
 }
