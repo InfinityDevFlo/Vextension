@@ -72,48 +72,6 @@ fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
     if (!VextensionBukkit.instance.items.containsKey(this.identifier)) {
         VextensionBukkit.instance.items[this.identifier] = this
     }
-    /*if (this.blockInteract) meta.persistentDataContainer.set(
-        NamespacedKey(VextensionBukkit.instance, "blockInteract"),
-        PersistentDataType.STRING,
-        "true"
-    )
-    if (this.blockClick) meta.persistentDataContainer.set(
-        NamespacedKey(VextensionBukkit.instance, "blockClick"),
-        PersistentDataType.STRING,
-        "true"
-    )
-    if (this.blockDrop) meta.persistentDataContainer.set(
-        NamespacedKey(VextensionBukkit.instance, "blockDrop"),
-        PersistentDataType.STRING,
-        "true"
-    )
-    var key: NamespacedKey = NamespacedKey(VextensionBukkit.instance, RandomStringUtils.random(64))
-    while (VextensionBukkit.instance.interactHandler.containsKey(key)) key = NamespacedKey(VextensionBukkit.instance, RandomStringUtils.random(64))
-    if (this.dropHandler != null) {
-        meta.persistentDataContainer.set(
-            NamespacedKey(VextensionBukkit.instance, "dropHandler"),
-            PersistentDataType.STRING,
-            key.key
-        )
-        VextensionBukkit.instance.dropHandler[key] = this.dropHandler
-    }
-    if (this.interactHandler != null) {
-        meta.persistentDataContainer.set(
-            NamespacedKey(VextensionBukkit.instance, "interactHandler"),
-            PersistentDataType.STRING,
-            key.key
-        )
-        VextensionBukkit.instance.interactHandler[key] = this.interactHandler
-
-    }
-    if (this.clickHandler != null) {
-        meta.persistentDataContainer.set(
-            NamespacedKey(VextensionBukkit.instance, "clickHandler"),
-            PersistentDataType.STRING,
-            key.key
-        )
-        VextensionBukkit.instance.clickHandler[key] = this.clickHandler
-    }*/
     item.itemMeta = meta
     return item
 }
@@ -127,20 +85,4 @@ fun org.bukkit.inventory.ItemStack.toItemStack(): ItemStack {
         VextensionBukkit.key,
         PersistentDataType.STRING
     )]  ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
-    //ItemStack(
-    /*eu.vironlab.vextension.item.Material.valueOf(this.type.name),
-    this.itemMeta.displayName,
-    this.amount,
-    if (this is Damageable) this.damage else 0,
-    this.itemMeta.lore ?: mutableListOf(),
-    this.itemMeta.isUnbreakable,
-    null,
-    null,
-    null,
-    this.itemMeta.persistentDataContainer.get(VextensionBukkit.key, PersistentDataType.STRING) ?: throw UnsupportedOperationException("Invalid Vextension ItemStack"),
-    VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]?.dropHandler,
-    VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]?.interactHandler,
-    VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]?.clickHandler*/
-    //)
-
 }
