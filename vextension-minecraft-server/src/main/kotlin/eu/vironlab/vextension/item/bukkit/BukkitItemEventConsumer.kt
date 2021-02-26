@@ -38,6 +38,7 @@
 package eu.vironlab.vextension.item.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
+import eu.vironlab.vextension.item.ItemStack
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -78,34 +79,36 @@ class BukkitItemEventConsumer : Listener {
     fun click(e: InventoryClickEvent) {
         if (e.action == InventoryAction.NOTHING)
             return
-        var item =
+        /*var item =
             if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null
                 ?: if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null
                     ?: if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null
-                        ?: return
-        if (VextensionBukkit.instance.items[item?.itemMeta?.persistentDataContainer?.get(
+                        ?: return*/
+        /*if (VextensionBukkit.instance.items[item?.itemMeta?.persistentDataContainer?.get(
                 VextensionBukkit.key,
                 PersistentDataType.STRING
-            )] == null
+            )]?.clickHandler == null
         ) {
             item = when (item) {
-                e.currentItem -> if (e.currentItem?.type != org.bukkit.Material.AIR) e.cursor else e.clickedInventory?.getItem(
+                e.currentItem -> if (e.currentItem?.type != org.bukkit.Material.AIR) e.cursor else e.whoClicked.inventory.getItem(
                     e.hotbarButton
                 ) ?: return
-                e.cursor -> if (e.cursor?.type != org.bukkit.Material.AIR) e.currentItem else e.clickedInventory?.getItem(
+                e.cursor -> if (e.cursor?.type != org.bukkit.Material.AIR) e.currentItem else e.whoClicked.inventory.getItem(
                     e.hotbarButton
                 ) ?: return
                 else -> return
             }
-        }
-        if (item != null) {
-            if (item.hasItemMeta()) {
-                if (!item.itemMeta.persistentDataContainer.isEmpty) {
-                    val itemm: eu.vironlab.vextension.item.ItemStack =
-                        VextensionBukkit.instance.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
-                            ?: return
-                    if (itemm.blockClick) e.isCancelled = true
-                    if (itemm.clickHandler != null) itemm.clickHandler!!.accept(itemm, e.whoClicked.uniqueId)
+        }*/
+        mutableListOf(if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null, if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null, if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null).forEach { item ->
+            if (item != null) {
+                if (item.hasItemMeta()) {
+                    if (!item.itemMeta.persistentDataContainer.isEmpty) {
+                        val itemm: ItemStack =
+                            VextensionBukkit.instance.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                                ?: return
+                        if (itemm.blockClick) e.isCancelled = true
+                        if (itemm.clickHandler != null) itemm.clickHandler!!.accept(itemm, e.whoClicked.uniqueId)
+                    }
                 }
             }
         }
