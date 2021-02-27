@@ -164,6 +164,18 @@ class ItemBuilder(
         this.dropHandler = dropHandler
         return this
     }
+    fun setBlockAll(blockAll: Boolean): ItemBuilder {
+        this.blockDrop = blockAll
+        this.blockInteract = blockAll
+        this.blockClick = blockAll
+        return this
+    }
+    fun setAllHandler(allHandler: BiConsumer<ItemStack, UUID>?) : ItemBuilder {
+        this.dropHandler = allHandler
+        this.interactHandler = allHandler
+        this.clickHandler = allHandler
+        return this
+    }
 }
 
 fun item(material: Material, init: ItemBuilder.() -> Unit): ItemStack {
