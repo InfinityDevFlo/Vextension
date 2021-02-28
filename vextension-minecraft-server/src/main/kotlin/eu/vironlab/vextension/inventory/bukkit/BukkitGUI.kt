@@ -36,6 +36,7 @@
  */
 package eu.vironlab.vextension.inventory.bukkit
 
+import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.extension.setItem
@@ -43,40 +44,44 @@ import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Bukkit
+import org.omg.CORBA.StringHolder
 import java.util.*
 
-class BukkitGUI(override val lines: Int) : GUI {
+class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     override var border: Boolean = false
     override var borderItem: ItemStack? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
-        val inventory = Bukkit.createInventory(null, 9 * lines)
-        if (border && borderItem != null) {
-            //<editor-fold desc="Border creation" defaultstate="collapsed">
-            for (i: Int in 0..8) {
-                inventory.setItem(i, borderItem!!)
-            }
-            for (i: Int in lines * 9-9 until inventory.size) {
-                inventory.setItem(i, borderItem!!)
-            }
-            var i = 9
-            while (i < 9*lines) {
-                inventory.setItem(i, borderItem!!)
-                if (i % 9 == 0) i += 8
-                else i++
-            }
+        scheduleAsync {
+            val inventory = Bukkit.createInventory(null, 9 * lines)
+            if (border && borderItem != null) {
+                //<editor-fold desc="Border creation" defaultstate="collapsed">
+                for (i: Int in 0..8) {
+                    inventory.setItem(i, borderItem!!)
+                }
+                for (i: Int in lines * 9 - 9 until inventory.size) {
+                    inventory.setItem(i, borderItem!!)
+                }
+                var i = 9
+                while (i < 9 * lines) {
+                    inventory.setItem(i, borderItem!!)
+                    if (i % 9 == 0) i += 8
+                    else i++
+                }
 
-            //</editor-fold>
+                //</editor-fold>
+            }
+            for ((index: Int, item: ItemStack) in contents) {
+                if (!border)
+                    inventory.setItem(index, item)
+                else inventory.setItem(index + 10, item)
+            }
+            Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
         }
-        for ((index: Int, item: ItemStack) in contents) {
-            if (!border)
-                inventory.setItem(index, item)
-            else inventory.setItem(index + 10, item)
-        }
-        Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
     }
+
 
     fun setItem(slot: Int, item: ItemStack): BukkitGUI {
         contents[slot] = item
