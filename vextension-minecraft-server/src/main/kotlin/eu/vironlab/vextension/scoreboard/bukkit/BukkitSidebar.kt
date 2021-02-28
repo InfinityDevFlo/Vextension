@@ -40,9 +40,11 @@ package eu.vironlab.vextension.scoreboard.bukkit
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.multiversion.MinecraftVersion
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
+import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -53,6 +55,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Team
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 
 class BukkitSidebar(
@@ -122,17 +126,33 @@ class BukkitSidebar(
                 }
                 val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", this.title)
                 objective.displaySlot = DisplaySlot.SIDEBAR
-                this.lines.forEach { name, pair ->
+                this.lines.forEach { (name, pair) ->
                     if (scoreboard.getTeam(name) != null) {
                         scoreboard.getTeam(name)!!.unregister()
                     }
-                    val team: Team = scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
+                    val team: Team = scoreboard.registerNewTeam(name)
                     if (pair.second.proceed != null) {
                         pair.second.proceed!!.invoke(pair.second, player)
                     }
-                    val splittetLine = ScoreboardUtil.splitContent(pair.second.content)
-                    team.prefix = splittetLine.first
-                    team.suffix = splittetLine.second
+                    //splittetLine = ScoreboardUtil.splitContent(pair.second.content)
+                    if ((ServerUtil.getMinecraftVersion().protocol <= 340 && pair.second.content.length > 48)) {
+                        Executors.newSingleThreadScheduledExecutor().schedule({
+                            for (index in pair.second.content.indices) {
+                                team.suffix = pair.second.content.substring(index, index + 47)
+                                Thread.sleep(1000)
+                            }
+                        }, 3, TimeUnit.SECONDS)
+                    } else if (ServerUtil.getMinecraftVersion().protocol > 340 && pair.second.content.length > 144) {
+                        Executors.newSingleThreadScheduledExecutor().schedule({
+                            for (index in pair.second.content.indices) {
+                                team.suffix = pair.second.content.substring(index, index + 143)
+                                Thread.sleep(1000)
+                            }
+                        }, 3, TimeUnit.SECONDS)
+                    } else {
+                        team.prefix = pair.first
+                        team.suffix = pair.second.content
+                    }
                     team.addEntry(pair.first)
                     objective.getScore(pair.first).score = pair.second.score
                 }
