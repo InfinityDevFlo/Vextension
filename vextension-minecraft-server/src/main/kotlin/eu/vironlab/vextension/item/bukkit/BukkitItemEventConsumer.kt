@@ -38,6 +38,7 @@
 package eu.vironlab.vextension.item.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
+import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -56,7 +57,8 @@ class BukkitItemEventConsumer : Listener {
                         VextensionBukkit.instance.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                             ?: return
                     if (item.blockInteract) e.isCancelled = true
-                    if (item.interactHandler != null) item.interactHandler!!.accept(item, e.player.uniqueId)
+                    if (item.interactHandler != null) item.interactHandler!!.accept(item, e.player.uniqueId, InteractType.valueOf(e.action.toString()))
+                    e.action
                 }
             }
         }

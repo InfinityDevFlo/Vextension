@@ -39,6 +39,8 @@ package eu.vironlab.vextension.item.builder
 
 import eu.vironlab.vextension.builder.Builder
 import eu.vironlab.vextension.bukkit.VextensionBukkit
+import eu.vironlab.vextension.concurrent.TriConsumer
+import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.util.ServerType
@@ -60,7 +62,7 @@ class ItemBuilder(
     private var blockClick: Boolean = false
     private var blockDrop: Boolean = false
     private var dropHandler: BiConsumer<ItemStack, UUID>? = null
-    private var interactHandler: BiConsumer<ItemStack, UUID>? = null
+    private var interactHandler: TriConsumer<ItemStack, UUID, InteractType>? = null
     private var clickHandler: BiConsumer<ItemStack, UUID>? = null
 
     override fun build(): ItemStack {
@@ -150,7 +152,7 @@ class ItemBuilder(
         return this
     }
 
-    fun setInteractHandler(interactHandler: BiConsumer<ItemStack, UUID>?): ItemBuilder {
+    fun setInteractHandler(interactHandler: TriConsumer<ItemStack, UUID, InteractType>?): ItemBuilder {
         this.interactHandler = interactHandler
         return this
     }
@@ -168,12 +170,6 @@ class ItemBuilder(
         this.blockDrop = blockAll
         this.blockInteract = blockAll
         this.blockClick = blockAll
-        return this
-    }
-    fun setAllHandler(allHandler: BiConsumer<ItemStack, UUID>?) : ItemBuilder {
-        this.dropHandler = allHandler
-        this.interactHandler = allHandler
-        this.clickHandler = allHandler
         return this
     }
 }
