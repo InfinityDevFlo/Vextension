@@ -36,6 +36,7 @@
  */
 package eu.vironlab.vextension.inventory.bukkit
 
+import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
@@ -78,7 +79,9 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                     inventory.setItem(index, item)
                 else inventory.setItem(index + 10, item)
             }
-            Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
+            Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
+                Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
+            }
         }
     }
 
