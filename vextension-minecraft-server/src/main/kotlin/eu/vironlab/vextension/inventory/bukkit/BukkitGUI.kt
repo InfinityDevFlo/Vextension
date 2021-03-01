@@ -75,9 +75,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                 //</editor-fold>
             }
             for ((index: Int, item: ItemStack) in contents) {
-                if (!border)
-                    inventory.setItem(index, item)
-                else inventory.setItem(index + 10, item)
+                inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
                 Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
