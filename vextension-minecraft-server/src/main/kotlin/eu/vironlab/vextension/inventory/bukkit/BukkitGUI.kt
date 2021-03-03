@@ -56,7 +56,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         scheduleAsync {
-            val inventory = Bukkit.createInventory(null, 9 * lines)
+            val inventory = Bukkit.createInventory(null, 9 * lines, name)
             if (border && borderItem != null) {
                 //<editor-fold desc="Border creation" defaultstate="collapsed">
                 for (i: Int in 0..8) {
