@@ -31,14 +31,14 @@ pipeline {
                 }
             }
         }
-        stage("Docs") {
+        /*stage("Docs") {
             steps {
-                /*sh "./gradlew dokkaHtmlMultiModule";
+                sh "./gradlew dokkaHtmlMultiModule";
                 sh "rm -r /var/www/docs/vextension"
                 sh "mkdir /var/www/docs/vextension"
-                sh "cp -r build/vextension /var/www/docs/"*/
+                sh "cp -r build/vextension /var/www/docs/"
             }
-        }
+        }*/
         stage("Sources") {
             steps {
                 sh "./gradlew sourcesJar";
