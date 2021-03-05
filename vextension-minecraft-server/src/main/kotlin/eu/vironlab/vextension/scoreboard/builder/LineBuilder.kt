@@ -76,4 +76,8 @@ interface LineConsumer<K, V> {
 class SidebarLineImpl(
     override val name: String, override var content: String, override var score: Int,
     override var proceed: ((SidebarLine, UUID) -> Unit?)?
-) : SidebarLine
+) : SidebarLine {
+    fun clone(): SidebarLineImpl {
+        return SidebarLineImpl(name, content, score, proceed)
+    }
+}
