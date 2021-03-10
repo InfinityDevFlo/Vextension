@@ -39,12 +39,8 @@ package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.database.info.ObjectInformation
-import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.reflect.KClass
 
 /**
  * This class implements the Async methods of the Database and have already the given Information by the Class

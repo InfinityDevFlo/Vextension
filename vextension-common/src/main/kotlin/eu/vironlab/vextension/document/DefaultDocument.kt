@@ -42,7 +42,6 @@ import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import eu.vironlab.vextension.database.annotation.NewDatabaseObject
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import eu.vironlab.vextension.document.storage.WrappedSpecificDocumentStorage
@@ -60,7 +59,6 @@ import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-@NewDatabaseObject()
 open class DefaultDocument(override val name: String) : Document, Nameable {
     private var jsonObject: JsonObject
 
@@ -143,59 +141,37 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
     }
 
     override fun insert(key: String, value: Any): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.add(key, GSON.toJsonTree(value))
         return this
     }
 
     override fun insert(key: String, value: Number): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.addProperty(key, value)
         return this
     }
 
     override fun insert(key: String, value: Boolean): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.addProperty(key, value)
         return this
     }
 
     override fun insert(key: String, value: String): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.addProperty(key, value)
         return this
     }
 
     override fun insert(key: String, value: Char): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.addProperty(key, value)
         return this
     }
 
     override fun insert(key: String, value: Document): DefaultDocument {
-        if (key == null || value == null) {
-            return this
-        }
         jsonObject.add(key, (value as DefaultDocument).jsonObject)
         return this
     }
 
     override fun insert(Document: Document): DefaultDocument {
-        return if (Document == null) {
-            this
-        } else {
-            insert((Document as DefaultDocument).jsonObject)
-        }
+        return insert((Document as DefaultDocument).jsonObject)
     }
 
     override fun insert(jsonObject: JsonObject): DefaultDocument {

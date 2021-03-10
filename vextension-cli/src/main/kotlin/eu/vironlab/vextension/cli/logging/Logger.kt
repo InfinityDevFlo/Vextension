@@ -42,6 +42,14 @@ package eu.vironlab.vextension.cli.logging
  */
 interface Logger {
 
+    companion object {
+        fun createLogger(): Logger {
+            TODO("Comming Soon")
+        }
+    }
+
+    var handlers: MutableList<LogHandler>
+
     /**
      * Log [message] with [type] wich came from [caller] and [throwable]
      */
