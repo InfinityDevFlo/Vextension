@@ -35,11 +35,37 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.info
+package eu.vironlab.vextension.cli.console
 
-import java.util.concurrent.TimeUnit
+import eu.vironlab.vextension.cli.logging.LogEntry
+import eu.vironlab.vextension.cli.logging.LogHandler
+import eu.vironlab.vextension.cli.logging.Logger
 
-/**
- * Gives Information about a Database Object
- */
-class ObjectInformation(val key: String, val keyField: String, val ignoredFields: MutableCollection<String>, val specificNames: MutableMap<String, String>)
+
+class DefaultConsole(override var prompt: String) : Console, LogHandler {
+    override var registeredLogger: MutableMap<String, Logger> = mutableMapOf()
+
+    override fun registerLogger(name: String, logger: Logger) {
+        if (this.registeredLogger.containsKey(name)) {
+            throw IllegalStateException("Cannot Register Logger with same name twice")
+        }
+        this.registeredLogger.put(name, logger)
+        logger.handlers.add(this)
+    }
+
+    override fun unregisterLogger(name: String) {
+        if (this.registeredLogger.containsKey(name)) {
+            val logger = this.registeredLogger.get(name)!!
+            logger.handlers.remove(this)
+            this.registeredLogger.remove(name)
+        }
+    }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
+
+    override fun handleEntry(entry: LogEntry) {
+        TODO("Not yet implemented")
+    }
+}

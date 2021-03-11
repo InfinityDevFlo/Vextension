@@ -8,19 +8,25 @@
 
 Vextension JVM Utility
 
---- 
+---
 ## Maven Dependency
 
 ```gradle
 
-//Repository
+//Repository - Groovy
 maven {
     name = "vironlab"
     url = "https://repo.vironlab.eu/repository/snapshot/"
 }
 
+//Repository - Kotlin DSL
+maven("https://repo.vironlab.eu/repository/snapshot/")
+
 //Dependency - Common
 compile("eu.vironlab.vextension:vextension-common:1.0.0-SNAPSHOT")
+
+//Dependency - Discord
+compile("eu.vironlab.vextension:vextension-discord:1.0.0-SNAPSHOT")
 
 //Dependency - Minecraft - Server
 compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
@@ -29,31 +35,14 @@ compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
 compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
 ```
 
-## Examples
+## Modules
 
-### Database
+### Common
 
+The common Module includes all Utils required for the other Modules and some things for your Project
 
-### Bukkit
+### Discord
 
-```kotlin
-        //MojangWrapper
-        val mojangWrapper: MojangWrapper = DefaultMojangWrapper()
-        
-        //Sidebar Example
-        val sidebar: Sidebar = sidebar {
-            this.title = "ExampleSidebar"
-            addLine { 
-                this.name = "profile"
-                this.content = "Name: %name%"
-                this.score = 2
-                proceed { sidebarLine, uuid -> 
-                    sidebarLine.content.replace("%name%", mojangWrapper.getPlayer(uuid).get().name)
-                }
-            }
-            addEmptyLine("profile_sub", 1)
-        }
-```
 
 
 <div align="center">

@@ -35,34 +35,13 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.annotation
+package eu.vironlab.vextension.cli.logging
 
-import java.util.concurrent.TimeUnit
+interface LogHandler {
 
-/**
- * Mark a Class wich will be a DatabaseObject to activate the Annotation Processor to the Class
- */
-@Target(AnnotationTarget.FIELD, AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class NewDatabaseObject()
+    fun handleEntry(entry: LogEntry)
 
-/**
- * If you dont want the Name of the Field as Column Name in the Database use this annotation to set [name] as Column Name
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseName(val name: String)
+}
 
-/**
- * With this Annotation the Field will be ignored by the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Ignored
+data class LogEntry(val messages: Array<String>, val type: LogType, val timestamp: Long, val clazz: Class<*>?, val throwable: Throwable?)
 
-/**
- * This annotation is to show that the Field is Used as Key in the Database
- */
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DatabaseKey

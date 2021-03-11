@@ -38,7 +38,6 @@
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.AsyncTask
-import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
@@ -55,6 +54,11 @@ interface Database : Nameable {
      */
     fun get(key: String): Optional<Document>
 
+    /**
+     * Get all value with the [key] and [value]
+     *
+     * @return All matching things
+     */
     fun get(key: String, value: Any): Collection<Document>
 
     /**

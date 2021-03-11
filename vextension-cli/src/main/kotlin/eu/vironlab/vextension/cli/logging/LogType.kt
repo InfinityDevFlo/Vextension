@@ -45,7 +45,7 @@ class LogType(override val name: String, val level: Int, val async: Boolean, val
 
     companion object {
         @JvmStatic
-        val INFO: LogType = LogType("info", 0, true, ConsoleColor.DEFAULT)
+        val INFO: LogType = LogType("info", 0, true, ConsoleColor.GREEN)
         @JvmStatic
         val ERROR: LogType = LogType("error", 100, false, ConsoleColor.RED)
         @JvmStatic

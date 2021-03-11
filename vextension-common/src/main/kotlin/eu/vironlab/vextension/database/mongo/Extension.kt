@@ -38,7 +38,6 @@
 package eu.vironlab.vextension.database.mongo
 
 import eu.vironlab.vextension.database.RemoteConnectionData
-import eu.vironlab.vextension.database.info.ObjectInformation
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
 import kotlin.reflect.KClass

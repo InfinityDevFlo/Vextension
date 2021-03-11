@@ -41,7 +41,13 @@ import eu.vironlab.vextension.cli.logging.Logger
 
 interface Console {
 
-    var logger: Logger
+    var prompt: String
+
+    var registeredLogger: MutableMap<String, Logger>
+
+    fun registerLogger(name: String, logger: Logger)
+
+    fun unregisterLogger(name: String)
 
     fun clear()
 
