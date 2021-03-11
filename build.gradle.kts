@@ -87,8 +87,8 @@ subprojects {
                         this.setProperty("inceptionYear", "2021")
                         "licenses" {
                             "license" {
-                                setProperty("name", "Apache License 2.0")
-                                setProperty("url", "https://www.apache.org/licenses/LICENSE-2.0")
+                                setProperty("name", "General Public License (GPL v3.0)")
+                                setProperty("url", "https://www.gnu.org/licenses/gpl-3.0.txt")
                                 setProperty("distribution", "repo")
                             }
                         }

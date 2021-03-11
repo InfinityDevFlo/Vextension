@@ -16,4 +16,3 @@ include("vextension-minecraft-proxy")
 include("vextension-common")
 include("vextension-discord")
 include("vextension-cli")
-
