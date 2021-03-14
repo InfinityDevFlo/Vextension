@@ -44,6 +44,7 @@ import eu.vironlab.vextension.multiversion.MinecraftVersion
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
+import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
 import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
 import org.bukkit.Bukkit
@@ -97,6 +98,7 @@ class BukkitSidebar(
 
     override fun updateLine(name: String, line: SidebarLine) {
         scheduleAsync {
+            lines[name] = DataPair(lines[name]!!.first, line)
             players.forEach {
                 val scoreboard = it.scoreboard
                 val team: Team? = scoreboard.getTeam(name)
@@ -114,51 +116,44 @@ class BukkitSidebar(
     }
 
     override fun set(player: UUID) {
-        scheduleAsync {
-            val p: Player? = Bukkit.getPlayer(player)
-            if (p != null) {
-                val scoreboard = p.scoreboard
-                if (scoreboard.getObjective(DisplaySlot.SIDEBAR) != null) {
-                    scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.unregister()
-                }
-                if (scoreboard.getObjective("sidebar") != null) {
-                    scoreboard.getObjective("sidebar")!!.unregister()
-                }
-                val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", this.title)
-                objective.displaySlot = DisplaySlot.SIDEBAR
-                this.lines.forEach { (name, pair) ->
-                    if (scoreboard.getTeam(name) != null) {
-                        scoreboard.getTeam(name)!!.unregister()
-                    }
-                    val team: Team = scoreboard.registerNewTeam(name)
-                    if (pair.second.proceed != null) {
-                        pair.second.proceed!!.invoke(pair.second, player)
-                    }
-                    //splittetLine = ScoreboardUtil.splitContent(pair.second.content)
-                    if ((ServerUtil.getMinecraftVersion().protocol <= 340 && pair.second.content.length > 48)) {
-                        Executors.newSingleThreadScheduledExecutor().schedule({
-                            for (index in pair.second.content.indices) {
-                                team.suffix = pair.second.content.substring(index, index + 47)
-                                Thread.sleep(1000)
-                            }
-                        }, 3, TimeUnit.SECONDS)
-                    } else if (ServerUtil.getMinecraftVersion().protocol > 340 && pair.second.content.length > 144) {
-                        Executors.newSingleThreadScheduledExecutor().schedule({
-                            for (index in pair.second.content.indices) {
-                                team.suffix = pair.second.content.substring(index, index + 143)
-                                Thread.sleep(1000)
-                            }
-                        }, 3, TimeUnit.SECONDS)
-                    } else {
-                        team.prefix = pair.first
-                        team.suffix = pair.second.content
-                    }
-                    team.addEntry(pair.first)
-                    objective.getScore(pair.first).score = pair.second.score
-                }
-                this.players.add(p)
-            }
+        val p: Player = Bukkit.getPlayer(player) ?: return
+        val scoreboard = Bukkit.getScoreboardManager().newScoreboard
+        if (scoreboard.getObjective(DisplaySlot.SIDEBAR) != null) {
+            scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.unregister()
         }
+        if (scoreboard.getObjective("sidebar") != null) {
+            scoreboard.getObjective("sidebar")!!.unregister()
+        }
+        val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", this.title)
+        objective.displaySlot = DisplaySlot.SIDEBAR
+        this.lines.forEach { (name, pair) ->
+            if (scoreboard.getTeam(name) != null) {
+                scoreboard.getTeam(name)!!.unregister()
+            }
+            val team: Team = scoreboard.registerNewTeam(name)
+            val line: SidebarLine = (pair.second as SidebarLineImpl).clone()
+            if (line.proceed != null) {
+                line.proceed!!.invoke(line, player)
+            }
+            //splittetLine = ScoreboardUtil.splitContent(pair.second.content)
+            val splittetLine = ScoreboardUtil.splitContent(line.content)
+            if (line.content.length > 32) {
+                Executors.newSingleThreadScheduledExecutor().schedule({
+                    for (index in pair.second.content.indices) {
+                        team.suffix = pair.second.content.substring(index, index + 16)
+                        Thread.sleep(1000)
+                    }
+                }, 3, TimeUnit.SECONDS)
+            } else {
+                team.prefix = splittetLine.first
+                team.suffix = splittetLine.second
+            }
+            team.addEntry(pair.first)
+            objective.getScore(pair.first).score = pair.second.score
+        }
+        p.scoreboard = scoreboard
+        if (!players.contains(p))
+            this.players.add(p)
     }
 
     override fun setAll() {
@@ -168,9 +163,7 @@ class BukkitSidebar(
     }
 
     override fun setAllAndListen() {
-        Bukkit.getOnlinePlayers().forEach {
-            set(it.uniqueId)
-        }
+        setAll()
         this.listening = true
     }
 
@@ -189,11 +182,11 @@ class BukkitSidebar(
     }
 
     override fun remove(player: UUID) {
-        val p: Player? = Bukkit.getPlayer(player)
-        if (p != null && this.players.contains(player)) {
+        val p: Player = Bukkit.getPlayer(player) ?: return
+        if (this.players.contains(p)) {
             p.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.unregister()
             p.scoreboard.clearSlot(DisplaySlot.SIDEBAR)
-            this.players.remove(player)
+            this.players.remove(p)
         }
     }
 
@@ -215,7 +208,7 @@ class BukkitSidebar(
 
     @EventHandler
     fun handleQuit(event: PlayerQuitEvent) {
-        if (this.players.contains(event.player.uniqueId)) {
+        if (this.players.contains(event.player)) {
             remove(event.player.uniqueId)
         }
     }
