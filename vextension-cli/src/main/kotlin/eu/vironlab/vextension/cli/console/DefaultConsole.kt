@@ -40,6 +40,7 @@ package eu.vironlab.vextension.cli.console
 import eu.vironlab.vextension.cli.logging.LogEntry
 import eu.vironlab.vextension.cli.logging.LogHandler
 import eu.vironlab.vextension.cli.logging.Logger
+import java.util.concurrent.Executors
 
 
 class DefaultConsole(override var prompt: String) : Console, LogHandler {

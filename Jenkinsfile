@@ -19,7 +19,7 @@ pipeline {
         }
         stage("Build") {
             steps {
-                sh "./gradlew jar";
+                sh "./gradlew shadowJar";
             }
             post {
                 success {
@@ -122,7 +122,7 @@ pipeline {
                                             [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
-                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar",
+                                                    fil,e      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar"
                                                     type      : "jar"
                                             ],
                                             [

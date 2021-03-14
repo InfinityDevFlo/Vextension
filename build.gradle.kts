@@ -1,3 +1,5 @@
+import kotlin.collections.*
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -6,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.4.20")
+        classpath("com.github.jengelman.gradle.plugins:shadow:6.1.0")
     }
 }
 
@@ -13,6 +16,7 @@ buildscript {
 plugins {
     id("java")
     id("maven")
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     kotlin("jvm") version "1.4.31"
     kotlin("kapt") version "1.4.31"
     id("org.jetbrains.dokka") version "1.4.20"
@@ -49,21 +53,44 @@ allprojects {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "maven")
+    apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.kapt")
     apply(plugin = "org.jetbrains.dokka")
 
     //Define Dependencies for all Modules
     dependencies {
-        compile("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
-        compile("org.jetbrains.kotlin:kotlin-serialization:1.4.31")
-        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+        shadow("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
+        shadow("org.jetbrains.kotlin:kotlin-serialization:1.4.31")
+        shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     }
 
-    //Configure build from Jar
-    tasks.jar {
+
+
+    //Configure build from Shadow Jar with Project Specific Things
+    tasks.shadowJar {
         //Set the Name of the Output File
         archiveFileName.set("${project.name}.jar")
+
+        //Configure Shadow
+        configurations = listOf(project.configurations.shadow.get())
+        exclude("META-INF/**")
+
+        //Include Commons
+        if (project.name != "vextension-common") {
+            dependsOn(":vextension-common:build")
+            val buildDir = project(":vextension-common").buildDir.path
+            from("$buildDir/classes/java/main") {
+                include("**")
+            }
+            from("$buildDir/classes/kotlin/main") {
+                include("**")
+            }
+            from("$buildDir/resources/main") {
+                include("**")
+            }
+        }
+
         doFirst {
             //Set Manifest
             manifest {

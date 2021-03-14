@@ -46,9 +46,9 @@ import eu.vironlab.vextension.rest.wrapper.mojang.user.Skin
 import java.util.*
 
 
-class DefaultMojangWrapper : AbstractMojangWrapper() {
+open class DefaultMojangWrapper : AbstractMojangWrapper() {
     override fun getPlayer(uuid: UUID): Optional<MojangUser> {
-        val profileRequest = CLIENT.getJsonDocument(PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
+        val profileRequest = MojangConstants.CLIENT.getJsonDocument(MojangConstants.PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
         var result: MojangUser? = null
         profileRequest.ifPresent {
             val name = it.getString("name").get()
@@ -61,7 +61,7 @@ class DefaultMojangWrapper : AbstractMojangWrapper() {
     }
 
     override fun getUUID(name: String): Optional<UUID> {
-        val request = CLIENT.getJsonDocument(UUID_REQUEST_URL + name)
+        val request = MojangConstants.CLIENT.getJsonDocument(MojangConstants.UUID_REQUEST_URL + name)
         var result: UUID? = null
         request.ifPresent {
             result = it.getString("id").get().appendToUUID()
@@ -70,7 +70,7 @@ class DefaultMojangWrapper : AbstractMojangWrapper() {
     }
 
     override fun getNameHistory(uuid: UUID): Optional<NameHistory> {
-        val request = CLIENT.getJsonArray(PLAYER_NAME_HISTORY.replace("%uuid%", uuid.toString()))
+        val request = MojangConstants.CLIENT.getJsonArray(MojangConstants.PLAYER_NAME_HISTORY.replace("%uuid%", uuid.toString()))
         var result: NameHistory? = null
         request.ifPresent {
             val firstName: JsonElement = it.first()
