@@ -122,7 +122,7 @@ pipeline {
                                             [
                                                     artifactId: "vextension-minecraft-server",
                                                     classifier: '',
-                                                    fil,e      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar"
+                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar"
                                                     type      : "jar"
                                             ],
                                             [
