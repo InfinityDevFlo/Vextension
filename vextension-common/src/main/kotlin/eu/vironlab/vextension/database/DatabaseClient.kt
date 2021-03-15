@@ -75,8 +75,6 @@ interface DatabaseClient {
      */
     fun getDatabaseAsync(name: String): AsyncTask<Database>
 
-
-
     /**
      * Check if a Database with the given name exists
      *

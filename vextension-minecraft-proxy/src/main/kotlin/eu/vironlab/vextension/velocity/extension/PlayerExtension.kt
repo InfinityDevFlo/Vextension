@@ -38,9 +38,7 @@
 package eu.vironlab.vextension.velocity.extension
 
 import com.velocitypowered.api.proxy.Player
-import eu.vironlab.vextension.bungee.extension.injectPipeline
 import io.netty.channel.Channel
-import java.lang.reflect.Field
 
 fun Player.injectPipeline(): Channel {
     val minecraftConnectionField = this::class.java.getDeclaredField("connection")

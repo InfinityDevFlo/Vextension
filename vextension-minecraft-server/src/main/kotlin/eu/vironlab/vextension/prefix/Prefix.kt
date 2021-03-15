@@ -37,17 +37,23 @@
 
 package eu.vironlab.vextension.prefix
 
+import eu.vironlab.vextension.document.Document
 import java.util.*
 
 interface Prefix {
 
-    var prefix: ((PrefixUnit) -> Unit?)?
+    var prefixTemplate: String
 
-    var suffix: ((PrefixUnit) -> Unit?)?
+    var suffixTemplate: String
 
-    var below: ((PrefixUnit) -> Unit?)?
+    var belowTemplate: String
+
+    var belowType: String
+
+    /**
+     * Replace the Placeholder in the Template for [player]
+     */
+    fun process(player: UUID): Map<String, String>
+
 
 }
-
-
-class PrefixUnit(var content: String, var player: UUID, var target: UUID)

@@ -5,7 +5,9 @@ import eu.vironlab.vextension.multiversion.MinecraftVersion
 
 object ServerUtil {
 
-
+    /**
+     * Get the Type of a Server
+     */
     @JvmStatic
     fun getServerType(): ServerType {
         return try {

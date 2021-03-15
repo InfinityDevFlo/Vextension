@@ -35,20 +35,17 @@
  *<p>
  */
 
-package eu.vironlab.vextension.prefix.builder
+package eu.vironlab.vextension.extension
 
-import eu.vironlab.vextension.builder.Builder
-import eu.vironlab.vextension.prefix.Prefix
+import java.util.*
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import org.spongepowered.api.Sponge
 
-
-class PrefixBuilder : Builder<Prefix> {
-    override fun build(): Prefix {
-        TODO("Not yet implemented")
-    }
+fun UUID.tryBukkitPlayer(): Optional<Player> {
+    return Optional.ofNullable(Bukkit.getPlayer(this))
 }
 
-fun prefix(init: PrefixBuilder.() -> Unit): Prefix {
-    val builder: PrefixBuilder = PrefixBuilder()
-    builder.init()
-    return builder.build()
+fun UUID.trySpongePlayer(): Optional<org.spongepowered.api.entity.living.player.Player> {
+    return Sponge.getServer().getPlayer(this)
 }

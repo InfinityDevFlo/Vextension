@@ -1,14 +1,11 @@
 package eu.vironlab.vextension.discord
 
-import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.dependency.DependencyClassloader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 import eu.vironlab.vextension.discord.embed.toHex
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
 import java.awt.Color
 import java.io.File
 import java.net.URL

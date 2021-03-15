@@ -69,20 +69,12 @@ class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
         VextensionAPI.initialize(this)
         instance = this
         key = NamespacedKey(instance, "vextension")
-        //getCommand("reload")!!.setExecutor(this)
     }
 
     override fun onEnable() {
         Bukkit.getPluginManager().registerEvents(BukkitItemEventConsumer(), this)
     }
 
-
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (sender.hasPermission("bukkit.command.reload")) {
-            sender.sendMessage("§cReload is Disabled on this Server")
-        }
-        return true
-    }
 
 
 }

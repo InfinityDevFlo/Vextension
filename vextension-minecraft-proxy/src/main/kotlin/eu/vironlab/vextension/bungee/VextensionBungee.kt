@@ -52,7 +52,6 @@ class VextensionBungee : Plugin(), Vextension, Listener {
 
     override fun onLoad() {
         VextensionAPI.initialize(this)
-        proxy.pluginManager.registerListener(this, this)
     }
 
 }
