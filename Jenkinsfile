@@ -31,6 +31,20 @@ pipeline {
                 }
             }
         }
+        stage("Build ShadowJar") {
+            steps {
+                sh "./gradlew shadowJar";
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-cli/build/libs/vextension-cli-full.jar', fingerprint: true
+                }
+            }
+        }
         stage("Docs") {
             steps {
                 sh "./gradlew dokkaHtmlMultiModule";

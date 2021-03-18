@@ -39,6 +39,7 @@ package eu.vironlab.vextension.prefix
 
 import eu.vironlab.vextension.document.Document
 import java.util.*
+import org.bukkit.entity.Player
 
 interface Prefix {
 
@@ -54,6 +55,5 @@ interface Prefix {
      * Replace the Placeholder in the Template for [player]
      */
     fun process(player: UUID): Map<String, String>
-
 
 }

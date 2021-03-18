@@ -48,7 +48,7 @@ import org.bukkit.Bukkit
 import org.omg.CORBA.StringHolder
 import java.util.*
 
-class BukkitGUI(override val lines: Int, override val name: String) : GUI {
+class BukkitGUI(override val lines: Int, override val name: String) : GUI{
     override var border: Boolean = false
     override var borderItem: ItemStack? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()

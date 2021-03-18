@@ -41,7 +41,7 @@ import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.item.ItemStack
 import java.util.*
 
-class BukkitDataGUI(override val lines: Int, override val name: String) : DataGUI {
+class BukkitDataGUI(override val lines: Int, override val name: String): DataGUI {
     override val comparator: Comparator<Entry>? = null
     override var contents: MutableList<ItemStack> = mutableListOf()
 
