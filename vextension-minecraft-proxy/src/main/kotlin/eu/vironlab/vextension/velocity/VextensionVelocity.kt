@@ -46,7 +46,7 @@ import eu.vironlab.vextension.database.*
 import org.slf4j.Logger
 
 @Plugin(
-    name = "Vextension-Velocity",
+    name = "Vextension",
     authors = arrayOf("VironLab"),
     id = "vextension_velocity",
     description = "Vextension for Velocity",
