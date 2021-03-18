@@ -126,25 +126,6 @@ subprojects {
                     attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
                 }
             }
-            //Include Commons
-            if (project.name != "vextension-common") {
-                dependsOn(":vextension-common:build")
-                val buildDir = project(":vextension-common").buildDir.path
-                from("$buildDir/classes/java/main") {
-                    include("**")
-                }
-                from("$buildDir/classes/kotlin/main") {
-                    include("**")
-                }
-                from("$buildDir/resources/main") {
-                    include("**")
-                }
-            }
-        }
-
-        withType<JavaCompile> {
-            this.options.encoding = "UTF-8"
-
             doLast {
                 //Generate the Pom file for the Repository
                 maven.pom {
@@ -178,6 +159,24 @@ subprojects {
 
                 }.writeTo("build/pom/pom.xml")
             }
+            //Include Commons
+            if (project.name != "vextension-common") {
+                dependsOn(":vextension-common:build")
+                val buildDir = project(":vextension-common").buildDir.path
+                from("$buildDir/classes/java/main") {
+                    include("**")
+                }
+                from("$buildDir/classes/kotlin/main") {
+                    include("**")
+                }
+                from("$buildDir/resources/main") {
+                    include("**")
+                }
+            }
+        }
+
+        withType<JavaCompile> {
+            this.options.encoding = "UTF-8"
         }
     }
 
