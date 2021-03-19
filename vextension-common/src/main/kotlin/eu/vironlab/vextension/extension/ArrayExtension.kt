@@ -35,21 +35,10 @@
  *<p>
  */
 
-package eu.vironlab.vextension.cli.logging
+package eu.vironlab.vextension.extension
 
-import eu.vironlab.vextension.cli.console.ConsoleColor
-import eu.vironlab.vextension.lang.Nameable
-
-
-class LogType(override val name: String, val level: Int, val async: Boolean, val color: ConsoleColor) : Nameable {
-
-    companion object {
-        @JvmStatic
-        val INFO: LogType = LogType("info", 0, true, ConsoleColor.GREEN)
-        @JvmStatic
-        val ERROR: LogType = LogType("error", 100, false, ConsoleColor.RED)
-        @JvmStatic
-        val WARN: LogType = LogType("warn", 100, false, ConsoleColor.ORANGE)
-    }
-
+fun <T> Array<T>.asMutableList(): MutableList<T> {
+    val rs = mutableListOf<T>()
+    rs.addAll(this)
+    return rs
 }

@@ -16,9 +16,6 @@ include("vextension-common")
     //Discord
     include("vextension-discord")
 
-    //Console Applications
-    include("vextension-cli")
-
     //Minecraft Modules
     include("vextension-minecraft-server")
     include("vextension-minecraft-proxy")
