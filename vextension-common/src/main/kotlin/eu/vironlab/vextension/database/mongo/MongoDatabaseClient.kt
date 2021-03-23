@@ -40,8 +40,6 @@ package eu.vironlab.vextension.database.mongo
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import eu.vironlab.vextension.database.*
-import eu.vironlab.vextension.dependency.DependencyLoader
-import kotlin.reflect.KClass
 
 class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDatabaseClient() {
 
@@ -49,9 +47,9 @@ class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDa
     lateinit var database: com.mongodb.client.MongoDatabase
 
     override fun init() {
-        DependencyLoader.require("org.mongodb:mongodb-driver-sync:4.2.0")
-        DependencyLoader.require("org.mongodb:mongodb-driver-core:4.2.0")
-        DependencyLoader.require("org.mongodb:bson:4.2.0")
+        OldDependencyLoader.require("org.mongodb:mongodb-driver-sync:4.2.0")
+        OldDependencyLoader.require("org.mongodb:mongodb-driver-core:4.2.0")
+        OldDependencyLoader.require("org.mongodb:bson:4.2.0")
         this.mongoClient = MongoClients.create(connectionData.toMongo())
         this.database = this.mongoClient.getDatabase(connectionData.database)
     }

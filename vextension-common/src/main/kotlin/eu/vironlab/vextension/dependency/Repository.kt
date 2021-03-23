@@ -35,9 +35,12 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.dependency
 
-import java.util.concurrent.Future
+import eu.vironlab.vextension.lang.Nameable
 
-interface AsyncTask<T> : Future<T> {
+interface Repository : Nameable {
+
+    val url: String
+
 }

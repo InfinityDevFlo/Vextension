@@ -37,13 +37,12 @@
 
 package eu.vironlab.vextension.scoreboard.builder
 
-import eu.vironlab.vextension.builder.Builder
+import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import java.util.*
-import org.bukkit.Bukkit
 
 
-class LineBuilder : Builder<SidebarLine> {
+class LineFactory : Factory<SidebarLine> {
 
     var name: String = ""
     var content: String = ""
@@ -60,8 +59,8 @@ class LineBuilder : Builder<SidebarLine> {
     }
 }
 
-fun buildLine(init: LineBuilder.() -> Unit): SidebarLine {
-    val builder: LineBuilder = LineBuilder()
+fun buildLine(init: LineFactory.() -> Unit): SidebarLine {
+    val builder: LineFactory = LineFactory()
     builder.init()
     return builder.build()
 }

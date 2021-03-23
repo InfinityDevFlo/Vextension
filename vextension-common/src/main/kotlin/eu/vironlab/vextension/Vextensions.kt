@@ -1,11 +1,6 @@
 package eu.vironlab.vextension
 
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.RemoteConnectionData
-import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.document.DocumentManagement
-import eu.vironlab.vextension.document.initDocumentManagement
 import java.io.File
 
 object VextensionAPI {
@@ -18,7 +13,7 @@ object VextensionAPI {
         vextension: Vextension,
         depenedencyDir: File = File(".libs"),
     ) {
-        DependencyLoader.dataPath = depenedencyDir
+        OldDependencyLoader.dataPath = depenedencyDir
         instance = vextension
     }
 

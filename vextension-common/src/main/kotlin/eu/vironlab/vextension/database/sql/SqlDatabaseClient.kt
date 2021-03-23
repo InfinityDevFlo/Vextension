@@ -40,7 +40,6 @@ package eu.vironlab.vextension.database.sql
 import eu.vironlab.vextension.database.AbstractDatabaseClient
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.RemoteConnectionData
-import eu.vironlab.vextension.dependency.DependencyLoader
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
@@ -55,7 +54,7 @@ class SqlDatabaseClient(val connectionData: RemoteConnectionData) : AbstractData
     lateinit var connection: Connection
 
     override fun init() {
-        DependencyLoader.require("mysql:mysql-connector-java:8.0.23")
+        OldDependencyLoader.require("mysql:mysql-connector-java:8.0.23")
         Class.forName("com.mysql.cj.jdbc.Driver")
         this.connection = DriverManager.getConnection(
             this.connectionData.toSql(),

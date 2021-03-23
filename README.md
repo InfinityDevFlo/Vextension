@@ -6,7 +6,9 @@
 
 ### Project description 
 
-Vextension JVM Utility
+Vextension JVM Utility v1.1.0-SNAPSHOT
+
+This version brings breaking changes to Version 1.0.0
 
 ---
 ## Maven Dependency
@@ -23,16 +25,16 @@ maven {
 maven("https://repo.vironlab.eu/repository/snapshot/")
 
 //Dependency - Common
-compile("eu.vironlab.vextension:vextension-common:1.0.0-SNAPSHOT")
+compile("eu.vironlab.vextension:vextension-common:1.1.0-SNAPSHOT")
 
 //Dependency - Discord
-compile("eu.vironlab.vextension:vextension-discord:1.0.0-SNAPSHOT")
+compile("eu.vironlab.vextension:vextension-discord:1.1.0-SNAPSHOT")
 
 //Dependency - Minecraft - Server
-compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
+compile("eu.vironlab.vextension:vextension-minecraft-server:1.1.0-SNAPSHOT")
 
 //Dependency - Minecraft - Proxy
-compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
+compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.1.0-SNAPSHOT")
 ```
 
 ## Modules

@@ -35,16 +35,14 @@
  *<p>
  */
 
-package eu.vironlab.vextension.builder
+package eu.vironlab.vextension.concurrent
 
-/**
- * This class if used for Builder to Build a specific class instance
- */
-interface Builder<T> {
+import kotlin.jvm.Throws
+import kotlin.reflect.KClass
 
-    /**
-     * This method will be called when building the instance with the Builder
-     */
-    fun build(): T
+interface ThrowableCallback<I, O> {
+
+    @Throws(Throwable::class)
+    fun call(input: I): O
 
 }

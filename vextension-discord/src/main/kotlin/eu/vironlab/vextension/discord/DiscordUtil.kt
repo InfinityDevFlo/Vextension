@@ -2,8 +2,6 @@ package eu.vironlab.vextension.discord
 
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.dependency.DependencyClassloader
-import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 import eu.vironlab.vextension.discord.embed.toHex
 import java.awt.Color
@@ -50,7 +48,7 @@ object DiscordUtil {
         val jdaDirectDownload =
             "https://github.com/DV8FromTheWorld/JDA/releases/download/v4.2.0/JDA-4.2.0_168-withDependencies-min.jar"
         try {
-            val dest: File = File(DependencyLoader.dataPath, "JDA-with-dependencies.jar")
+            val dest: File = File(OldDependencyLoader.dataPath, "JDA-with-dependencies.jar")
             if (!dest.exists()) {
                 dest.parentFile.mkdirs()
                 val requestURL = URL(jdaDirectDownload)

@@ -37,11 +37,7 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
-import kotlin.reflect.KClass
 
 /**
  * This class implements the Async methods of the Client

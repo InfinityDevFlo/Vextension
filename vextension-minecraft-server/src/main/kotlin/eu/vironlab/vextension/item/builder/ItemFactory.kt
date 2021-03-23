@@ -37,7 +37,7 @@
 package eu.vironlab.vextension.item.builder
 
 
-import eu.vironlab.vextension.builder.Builder
+import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.TriConsumer
 import eu.vironlab.vextension.item.InteractType
@@ -49,9 +49,9 @@ import eu.vironlab.vextension.utils.StringUtil
 import java.util.*
 import java.util.function.BiConsumer
 
-class ItemBuilder(
+class ItemFactory(
     private var material: Material
-) : Builder<ItemStack> {
+) : Factory<ItemStack> {
 
     private var name: String = material.toString().toLowerCase()
     private var amount: Int = 1
@@ -112,61 +112,61 @@ class ItemBuilder(
         )
     }
 
-    fun setName(name: String): ItemBuilder {
+    fun setName(name: String): ItemFactory {
         this.name = name
         return this
     }
 
-    fun setAmount(amount: Int): ItemBuilder {
+    fun setAmount(amount: Int): ItemFactory {
         this.amount = amount
         return this
     }
 
-    fun setDamage(damage: Int): ItemBuilder {
+    fun setDamage(damage: Int): ItemFactory {
         this.damage = damage
         return this
     }
 
-    fun setLore(lore: MutableList<String>): ItemBuilder {
+    fun setLore(lore: MutableList<String>): ItemFactory {
         this.lore = lore
         return this
     }
 
-    fun setUnbreakable(unbreakable: Boolean): ItemBuilder {
+    fun setUnbreakable(unbreakable: Boolean): ItemFactory {
         this.unbreakable = unbreakable
         return this
     }
 
-    fun setBlockInteract(blockInteract: Boolean): ItemBuilder {
+    fun setBlockInteract(blockInteract: Boolean): ItemFactory {
         this.blockInteract = blockInteract
         return this
     }
 
-    fun setBlockClick(blockClick: Boolean): ItemBuilder {
+    fun setBlockClick(blockClick: Boolean): ItemFactory {
         this.blockClick = blockClick
         return this
     }
 
-    fun setBlockDrop(blockDrop: Boolean): ItemBuilder {
+    fun setBlockDrop(blockDrop: Boolean): ItemFactory {
         this.blockDrop = blockDrop
         return this
     }
 
-    fun setInteractHandler(interactHandler: TriConsumer<ItemStack, UUID, InteractType>?): ItemBuilder {
+    fun setInteractHandler(interactHandler: TriConsumer<ItemStack, UUID, InteractType>?): ItemFactory {
         this.interactHandler = interactHandler
         return this
     }
 
-    fun setClickHandler(clickHandler: BiConsumer<ItemStack, UUID>?): ItemBuilder {
+    fun setClickHandler(clickHandler: BiConsumer<ItemStack, UUID>?): ItemFactory {
         this.clickHandler = clickHandler
         return this
     }
 
-    fun setDropHandler(dropHandler: BiConsumer<ItemStack, UUID>?): ItemBuilder {
+    fun setDropHandler(dropHandler: BiConsumer<ItemStack, UUID>?): ItemFactory {
         this.dropHandler = dropHandler
         return this
     }
-    fun setBlockAll(blockAll: Boolean): ItemBuilder {
+    fun setBlockAll(blockAll: Boolean): ItemFactory {
         this.blockDrop = blockAll
         this.blockInteract = blockAll
         this.blockClick = blockAll
@@ -174,8 +174,8 @@ class ItemBuilder(
     }
 }
 
-fun item(material: Material, init: ItemBuilder.() -> Unit): ItemStack {
-    val itemBuilder = ItemBuilder(material)
+fun item(material: Material, init: ItemFactory.() -> Unit): ItemStack {
+    val itemBuilder = ItemFactory(material)
     itemBuilder.init()
     return itemBuilder.build()
 }

@@ -40,4 +40,8 @@ package eu.vironlab.vextension.dependency
 /**
  * The group, artifact and version of a Dependency in one Class instance
  */
-data class Dependency(val groupId: String, val artifactId: String, val version: String)
+interface Dependency {
+    val groupId: String
+    val artifactId: String
+    val version: String
+}

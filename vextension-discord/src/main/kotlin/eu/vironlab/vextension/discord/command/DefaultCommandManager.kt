@@ -50,7 +50,7 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-class DefaultCommandManager(override val prefix: String, val jda: JDA) : CommandManager, ListenerAdapter() {
+class DefaultCommandManager(override val prefix: String, val jda: JDA, val enableLogging: Boolean) : CommandManager, ListenerAdapter() {
     override val commands: MutableMap<String, CommandData> = mutableMapOf()
     val aliases: MutableMap<String, String> = mutableMapOf()
     override var commandNotFoundMessage: SimpleEmbedConfiguration =
@@ -90,13 +90,17 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                 if (event.isFromGuild) {
                     if (cmd.target == CommandChannelTarget.PRIVATE) {
                         event.channel.sendMessage(DiscordUtil.onlyDirectMessage.toEmbed())
-                        println("${event.author.name} tried to use a Public command in Private Chat")
+                        if (enableLogging) {
+                            println("${event.author.name} tried to use a Public command in Private Chat")
+                        }
                         return
                     }
                 } else {
                     if (cmd.target == CommandChannelTarget.GUILD) {
                         event.channel.sendMessage(DiscordUtil.onlyGuild.toEmbed())
-                        println("${event.author.name} tried to use a Public command in Private Chat")
+                        if (enableLogging) {
+                            println("${event.author.name} tried to use a Public command in Private Chat")
+                        }
                         return
                     }
                 }
@@ -114,7 +118,9 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                                 event.guild,
                                 this.jda
                             )
-                            println("Subcommand > ${finalArgs[0]} from Command ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                            if (enableLogging) {
+                                println("Subcommand > ${finalArgs[0]} from Command ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                            }
                             return
                         }
                     }
@@ -128,10 +134,14 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                         event.guild,
                         this.jda
                     )
-                println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                if (enableLogging) {
+                    println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
+                }
                 return
             } else {
-                println("${event.author.name} tried to use unknown Command: $cmdName")
+                if (enableLogging) {
+                    println("${event.author.name} tried to use unknown Command: $cmdName")
+                }
                 event.channel.sendMessage(
                     this.commandNotFoundMessage.toEmbed(
                         event.author.avatarUrl!!,

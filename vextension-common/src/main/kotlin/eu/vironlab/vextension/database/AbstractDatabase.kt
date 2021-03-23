@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.concurrent.AsyncTask
 import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.document.Document
 import java.util.*

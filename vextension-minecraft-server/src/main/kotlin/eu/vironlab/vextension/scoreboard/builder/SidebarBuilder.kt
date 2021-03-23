@@ -37,7 +37,7 @@
 
 package eu.vironlab.vextension.scoreboard.builder
 
-import eu.vironlab.vextension.builder.Builder
+import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
@@ -48,13 +48,13 @@ import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 
 
-class SidebarBuilder : Builder<Sidebar> {
+class SidebarFactory : Factory<Sidebar> {
 
     val lines: MutableMap<String, SidebarLine> = mutableMapOf()
     var title: String = ""
 
-    fun addLine(init: LineBuilder.() -> Unit) {
-        val builder: LineBuilder = LineBuilder()
+    fun addLine(init: LineFactory.() -> Unit) {
+        val builder: LineFactory = LineFactory()
         builder.init()
         val line = builder.build()
         this.lines[line.name] = line
@@ -85,8 +85,8 @@ class SidebarBuilder : Builder<Sidebar> {
 
 }
 
-fun sidebar(init: SidebarBuilder.() -> Unit): Sidebar {
-    val builder: SidebarBuilder = SidebarBuilder()
+fun sidebar(init: SidebarFactory.() -> Unit): Sidebar {
+    val builder: SidebarFactory = SidebarFactory()
     builder.init()
     return builder.build()
 }

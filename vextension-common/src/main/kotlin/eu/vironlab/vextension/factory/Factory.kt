@@ -35,9 +35,16 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.factory
 
-import java.util.concurrent.Future
+/**
+ * This class if used for Builder to Build a specific class instance
+ */
+interface Factory<T> {
 
-interface AsyncTask<T> : Future<T> {
+    /**
+     * This method will be called when building the instance with the Builder
+     */
+    fun create(): T
+
 }

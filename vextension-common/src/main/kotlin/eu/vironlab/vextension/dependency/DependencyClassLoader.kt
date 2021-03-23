@@ -35,9 +35,12 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.dependency
 
-import java.util.concurrent.Future
+import java.io.File
 
-interface AsyncTask<T> : Future<T> {
+interface DependencyClassLoader {
+
+    fun addJarToClasspath(paramPath: File)
+
 }

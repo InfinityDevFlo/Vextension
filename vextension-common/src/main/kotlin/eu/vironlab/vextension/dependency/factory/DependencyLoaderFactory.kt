@@ -35,9 +35,40 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.dependency.factory
 
-import java.util.concurrent.Future
+import eu.vironlab.vextension.dependency.DependencyLoader
+import eu.vironlab.vextension.dependency.Repository
+import eu.vironlab.vextension.factory.Factory
+import java.io.File
 
-interface AsyncTask<T> : Future<T> {
+class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+
+    val repositories: MutableList<Repository> = mutableListOf()
+
+    fun addRepository(name: String, url: String): DependencyLoaderFactory {
+        if (!url.endsWith("/")) {
+            url.plus("/")
+        }
+        this.repositories.add(RepositoryImpl(name, url))
+        return this
+    }
+
+    fun addMavenCentral(): DependencyLoaderFactory {
+        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
+        return this
+    }
+    fun addJCenter(): DependencyLoaderFactory {
+        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
+        return this
+    }
+    fun addVironLabSnapshot(): DependencyLoaderFactory {
+        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
+        return this
+    }
+
+    override fun create(): DependencyLoader {
+        return DependencyLoaderImpl(this.libDir, repositories)
+    }
+
 }

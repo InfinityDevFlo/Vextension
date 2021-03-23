@@ -44,9 +44,7 @@ import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.RemoteConnectionData
 import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
 import eu.vironlab.vextension.database.sql.SqlDatabaseClient
-import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.discord.command.CommandManager
-import eu.vironlab.vextension.discord.command.DefaultCommandManager
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.document.ConfigDocument
 import eu.vironlab.vextension.document.initDocumentManagement
@@ -65,7 +63,7 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
 
     init {
         initDocumentManagement()
-        DependencyLoader.init()
+        OldDependencyLoader.init()
         if (loadJda) {
             DiscordUtil.loadJDA()
         }

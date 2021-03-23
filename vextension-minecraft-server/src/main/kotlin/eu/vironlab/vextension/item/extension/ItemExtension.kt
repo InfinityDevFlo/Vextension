@@ -40,7 +40,7 @@ package eu.vironlab.vextension.item.extension
 import com.google.common.primitives.Booleans
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
-import eu.vironlab.vextension.item.builder.ItemBuilder
+import eu.vironlab.vextension.item.builder.ItemFactory
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
