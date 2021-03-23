@@ -123,7 +123,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA) : Command
                         event.author.toVextension(),
                         event.channel,
                         event.message,
-                        args.toTypedArray(),
+                        args.drop(1).toTypedArray(),
                         event.isFromGuild,
                         event.guild,
                         this.jda
