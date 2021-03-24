@@ -178,7 +178,3 @@ internal class DependencyLoaderImpl(
     }
 
 }
-
-fun main() {
-    println(RestUtil.DEFAULT_CLIENT.getXmlDocument("https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.pom").get().toJson())
-}
