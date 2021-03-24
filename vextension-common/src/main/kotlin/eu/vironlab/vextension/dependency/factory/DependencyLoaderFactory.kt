@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.dependency.factory
 
+import eu.vironlab.vextension.dependency.DependencyClassLoader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.dependency.Repository
 import eu.vironlab.vextension.factory.Factory
@@ -44,7 +45,8 @@ import java.io.File
 
 class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
 
-    val repositories: MutableList<Repository> = mutableListOf()
+    private val repositories: MutableList<Repository> = mutableListOf()
+    private var classLoader: DependencyClassLoader? = null
 
     fun addRepository(name: String, url: String): DependencyLoaderFactory {
         if (!url.endsWith("/")) {
@@ -52,6 +54,10 @@ class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
         }
         this.repositories.add(RepositoryImpl(name, url))
         return this
+    }
+
+    fun setClassLoader(classLoader: DependencyClassLoader) {
+        this.classLoader = classLoader
     }
 
     fun addMavenCentral(): DependencyLoaderFactory {
@@ -68,7 +74,7 @@ class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
     }
 
     override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories)
+        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
     }
 
 }

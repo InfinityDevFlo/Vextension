@@ -37,10 +37,13 @@
 
 package eu.vironlab.vextension.dependency.factory
 
-import eu.vironlab.vextension.dependency.Dependency
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
+import com.google.gson.reflect.TypeToken
+import eu.vironlab.vextension.dependency.*
+import eu.vironlab.vextension.dependency.exception.InvalidPomException
+import eu.vironlab.vextension.dependency.exception.NoRepositoryFoundException
+import eu.vironlab.vextension.dependency.exception.PomNotFoundException
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -48,58 +51,76 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Files
+import java.util.*
 
 internal class RepositoryImpl(override val url: String, override val name: String) : Repository
 
 internal class DependencyImpl(
     override val groupId: String,
     override val artifactId: String,
-    override val version: String
+    override val version: String,
 ) : Dependency
 
-internal class DependencyLoaderImpl(override val libDir: File, override val repositories: Collection<Repository>) : DependencyLoader {
+internal class DependencyLoaderImpl(
+    override val libDir: File,
+    override val repositories: Collection<Repository>,
+    var dependencyClassLoader: DependencyClassLoader?
+) :
+    DependencyLoader {
 
-    override val classLoader: DependencyClassLoader = DependencyClassloaderImpl()
+
 
     init {
         libDir.mkdirs()
     }
 
-    override fun require(coords: String) {
+    override val classLoader: DependencyClassLoader = if (dependencyClassLoader == null) {
+        DependencyClassloaderImpl()
+    } else {
+        dependencyClassLoader!!
+    }
+
+    @Throws(NoRepositoryFoundException::class)
+    override fun download(coords: String) {
         val split = coords.split(":".toRegex()).toTypedArray()
         if (split.size != 3) {
             throw java.lang.IllegalStateException("Wrong Library input... StringExample: 'groupid:artifactid:version' Given: '$coords'")
         }
-        require(DependencyImpl(split[0], split[1], split[2]))
+        download(DependencyImpl(split[0], split[1], split[2]))
     }
 
-    override fun require(dependency: Dependency) {
+    override fun download(name: String, url: URL) {
+        val dest = File("$libDir", "${name}.jar")
+        Files.copy(url.openStream(), dest.toPath())
+        classLoader.addJarToClasspath(dest)
+    }
+
+    @Throws(NoRepositoryFoundException::class)
+    override fun download(dependency: Dependency) {
         val filePath: String =
             dependency.groupId.replace('.', '/') + '/' + dependency.artifactId + '/' + dependency.version
         val fileName: String = dependency.artifactId + '-' + dependency.version + ".jar"
-
         val folder: File = File(libDir, filePath)
         val dest = File(folder, fileName)
-
-        TODO("Find correct Repository Server")
-
-        /*try {
-            if (!dest.exists()) {
-                dest.parentFile.mkdirs()
-                val requestURL = URL("$server$filePath/$fileName")
-                Files.copy(requestURL.openStream(), dest.toPath())
+        var server: String? = null
+        repositories.forEach {
+            if (RestUtil.getStatusCode(URL("${it.url}$filePath/$fileName")).equals(200)) {
+                server = it.url
+                return@forEach
             }
-            try {
-                classLoader.addJarToClasspath(dest)
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-                return
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return
-        }*/
+        }
+        if (server == null) {
+            throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
+        }
+        if (!dest.exists()) {
+            dest.parentFile.mkdirs()
+            val requestURL = URL("$server$filePath/$fileName")
+            Files.copy(requestURL.openStream(), dest.toPath())
+        }
+        classLoader.addJarToClasspath(dest)
     }
+
+    internal inner class ParsedMavenDependency()
 
     /**
      * ClassLoader Implementation
@@ -156,4 +177,8 @@ internal class DependencyLoaderImpl(override val libDir: File, override val repo
 
     }
 
+}
+
+fun main() {
+    println(RestUtil.DEFAULT_CLIENT.getXmlDocument("https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.pom").get().toJson())
 }

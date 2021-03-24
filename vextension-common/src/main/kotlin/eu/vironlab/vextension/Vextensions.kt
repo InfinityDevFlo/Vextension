@@ -1,6 +1,5 @@
 package eu.vironlab.vextension
 
-import eu.vironlab.vextension.database.DatabaseClient
 import java.io.File
 
 object VextensionAPI {
@@ -13,7 +12,6 @@ object VextensionAPI {
         vextension: Vextension,
         depenedencyDir: File = File(".libs"),
     ) {
-        OldDependencyLoader.dataPath = depenedencyDir
         instance = vextension
     }
 
@@ -22,6 +20,5 @@ object VextensionAPI {
 
 interface Vextension {
 
-    var databaseClient: DatabaseClient
 
 }

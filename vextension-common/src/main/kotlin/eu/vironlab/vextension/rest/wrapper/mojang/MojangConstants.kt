@@ -12,5 +12,5 @@ object MojangConstants {
     @JvmStatic
     val PLAYER_NAME_HISTORY = "https://api.mojang.com/user/profiles/%uuid%/names"
     @JvmStatic
-    val CLIENT = RestUtil.getDefaultClient()
+    val CLIENT = RestUtil.DEFAULT_CLIENT
 }

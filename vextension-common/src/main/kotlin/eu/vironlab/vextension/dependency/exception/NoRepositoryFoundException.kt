@@ -35,22 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.mongo
-
-import eu.vironlab.vextension.database.RemoteConnectionData
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import kotlin.reflect.KClass
-
-fun RemoteConnectionData.toMongo(): String {
-    return "mongodb://${user}:${password}@${host}:${port}/${database}"
-}
-
-fun org.bson.Document.toDocument(name: String): Document {
-    return DocumentManagement.newJsonDocument(name, this.toJson())
-}
+package eu.vironlab.vextension.dependency.exception
 
 
-fun Document.toBson(): org.bson.Document {
-    return org.bson.Document.parse(this.toJson())
-}
+class NoRepositoryFoundException(message: String) : Exception(message)

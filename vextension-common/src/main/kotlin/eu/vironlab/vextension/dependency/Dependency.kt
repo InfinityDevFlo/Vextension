@@ -44,4 +44,9 @@ interface Dependency {
     val groupId: String
     val artifactId: String
     val version: String
+
+    fun toCoords(): String {
+        return "${groupId}:${artifactId}:${version}"
+    }
+
 }

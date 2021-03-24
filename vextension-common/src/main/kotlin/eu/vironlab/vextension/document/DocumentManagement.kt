@@ -220,12 +220,12 @@ object DocumentManagement {
 }
 
 fun initDocumentManagement() {
-    OldDependencyLoader.require("com.google.code.gson:gson:2.8.6")
+    /*OldDependencyLoader.require("com.google.code.gson:gson:2.8.6")
     OldDependencyLoader.require("org.yaml:snakeyaml:1.27")
     OldDependencyLoader.require("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
     OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-databind:2.12.1")
     OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-core:2.12.1")
     OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
     OldDependencyLoader.require("org.codehaus.woodstox:stax2-api:4.2.1")
-
+    */
 }

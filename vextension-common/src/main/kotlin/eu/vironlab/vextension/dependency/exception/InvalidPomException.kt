@@ -35,45 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.mongo
+package eu.vironlab.vextension.dependency.exception
 
-import com.mongodb.client.MongoClient
-import com.mongodb.client.MongoClients
-import eu.vironlab.vextension.database.*
 
-class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDatabaseClient() {
-
-    lateinit var mongoClient: MongoClient
-    lateinit var database: com.mongodb.client.MongoDatabase
-
-    override fun init() {
-        OldDependencyLoader.require("org.mongodb:mongodb-driver-sync:4.2.0")
-        OldDependencyLoader.require("org.mongodb:mongodb-driver-core:4.2.0")
-        OldDependencyLoader.require("org.mongodb:bson:4.2.0")
-        this.mongoClient = MongoClients.create(connectionData.toMongo())
-        this.database = this.mongoClient.getDatabase(connectionData.database)
-    }
-
-    override fun getDatabase(name: String): Database {
-        return MongoDatabase(name, this.database)
-    }
-
-    override fun exists(name: String): Boolean {
-        return this.database.listCollectionNames().contains(name)
-    }
-
-    override fun drop(name: String): Boolean {
-        return if (!exists(name)) {
-            false
-        } else {
-            this.database.getCollection(name).drop()
-            return true
-
-        }
-
-    }
-
-    override fun close() {
-        this.mongoClient.close()
-    }
-}
+class InvalidPomException(message: String) : Exception(message)

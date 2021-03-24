@@ -35,17 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.dependency.exception
 
-import eu.vironlab.vextension.concurrent.scheduleAsync
 
-/**
- * This class implements the Async methods of the Client
- */
-abstract class AbstractDatabaseClient : DatabaseClient {
-
-    override fun getDatabaseAsync(name: String): AsyncTask<Database> {
-        return scheduleAsync { getDatabase(name) }
-    }
-
-}
+class PomNotFoundException(message: String) : Exception(message)

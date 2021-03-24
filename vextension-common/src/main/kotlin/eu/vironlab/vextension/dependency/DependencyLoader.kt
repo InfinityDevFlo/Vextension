@@ -37,7 +37,9 @@
 
 package eu.vironlab.vextension.dependency
 
+import eu.vironlab.vextension.dependency.exception.NoRepositoryFoundException
 import java.io.File
+import java.net.URL
 
 interface DependencyLoader {
 
@@ -47,8 +49,12 @@ interface DependencyLoader {
 
     val repositories: Collection<Repository>
 
-    fun require(coords: String)
+    @Throws(NoRepositoryFoundException::class)
+    fun download(coords: String)
 
-    fun require(dependency: Dependency)
+    fun download(name: String, url: URL)
+
+    @Throws(NoRepositoryFoundException::class)
+    fun download(dependency: Dependency)
 
 }
