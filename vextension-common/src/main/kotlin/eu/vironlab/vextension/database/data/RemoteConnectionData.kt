@@ -35,52 +35,18 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database.data
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+interface RemoteConnectionData : ConnectionData {
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+    val host: String
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
+    val port: Int
 
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
-    }
+    val database: String
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
-    }
+    val user: String
 
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
-    }
+    val password: String
 
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
-    }
-
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
 }

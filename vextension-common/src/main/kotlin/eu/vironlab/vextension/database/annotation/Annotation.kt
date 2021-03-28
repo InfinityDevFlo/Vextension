@@ -35,52 +35,27 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database.annotation
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import eu.vironlab.vextension.database.ORMDatabaseClient
+import kotlin.reflect.KClass
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS)
+annotation class LinkORMClient<T : ORMDatabaseClient>(val ormClass: KClass<T>)
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS)
+annotation class ORMObject()
 
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
-    }
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class ORMIgnore()
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
-    }
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class ORMKey()
 
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
-    }
-
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
-    }
-
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class ORMName(val name: String)

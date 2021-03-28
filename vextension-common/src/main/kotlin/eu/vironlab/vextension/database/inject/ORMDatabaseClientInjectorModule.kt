@@ -35,52 +35,20 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database.inject
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import com.google.inject.AbstractModule
+import eu.vironlab.vextension.database.data.ConnectionData
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
+class ORMDatabaseClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) : AbstractModule() {
 
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
+    override fun configure() {
+        bind(ExecutorService::class.java).to(Executors.newCachedThreadPool())
+        bind(ConnectionData::class.java).to(connectionData)
+        bind(clientClass).to(client)
     }
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
-    }
-
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
-    }
-
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
-    }
-
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
 }

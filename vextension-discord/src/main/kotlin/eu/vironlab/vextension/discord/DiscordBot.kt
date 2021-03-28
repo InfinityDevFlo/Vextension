@@ -37,13 +37,8 @@
 
 package eu.vironlab.vextension.discord
 
-import com.google.gson.reflect.TypeToken
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.RemoteConnectionData
-import eu.vironlab.vextension.database.mongo.MongoDatabaseClient
-import eu.vironlab.vextension.database.sql.SqlDatabaseClient
 import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.document.ConfigDocument
@@ -57,13 +52,13 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
     abstract var jda: JDA
     abstract var commandManager: CommandManager
     protected val token: String
-    protected val connectionData: RemoteConnectionData
+    //protected val connectionData: RemoteConnectionData
     protected val config: ConfigDocument
-    final override var databaseClient: DatabaseClient
+    //final override var databaseClient: DatabaseClient
 
     init {
         initDocumentManagement()
-        OldDependencyLoader.init()
+        //OldDependencyLoader.init()
         if (loadJda) {
             DiscordUtil.loadJDA()
         }
@@ -71,7 +66,7 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
         this.config.loadConfig()
         this.token = this.config.getString("token", "Please enter Token here")
         val clientType: String = this.config.getString("databaseType", "mongodb")
-        this.connectionData = this.config.get(
+        /*this.connectionData = this.config.get(
             "database",
             object : TypeToken<RemoteConnectionData>() {}.type,
             RemoteConnectionData("localhost", 27017, "discord", "discord", "password")
@@ -90,11 +85,12 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
         }
         this.databaseClient.init()
         DiscordUtil.userDatabase = this.databaseClient.getDatabase("discord_users")
+        */
         VextensionAPI.initialize(this)
     }
 
     fun shutdown() {
-        this.databaseClient.close()
+        //this.databaseClient.close()
         this.jda.shutdown()
     }
 

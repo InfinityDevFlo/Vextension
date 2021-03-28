@@ -35,52 +35,12 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.discord
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import com.google.inject.Inject
+import eu.vironlab.vextension.database.annotation.ORMKey
+import eu.vironlab.vextension.database.annotation.ORMObject
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
-
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
-
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
-    }
-
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
-    }
-
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
-    }
-
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
-    }
-
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
+@ORMObject
+class Test @Inject constructor(@ORMKey val test: String) {
 }

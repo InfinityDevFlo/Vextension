@@ -35,52 +35,48 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database.impl.mongo
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import com.mongodb.BasicDBObject
+import com.mongodb.client.MongoCollection
+import eu.vironlab.vextension.database.AbstractORMDatabase
+import java.util.*
+import org.bson.Document
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
-
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
+class MongoORMDatabase<K, V>(override val name: String, val mongoCollection: MongoCollection<Document>, clazz: Class<V>) :
+    AbstractORMDatabase<K, V>(clazz) {
+    override fun contains(key: K): Boolean {
+        TODO("Not yet implemented")
     }
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
+
+    override fun get(key: K, def: V): V {
+        TODO("Not yet implemented")
     }
 
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
+    override fun insert(key: K, value: V): Boolean {
+        TODO("Not yet implemented")
     }
 
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
+    override fun delete(key: K): Boolean {
+        TODO("Not yet implemented")
     }
 
-}
+    override fun keys(): Collection<K> {
+        TODO("Not yet implemented")
+    }
 
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
+    override fun contains(fieldName: String, fieldValue: Any): Boolean {
+        return this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor().hasNext()
+    }
+
+    override fun get(key: K): Optional<V> {
+        TODO("Not yet implemented")
+    }
+
+    override fun get(fieldName: String, fieldValue: Any): Collection<V> {
+        TODO("Not yet implemented")
+    }
+
 }

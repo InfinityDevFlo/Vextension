@@ -35,52 +35,68 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import eu.vironlab.vextension.document.Document
+import java.util.concurrent.CompletableFuture
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+/**
+ * Client for Multiple Database Types
+ */
+interface DatabaseClient {
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
+    /**
+     * Init the Client and open the Connection
+     */
+    fun init()
 
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
+    /**
+     * Close the connection of the Client
+     */
+    fun close()
+
+    /**
+     * Delete a Database with [name]
+     *
+     * @return true if the Database is Deleted, false if there is an error or the Database does not exist
+     */
+    fun dropDatabase(name: String): Boolean
+
+    /**
+     * Async Method for dropDatabase
+     *
+     * @see DatabaseClient.dropDatabase([name])
+     */
+    fun dropDatabaseAsync(name: String): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { dropDatabase(name) }
     }
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
+    /**
+     * Check if a Database with [name] exists
+     */
+    fun containsDatabase(name: String): Boolean
+
+    /**
+     * Async method for containsDatabase
+     *
+     * @see DatabaseClient.containsDatabase([name])
+     */
+    fun containsDatabaseAsync(name: String): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { containsDatabase(name) }
     }
 
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
+    /**
+     * Get the Database with [name]
+     */
+    fun getDatabase(name: String): Database<String, Document>
+
+    /**
+     * Get the Database with [name] Async
+     *
+     * @see DatabaseClient.getDatabase([name])
+     */
+    fun getDatabaseAsync(name: String): CompletableFuture<Database<String, Document>> {
+        return CompletableFuture.supplyAsync { getDatabase(name) }
     }
 
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
-    }
-
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
 }

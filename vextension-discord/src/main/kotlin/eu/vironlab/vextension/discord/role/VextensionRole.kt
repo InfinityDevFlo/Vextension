@@ -43,13 +43,13 @@ import eu.vironlab.vextension.document.DocumentManagement
 import net.dv8tion.jda.api.entities.Role
 
 
-class VextensionRole(jda: Role): Role by jda{
+class VextensionRole(jda: Role): Role by jda {
 
-    val properties: Document = DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").getOrDefault(this.id, DocumentManagement.newDocument(this.id))
+    //val properties: Document = DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").getOrDefault(this.id, DocumentManagement.newDocument(this.id))
 
 
     fun updateProperties() {
-        DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").update(this.id, this.properties)
+        //DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").update(this.id, this.properties)
     }
 
 }

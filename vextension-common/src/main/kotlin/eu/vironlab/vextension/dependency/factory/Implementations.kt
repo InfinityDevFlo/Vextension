@@ -103,10 +103,10 @@ internal class DependencyLoaderImpl(
         val folder: File = File(libDir, filePath)
         val dest = File(folder, fileName)
         var server: String? = null
-        repositories.forEach {
+        for (it in repositories) {
             if (RestUtil.getStatusCode(URL("${it.url}$filePath/$fileName")).equals(200)) {
                 server = it.url
-                return@forEach
+                break
             }
         }
         if (server == null) {

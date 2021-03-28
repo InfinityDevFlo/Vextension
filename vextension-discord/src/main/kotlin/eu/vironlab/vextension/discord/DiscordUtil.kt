@@ -14,8 +14,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 
 object DiscordUtil {
 
-    @JvmStatic
-    lateinit var userDatabase: Database
+    //lateinit var userDatabase: Database
 
     lateinit var databaseClient: DatabaseClient
 
@@ -45,7 +44,7 @@ object DiscordUtil {
      */
     @JvmStatic
     fun loadJDA() {
-        val jdaDirectDownload =
+        /*val jdaDirectDownload =
             "https://github.com/DV8FromTheWorld/JDA/releases/download/v4.2.0/JDA-4.2.0_168-withDependencies-min.jar"
         try {
             val dest: File = File(OldDependencyLoader.dataPath, "JDA-with-dependencies.jar")
@@ -61,7 +60,7 @@ object DiscordUtil {
             }
         } catch (e: Exception) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 }

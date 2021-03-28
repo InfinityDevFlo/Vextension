@@ -35,9 +35,13 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.database
 
-import java.util.concurrent.Future
 
-interface AsyncTask<T> : Future<T> {
-}
+class SerializedORMObjectInfo(
+    val objClass: String,
+    val keyName: String,
+    val keyField: String,
+    val ignoredFields: Collection<String>,
+    val renamedFields: Map<String, String>
+)

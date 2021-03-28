@@ -35,52 +35,52 @@
  *<p>
  */
 
-package eu.vironlab.vextension.dependency.factory
+package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
-import eu.vironlab.vextension.factory.Factory
-import java.io.File
+import eu.vironlab.vextension.lang.Nameable
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+interface Database<K, V> : Nameable {
 
-    private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
+    fun contains(key: K): Boolean
 
-    fun addRepository(name: String, url: String): DependencyLoaderFactory {
-        if (!url.endsWith("/")) {
-            url.plus("/")
-        }
-        this.repositories.add(RepositoryImpl(name, url))
-        return this
+    fun contains(fieldName: String, fieldValue: Any): Boolean
+
+    fun get(key: K): Optional<V>
+    
+    fun get(fieldName: String, fieldValue: Any,): Collection<V>
+
+    fun get(key: K, def: V): V
+
+    fun insert(key: K, value: V): Boolean
+
+    fun delete(key: K): Boolean
+
+    fun keys(): Collection<K>
+
+    fun containsAsync(key: K): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { contains(key) }
     }
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
+    fun getAsync(key: K): CompletableFuture<Optional<V>> {
+        return CompletableFuture.supplyAsync { get(key) }
     }
 
-    fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
-        return this
-    }
-    fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
-        return this
-    }
-    fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
-        return this
+    fun getAsync(key: K, def: V): CompletableFuture<V> {
+        return CompletableFuture.supplyAsync { get(key, def) }
     }
 
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
+    fun insertAsync(key: K, value: V): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { insert(key, value) }
     }
 
-}
+    fun deleteAsync(key: K): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { delete(key) }
+    }
 
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
+    fun keysAsync(): CompletableFuture<Collection<K>> {
+        return CompletableFuture.supplyAsync { keys() }
+    }
+
 }

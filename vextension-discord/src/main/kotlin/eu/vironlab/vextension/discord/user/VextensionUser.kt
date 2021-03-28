@@ -51,10 +51,10 @@ import net.dv8tion.jda.api.entities.User
 
 class VextensionUser(jdaUser: User) : CommandSource(jdaUser) {
 
-    override var properties: Document = DiscordUtil.userDatabase.getOrDefault(this.id, DocumentManagement.newDocument(this.id))
+    override var properties: Document = DocumentManagement.newDocument("test")
 
     override fun updateProperties() {
-        DiscordUtil.userDatabase.update(this.id, this.properties)
+        //DiscordUtil.userDatabase.update(this.id, this.properties)
     }
 
 }
