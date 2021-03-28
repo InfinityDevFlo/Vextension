@@ -45,6 +45,7 @@ import net.md_5.bungee.api.plugin.Plugin
 
 class VextensionBungee : Plugin(), Vextension, Listener {
 
+
     override fun onLoad() {
         VextensionAPI.initialize(this)
     }

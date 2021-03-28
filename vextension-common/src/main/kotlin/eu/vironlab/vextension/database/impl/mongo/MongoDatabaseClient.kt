@@ -40,12 +40,12 @@ package eu.vironlab.vextension.database.impl.mongo
 import com.google.inject.Inject
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
+import com.mongodb.client.MongoDatabase as MongoDB
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.data.ConnectionData
 import eu.vironlab.vextension.database.data.RemoteConnectionData
 import eu.vironlab.vextension.document.Document
-import com.mongodb.client.MongoDatabase as MongoDB
 
 open class MongoDatabaseClient @Inject constructor(val connectionData: ConnectionData) : DatabaseClient {
 
@@ -61,8 +61,7 @@ open class MongoDatabaseClient @Inject constructor(val connectionData: Connectio
     }
 
     override fun init() {
-        this.mongoClient =
-            MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
+        this.mongoClient = MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
         this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
     }
 

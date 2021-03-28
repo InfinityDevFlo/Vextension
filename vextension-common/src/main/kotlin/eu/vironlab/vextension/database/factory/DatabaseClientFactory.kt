@@ -61,8 +61,7 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
             throw IllegalStateException("No ORM Link present")
         }
         val ormClass = implClass.getAnnotation(LinkORMClient::class.java).ormClass.java
-        val injector =
-            Guice.createInjector(ORMDatabaseClientInjectorModule<T>(this.connectionData, implClass, create()))
+        val injector = Guice.createInjector(ORMDatabaseClientInjectorModule<T>(this.connectionData, implClass, create()))
         return injector.getInstance(ormClass)
     }
 
@@ -72,17 +71,14 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
 
 }
 
-fun <T : DatabaseClient> createDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): T {
+fun <T: DatabaseClient> createDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): T {
     val clientFactory: DatabaseClientFactory<T> = DatabaseClientFactory(implClass)
     clientFactory.init()
     return clientFactory.create()
 }
 
 
-fun <T : DatabaseClient> createORMDatabaseClient(
-    implClass: Class<T>,
-    init: DatabaseClientFactory<T>.() -> Unit
-): ORMDatabaseClient {
+fun <T: DatabaseClient> createORMDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): ORMDatabaseClient {
     val clientFactory: DatabaseClientFactory<T> = DatabaseClientFactory(implClass)
     clientFactory.init()
     return clientFactory.createOrm()

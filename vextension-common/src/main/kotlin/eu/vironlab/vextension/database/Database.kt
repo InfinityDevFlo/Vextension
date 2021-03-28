@@ -48,8 +48,8 @@ interface Database<K, V> : Nameable {
     fun contains(fieldName: String, fieldValue: Any): Boolean
 
     fun get(key: K): Optional<V>
-
-    fun get(fieldName: String, fieldValue: Any): Collection<V>
+    
+    fun get(fieldName: String, fieldValue: Any,): Collection<V>
 
     fun get(key: K, def: V): V
 

@@ -43,8 +43,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ORMDatabaseClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) :
-    AbstractModule() {
+class ORMDatabaseClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) : AbstractModule() {
 
     override fun configure() {
         bind(ExecutorService::class.java).to(Executors.newCachedThreadPool())

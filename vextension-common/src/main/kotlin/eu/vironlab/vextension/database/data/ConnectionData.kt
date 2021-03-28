@@ -37,6 +37,4 @@
 
 package eu.vironlab.vextension.database.data
 
-interface ConnectionData {
-
-}
+interface ConnectionData

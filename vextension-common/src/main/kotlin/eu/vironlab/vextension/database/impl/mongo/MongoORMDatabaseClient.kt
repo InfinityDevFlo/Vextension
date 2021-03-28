@@ -43,8 +43,7 @@ import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.ORMDatabaseClient
 
 
-class MongoORMDatabaseClient @Inject constructor(val client: MongoDatabaseClient) : ORMDatabaseClient,
-    DatabaseClient by client {
+class MongoORMDatabaseClient @Inject constructor(val client: MongoDatabaseClient) : ORMDatabaseClient, DatabaseClient by client  {
     override fun <K, V> getDatabase(clazz: Class<V>): Database<K, V> {
         TODO("Not yet implemented")
     }
