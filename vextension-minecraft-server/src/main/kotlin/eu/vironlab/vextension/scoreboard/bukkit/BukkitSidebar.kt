@@ -45,8 +45,6 @@ import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -56,6 +54,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Team
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 
 class BukkitSidebar(

@@ -105,9 +105,7 @@ class VextensionProcessor : AbstractProcessor() {
 
                 //Validate Object
                 var validationResult: ORMValidationResult =
-                    if (!constructors.filter { it.getAnnotation(Inject::class.java) != null }.isNotEmpty()) {
-                        ORMValidationResult.INJECT_MISSING
-                    } else if (fields.filter { it.getAnnotation(ORMKey::class.java) != null }.isEmpty()) {
+                    if (fields.filter { it.getAnnotation(ORMKey::class.java) != null }.isEmpty()) {
                         ORMValidationResult.INVALID_KEY
                     } else {
                         ORMValidationResult.OK

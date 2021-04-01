@@ -39,12 +39,12 @@ package eu.vironlab.vextension.bungee
 
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
+import eu.vironlab.vextension.database.DatabaseClient
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 
 
 class VextensionBungee : Plugin(), Vextension, Listener {
-
 
     override fun onLoad() {
         VextensionAPI.initialize(this)
