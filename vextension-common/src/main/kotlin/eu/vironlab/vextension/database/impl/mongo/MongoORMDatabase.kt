@@ -39,18 +39,29 @@ package eu.vironlab.vextension.database.impl.mongo
 
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.MongoCursor
 import eu.vironlab.vextension.database.AbstractORMDatabase
+import eu.vironlab.vextension.database.ORMModel
+import eu.vironlab.vextension.document.DocumentManagement
 import java.util.*
 import org.bson.Document
 
 
-class MongoORMDatabase<K, V>(override val name: String, val mongoCollection: MongoCollection<Document>, clazz: Class<V>) :
+class MongoORMDatabase<K, V : ORMModel<V>>(override val name: String, val mongoCollection: MongoCollection<Document>, clazz: Class<V>) :
     AbstractORMDatabase<K, V>(clazz) {
-    override fun contains(key: K): Boolean {
-        TODO("Not yet implemented")
+
+    private fun toBson(document: eu.vironlab.vextension.document.Document): Document {
+        return Document.parse(document.toJson())
     }
 
+    private fun fromBson(document: Document): eu.vironlab.vextension.document.Document {
+        return DocumentManagement.newJsonDocument(document.getString(COLLECTION_KEY), document.toJson())
+    }
 
+    override fun contains(key: K): Boolean {
+        return this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
+    }
+    
     override fun get(key: K, def: V): V {
         TODO("Not yet implemented")
     }
@@ -72,7 +83,12 @@ class MongoORMDatabase<K, V>(override val name: String, val mongoCollection: Mon
     }
 
     override fun get(key: K): Optional<V> {
-        TODO("Not yet implemented")
+        val cursor: MongoCursor<Document> = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
+        if (!cursor.hasNext()) {
+            return Optional.empty()
+        }
+        val rs: V = this.ormConstructor.newInstance()!!
+        return Optional.ofNullable(rs.init(fromBson(cursor.next())))
     }
 
     override fun get(fieldName: String, fieldValue: Any): Collection<V> {

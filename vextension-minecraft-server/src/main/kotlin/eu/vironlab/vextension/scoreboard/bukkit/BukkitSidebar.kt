@@ -39,14 +39,12 @@ package eu.vironlab.vextension.scoreboard.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.multiversion.MinecraftVersion
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
-import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -79,7 +77,7 @@ class BukkitSidebar(
             val color = ScoreboardUtil.getAvailableColor(usedColors)
             this.lines.put(line.name, DataPair(color, line))
             this.usedColors.add(color)
-            scheduleAsync {
+            CompletableFuture.supplyAsync {
                 this.players.forEach {
                     val scoreboard = it.scoreboard
                     val team: Team = scoreboard.registerNewTeam(line.name)
@@ -97,7 +95,7 @@ class BukkitSidebar(
     }
 
     override fun updateLine(name: String, line: SidebarLine) {
-        scheduleAsync {
+        CompletableFuture.supplyAsync {
             lines[name] = DataPair(lines[name]!!.first, line)
             players.forEach {
                 val scoreboard = it.scoreboard
@@ -174,7 +172,7 @@ class BukkitSidebar(
     }
 
     override fun removeAll() {
-        scheduleAsync {
+        CompletableFuture.supplyAsync {
             players.forEach {
                 remove(it.uniqueId)
             }
@@ -192,7 +190,7 @@ class BukkitSidebar(
 
     override fun updateTitle(title: String) {
         this.title = title
-        scheduleAsync {
+        CompletableFuture.supplyAsync {
             players.forEach {
                 it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName = title
             }

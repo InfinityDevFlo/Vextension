@@ -65,7 +65,7 @@ class ItemFactory(
     private var interactHandler: TriConsumer<ItemStack, UUID, InteractType>? = null
     private var clickHandler: BiConsumer<ItemStack, UUID>? = null
 
-    override fun build(): ItemStack {
+    override fun create(): ItemStack {
         var key: String = StringUtil.randomString(64)
         when (ServerUtil.getServerType()) {
             ServerType.SPONGE -> {
@@ -94,7 +94,7 @@ class ItemFactory(
         )
     }
 
-    fun build(key: String): ItemStack {
+    fun create(key: String): ItemStack {
         return ItemStack(
             material,
             name,
@@ -177,5 +177,5 @@ class ItemFactory(
 fun item(material: Material, init: ItemFactory.() -> Unit): ItemStack {
     val itemBuilder = ItemFactory(material)
     itemBuilder.init()
-    return itemBuilder.build()
+    return itemBuilder.create()
 }

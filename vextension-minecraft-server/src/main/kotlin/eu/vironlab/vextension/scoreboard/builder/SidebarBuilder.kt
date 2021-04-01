@@ -56,7 +56,7 @@ class SidebarFactory : Factory<Sidebar> {
     fun addLine(init: LineFactory.() -> Unit) {
         val builder: LineFactory = LineFactory()
         builder.init()
-        val line = builder.build()
+        val line = builder.create()
         this.lines[line.name] = line
     }
 
@@ -68,7 +68,7 @@ class SidebarFactory : Factory<Sidebar> {
         }
     }
 
-    override fun build(): Sidebar {
+    override fun create(): Sidebar {
         val finalLines: MutableMap<String, DataPair<String, SidebarLine>> = mutableMapOf()
         val usedColors: MutableList<String> = mutableListOf()
         lines.forEach {
@@ -88,5 +88,5 @@ class SidebarFactory : Factory<Sidebar> {
 fun sidebar(init: SidebarFactory.() -> Unit): Sidebar {
     val builder: SidebarFactory = SidebarFactory()
     builder.init()
-    return builder.build()
+    return builder.create()
 }

@@ -55,7 +55,6 @@ import org.spongepowered.api.plugin.Plugin
 )
 class VextensionSponge : Vextension  {
 
-    override lateinit var databaseClient: DatabaseClient
     @Inject
     private lateinit var logger: Logger
 

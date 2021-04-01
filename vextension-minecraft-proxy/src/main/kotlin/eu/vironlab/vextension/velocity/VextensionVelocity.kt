@@ -53,7 +53,6 @@ import org.slf4j.Logger
     version = "1.0.0-SNAPSHOT"
 )
 class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
-    override lateinit var databaseClient: DatabaseClient
 
     init {
         VextensionAPI.initialize(this)

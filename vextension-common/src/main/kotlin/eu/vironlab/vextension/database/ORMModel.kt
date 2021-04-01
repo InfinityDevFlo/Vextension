@@ -35,19 +35,19 @@
  *<p>
  */
 
-package eu.vironlab.vextension.bungee
+package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.DatabaseClient
-import net.md_5.bungee.api.plugin.Listener
-import net.md_5.bungee.api.plugin.Plugin
+import eu.vironlab.vextension.document.Document
 
+/**
+ * Make sure you have an empty contructor
+ *
+ * @param T is the Implementation Class
+ */
+interface ORMModel<T> {
 
-class VextensionBungee : Plugin(), Vextension, Listener {
+    fun init(document: Document): T
 
-    override fun onLoad() {
-        VextensionAPI.initialize(this)
-    }
+    fun export(document: Document): Document
 
 }

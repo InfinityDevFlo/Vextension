@@ -37,7 +37,6 @@
 package eu.vironlab.vextension.inventory.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
-import eu.vironlab.vextension.concurrent.scheduleAsync
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.extension.setItem
@@ -47,6 +46,7 @@ import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Bukkit
 import org.omg.CORBA.StringHolder
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 class BukkitGUI(override val lines: Int, override val name: String) : GUI{
     override var border: Boolean = false
@@ -55,7 +55,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI{
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
-        scheduleAsync {
+        CompletableFuture.supplyAsync {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
             if (border && borderItem != null) {
                 //<editor-fold desc="Border creation" defaultstate="collapsed">

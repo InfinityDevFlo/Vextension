@@ -42,18 +42,20 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.lang.reflect.Constructor
 
 
-abstract class AbstractORMDatabase<K, V>(val ormClass: Class<V>) : Database<K, V> {
+abstract class AbstractORMDatabase<K, V : ORMModel<V>>(val ormClass: Class<V>) : Database<K, V> {
 
     protected val ormInfo: SerializedORMObjectInfo
-    protected val injector: Injector
+    protected val ormConstructor: Constructor<V>
+    protected val COLLECTION_KEY = "__key__"
 
     init {
         val inputStream: InputStream = ormClass.classLoader.getResourceAsStream("ormobjects/${ormClass.canonicalName}.json")
             ?: throw NullPointerException("Cannot find Object Information")
         this.ormInfo = Gson().fromJson(InputStreamReader(inputStream), SerializedORMObjectInfo::class.java)
-        this.injector = Guice.createInjector(ORMObjectInjectorModule()).bindings.
+        this.ormConstructor = ormClass.getConstructor()
     }
 
 

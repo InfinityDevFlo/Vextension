@@ -53,8 +53,6 @@ import java.util.function.BiConsumer
 
 class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
 
-    override lateinit var databaseClient: DatabaseClient
-
     val items: MutableMap<String, ItemStack> = mutableMapOf()
 
     companion object {

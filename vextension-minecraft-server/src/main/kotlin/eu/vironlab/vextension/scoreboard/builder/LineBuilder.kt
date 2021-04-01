@@ -54,7 +54,7 @@ class LineFactory : Factory<SidebarLine> {
     }
 
 
-    override fun build(): SidebarLine {
+    override fun create(): SidebarLine {
         return SidebarLineImpl(name, content, score, proceed)
     }
 }
@@ -62,7 +62,7 @@ class LineFactory : Factory<SidebarLine> {
 fun buildLine(init: LineFactory.() -> Unit): SidebarLine {
     val builder: LineFactory = LineFactory()
     builder.init()
-    return builder.build()
+    return builder.create()
 }
 
 @FunctionalInterface
