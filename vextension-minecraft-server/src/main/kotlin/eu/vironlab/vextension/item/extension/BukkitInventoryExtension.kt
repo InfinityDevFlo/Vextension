@@ -47,7 +47,6 @@ import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
-import org.spongepowered.api.entity.living.monster.Vex
 
 /**
  * Set the [item] on [slot] into the Inventory

@@ -399,7 +399,7 @@ interface Document {
         val rs = getList<T>(key)
         if (rs.isPresent) {
             return rs.get()
-        }else {
+        } else {
             insert(key, def)
             return def
         }
@@ -413,7 +413,7 @@ interface Document {
     fun <K, V> getMap(key: String, def: MutableMap<K, V>): MutableMap<K, V> {
         if (contains(key)) {
             return getMap<K, V>(key).get()
-        }else {
+        } else {
             insert(key, def)
             return def
         }

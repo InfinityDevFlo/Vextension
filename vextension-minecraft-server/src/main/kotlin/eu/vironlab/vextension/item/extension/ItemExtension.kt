@@ -37,22 +37,14 @@
 
 package eu.vironlab.vextension.item.extension
 
-import com.google.common.primitives.Booleans
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
-import eu.vironlab.vextension.item.builder.ItemFactory
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import org.apache.commons.lang.RandomStringUtils
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Vex
 import org.bukkit.inventory.meta.Damageable
-import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import java.lang.UnsupportedOperationException
 
 
 fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
@@ -84,5 +76,5 @@ fun org.bukkit.inventory.ItemStack.toItemStack(): ItemStack {
     return VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer.get(
         VextensionBukkit.key,
         PersistentDataType.STRING
-    )]  ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
+    )] ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
 }

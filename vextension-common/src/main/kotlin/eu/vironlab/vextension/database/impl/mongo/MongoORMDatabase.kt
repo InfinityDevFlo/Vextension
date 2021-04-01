@@ -47,7 +47,11 @@ import java.util.*
 import org.bson.Document
 
 
-class MongoORMDatabase<K, V : ORMModel<V>>(override val name: String, val mongoCollection: MongoCollection<Document>, clazz: Class<V>) :
+class MongoORMDatabase<K, V : ORMModel<V>>(
+    override val name: String,
+    val mongoCollection: MongoCollection<Document>,
+    clazz: Class<V>
+) :
     AbstractORMDatabase<K, V>(clazz) {
 
     private fun toBson(document: eu.vironlab.vextension.document.Document): Document {
@@ -61,7 +65,7 @@ class MongoORMDatabase<K, V : ORMModel<V>>(override val name: String, val mongoC
     override fun contains(key: K): Boolean {
         return this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
     }
-    
+
     override fun get(key: K, def: V): V {
         TODO("Not yet implemented")
     }

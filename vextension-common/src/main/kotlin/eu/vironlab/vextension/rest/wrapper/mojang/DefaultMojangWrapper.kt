@@ -48,11 +48,19 @@ import java.util.*
 
 open class DefaultMojangWrapper : AbstractMojangWrapper() {
     override fun getPlayer(uuid: UUID): Optional<MojangUser> {
-        val profileRequest = MojangConstants.CLIENT.getJsonDocument(MojangConstants.PLAYER_PROFILE_URL.replace("%uuid%", uuid.toString()))
+        val profileRequest = MojangConstants.CLIENT.getJsonDocument(
+            MojangConstants.PLAYER_PROFILE_URL.replace(
+                "%uuid%",
+                uuid.toString()
+            )
+        )
         var result: MojangUser? = null
         profileRequest.ifPresent {
             val name = it.getString("name").get()
-            val properties = it.get<MutableList<PropertyToken>>("properties", object : TypeToken<MutableList<PropertyToken>>() {}.type)
+            val properties = it.get<MutableList<PropertyToken>>(
+                "properties",
+                object : TypeToken<MutableList<PropertyToken>>() {}.type
+            )
             val skin = Skin(properties.get().get(0).value, properties.get().get(0).signature)
             val namehistory = getNameHistory(uuid).get()
             result = MojangUser(uuid, name, namehistory, skin)
@@ -70,12 +78,14 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
     }
 
     override fun getNameHistory(uuid: UUID): Optional<NameHistory> {
-        val request = MojangConstants.CLIENT.getJsonArray(MojangConstants.PLAYER_NAME_HISTORY.replace("%uuid%", uuid.toString()))
+        val request =
+            MojangConstants.CLIENT.getJsonArray(MojangConstants.PLAYER_NAME_HISTORY.replace("%uuid%", uuid.toString()))
         var result: NameHistory? = null
         request.ifPresent {
             val firstName: JsonElement = it.first()
             it.remove(0)
-            val history: MutableList<NameHistoryEntry> = mutableListOf(NameHistoryEntry(firstName.asJsonObject.get("name").asString, 0L))
+            val history: MutableList<NameHistoryEntry> =
+                mutableListOf(NameHistoryEntry(firstName.asJsonObject.get("name").asString, 0L))
             it.forEach { element ->
                 val name = element.asJsonObject.get("name").asString
                 val changedToAt = element.asJsonObject.get("changedToAt").asLong

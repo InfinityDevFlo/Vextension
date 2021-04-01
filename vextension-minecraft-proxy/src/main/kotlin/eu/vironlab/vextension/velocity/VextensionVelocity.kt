@@ -42,7 +42,6 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.*
 import org.slf4j.Logger
 
 @Plugin(

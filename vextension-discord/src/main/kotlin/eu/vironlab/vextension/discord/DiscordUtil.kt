@@ -1,13 +1,9 @@
 package eu.vironlab.vextension.discord
 
-import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 import eu.vironlab.vextension.discord.embed.toHex
 import java.awt.Color
-import java.io.File
-import java.net.URL
-import java.nio.file.Files
 import java.time.OffsetDateTime
 import net.dv8tion.jda.api.EmbedBuilder
 

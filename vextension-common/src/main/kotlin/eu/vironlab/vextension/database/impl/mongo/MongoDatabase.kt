@@ -46,7 +46,8 @@ import eu.vironlab.vextension.document.DocumentManagement
 import java.util.*
 import org.bson.Document as BsonDocument
 
-class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) : Database<String, Document> {
+class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) :
+    Database<String, Document> {
 
     val COLLECTION_KEY: String = "__key__"
 

@@ -37,9 +37,6 @@
 
 package eu.vironlab.vextension.concurrent
 
-import kotlin.jvm.Throws
-import kotlin.reflect.KClass
-
 interface ThrowableCallback<I, O> {
 
     @Throws(Throwable::class)

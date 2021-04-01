@@ -37,13 +37,10 @@
 
 package eu.vironlab.vextension.discord.role
 
-import eu.vironlab.vextension.discord.DiscordUtil
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
 import net.dv8tion.jda.api.entities.Role
 
 
-class VextensionRole(jda: Role): Role by jda {
+class VextensionRole(jda: Role) : Role by jda {
 
     //val properties: Document = DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").getOrDefault(this.id, DocumentManagement.newDocument(this.id))
 

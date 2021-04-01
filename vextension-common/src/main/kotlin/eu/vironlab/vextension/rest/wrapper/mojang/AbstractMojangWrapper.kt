@@ -37,14 +37,16 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang
 
-import eu.vironlab.vextension.rest.RestUtil
 import java.util.*
 
 
 abstract class AbstractMojangWrapper : MojangWrapper {
 
     override fun getServiceStatus(): MojangServiceStatusList {
-        return MojangConstants.CLIENT.getClassInstance(MojangConstants.STATUS_CHECK_URL, MojangServiceStatusList::class.java).get()
+        return MojangConstants.CLIENT.getClassInstance(
+            MojangConstants.STATUS_CHECK_URL,
+            MojangServiceStatusList::class.java
+        ).get()
     }
 
     protected fun String.appendToUUID(): UUID {

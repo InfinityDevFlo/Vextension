@@ -4,13 +4,14 @@
 [![Discord](https://img.shields.io/discord/785956343407181824.svg)](https://discord.gg/wvcX92VyEH)
 [![Build Status](https://ci.vironlab.eu/job/Vextension/badge/icon)](https://ci.vironlab.eu/job/Vextension/)
 
-### Project description 
+### Project description
 
 Vextension JVM Utility v1.1.0-SNAPSHOT
 
 This version brings breaking changes to Version 1.0.0
 
 ---
+
 ## Maven Dependency
 
 ```gradle
@@ -44,8 +45,6 @@ compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.1.0-SNAPSHOT")
 The common Module includes all Utils required for the other Modules and some things for your Project
 
 ### Discord
-
-
 
 <div align="center">
     <h1 style="color:#154444">Other Links:</h1>

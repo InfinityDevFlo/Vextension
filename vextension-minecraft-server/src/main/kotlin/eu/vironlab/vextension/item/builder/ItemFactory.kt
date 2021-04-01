@@ -37,9 +37,9 @@
 package eu.vironlab.vextension.item.builder
 
 
-import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.TriConsumer
+import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
@@ -166,6 +166,7 @@ class ItemFactory(
         this.dropHandler = dropHandler
         return this
     }
+
     fun setBlockAll(blockAll: Boolean): ItemFactory {
         this.blockDrop = blockAll
         this.blockInteract = blockAll

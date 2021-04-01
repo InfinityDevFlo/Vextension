@@ -1,20 +1,15 @@
 package eu.vironlab.vextension.document.storage
 
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonFactoryBuilder
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.JsonParser
-import com.sun.corba.se.spi.ior.ObjectKey
 import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
-import java.io.Reader
-import java.io.Writer
-
-
 import eu.vironlab.vextension.document.DocumentManagement
 import java.io.BufferedReader
-import java.util.logging.Level.parse
+import java.io.Reader
+import java.io.Writer
 
 
 class XMLDocumentStorage : DocumentStorage {
@@ -24,8 +19,11 @@ class XMLDocumentStorage : DocumentStorage {
 
     override fun read(name: String, reader: Reader): DefaultDocument {
         BufferedReader(reader).use { bufferedReader ->
-            return DocumentManagement.newDocument(name,
-                JsonParser().parse(jsonMapper.writeValueAsString(xmlMapper.readTree(bufferedReader)).toString()).asJsonObject
+            return DocumentManagement.newDocument(
+                name,
+                JsonParser().parse(
+                    jsonMapper.writeValueAsString(xmlMapper.readTree(bufferedReader)).toString()
+                ).asJsonObject
             )
         }
     }

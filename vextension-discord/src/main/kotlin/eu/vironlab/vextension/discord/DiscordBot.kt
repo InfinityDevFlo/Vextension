@@ -47,11 +47,12 @@ import java.io.File
 import net.dv8tion.jda.api.JDA
 
 
-abstract class DiscordBot(loadJda: Boolean = true) : Vextension{
+abstract class DiscordBot(loadJda: Boolean = true) : Vextension {
 
     abstract var jda: JDA
     abstract var commandManager: CommandManager
     protected val token: String
+
     //protected val connectionData: RemoteConnectionData
     protected val config: ConfigDocument
     //final override var databaseClient: DatabaseClient

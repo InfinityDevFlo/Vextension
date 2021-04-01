@@ -43,12 +43,11 @@ import eu.vironlab.vextension.item.extension.setItem
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import org.bukkit.Bukkit
-import org.omg.CORBA.StringHolder
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import org.bukkit.Bukkit
 
-class BukkitGUI(override val lines: Int, override val name: String) : GUI{
+class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     override var border: Boolean = false
     override var borderItem: ItemStack? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()

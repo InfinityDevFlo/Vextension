@@ -38,9 +38,7 @@
 package eu.vironlab.vextension.discord.user
 
 
-import eu.vironlab.vextension.discord.DiscordUtil
 import eu.vironlab.vextension.discord.command.CommandSource
-import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
 import java.util.*

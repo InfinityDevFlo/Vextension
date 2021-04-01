@@ -107,7 +107,12 @@ data class EmbedField(var title: String, var message: String, var inline: Boolea
     }
 }
 
-data class EmbedConfiguration(var title: String, var message: String, var color: String, var fields: MutableCollection<EmbedField>) {
+data class EmbedConfiguration(
+    var title: String,
+    var message: String,
+    var color: String,
+    var fields: MutableCollection<EmbedField>
+) {
 
     fun toEmbed(): MessageEmbed {
         val builder: EmbedBuilder = EmbedBuilder()
@@ -169,5 +174,5 @@ data class EmbedConfiguration(var title: String, var message: String, var color:
 }
 
 fun Color.toHex(): String {
-    return "#"+Integer.toHexString(this.getRGB()).substring(2);
+    return "#" + Integer.toHexString(this.getRGB()).substring(2);
 }

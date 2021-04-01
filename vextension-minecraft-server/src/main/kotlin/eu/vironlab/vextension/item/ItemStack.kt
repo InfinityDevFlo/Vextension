@@ -52,7 +52,7 @@ data class ItemStack(
     var blockClick: Boolean,
     val identifier: String,
     var dropHandler: BiConsumer<ItemStack, UUID>?,
-    var interactHandler:  TriConsumer<ItemStack, UUID, InteractType>?,
+    var interactHandler: TriConsumer<ItemStack, UUID, InteractType>?,
     var clickHandler: BiConsumer<ItemStack, UUID>?
 
 )

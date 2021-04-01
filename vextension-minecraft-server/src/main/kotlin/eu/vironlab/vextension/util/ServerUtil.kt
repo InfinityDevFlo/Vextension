@@ -1,4 +1,4 @@
- package eu.vironlab.vextension.util
+package eu.vironlab.vextension.util
 
 import eu.vironlab.vextension.multiversion.MinecraftVersion
 
@@ -13,7 +13,7 @@ object ServerUtil {
         return try {
             Class.forName("org.bukkit.Bukkit", false, this::class.java.classLoader)
             ServerType.BUKKIT
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             try {
                 Class.forName("org.spongepowered.api.Sponge", false, this::class.java.classLoader)
                 ServerType.SPONGE
@@ -38,7 +38,7 @@ object ServerUtil {
     }
 }
 
-class UnsupportedServerTypeException(msg: String): Exception(msg)
+class UnsupportedServerTypeException(msg: String) : Exception(msg)
 
 enum class ServerType {
     BUKKIT, SPONGE

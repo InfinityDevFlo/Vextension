@@ -41,11 +41,11 @@ import eu.vironlab.vextension.document.Document
 import net.dv8tion.jda.api.entities.User
 
 
-abstract class CommandSource(val user: User): User by user {
+abstract class CommandSource(val user: User) : User by user {
 
     abstract val properties: Document
 
-    
+
     abstract fun updateProperties()
 
 }

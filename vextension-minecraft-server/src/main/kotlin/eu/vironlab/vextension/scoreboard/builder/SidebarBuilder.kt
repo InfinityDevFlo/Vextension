@@ -37,8 +37,8 @@
 
 package eu.vironlab.vextension.scoreboard.builder
 
-import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.collection.DataPair
+import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
@@ -76,9 +76,9 @@ class SidebarFactory : Factory<Sidebar> {
             usedColors.add(color)
             finalLines.put(it.key, DataPair(color, it.value))
         }
-        return if(ServerUtil.getServerType().equals(ServerType.BUKKIT))  {
+        return if (ServerUtil.getServerType().equals(ServerType.BUKKIT)) {
             BukkitSidebar(finalLines, usedColors, title)
-        }else {
+        } else {
             SpongeSidebar(finalLines, usedColors, title)
         }
     }

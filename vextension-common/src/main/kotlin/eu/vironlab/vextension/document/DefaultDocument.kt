@@ -330,7 +330,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         }
     }
 
-    override fun getString(key: String): Optional<String>{
+    override fun getString(key: String): Optional<String> {
         if (!contains(key)) {
             return Optional.ofNullable(null)
         }

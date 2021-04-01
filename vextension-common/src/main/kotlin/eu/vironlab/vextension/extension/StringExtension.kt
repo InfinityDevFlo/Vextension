@@ -46,7 +46,7 @@ fun String.isInt(): Boolean {
     try {
         this.toInt()
         return true
-    }catch(e: Exception) {
+    } catch (e: Exception) {
         return false
     }
 }
@@ -58,7 +58,7 @@ fun String.isBoolean(): Boolean {
     try {
         this.toBoolean()
         return true
-    }catch(e: Exception) {
+    } catch (e: Exception) {
         return false
     }
 }
@@ -71,7 +71,7 @@ fun String.isUrl(): Boolean {
     try {
         URL(this)
         return true
-    }catch(e: Exception) {
+    } catch (e: Exception) {
         return false
     }
 }

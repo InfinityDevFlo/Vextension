@@ -45,12 +45,12 @@ import eu.vironlab.vextension.discord.embed.toHex
 import eu.vironlab.vextension.discord.extension.toVextension
 import eu.vironlab.vextension.document.DocumentManagement
 import java.awt.Color
-import java.util.*
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-class DefaultCommandManager(override val prefix: String, val jda: JDA, val enableLogging: Boolean) : CommandManager, ListenerAdapter() {
+class DefaultCommandManager(override val prefix: String, val jda: JDA, val enableLogging: Boolean) : CommandManager,
+    ListenerAdapter() {
     override val commands: MutableMap<String, CommandData> = mutableMapOf()
     val aliases: MutableMap<String, String> = mutableMapOf()
     override var commandNotFoundMessage: SimpleEmbedConfiguration =
@@ -125,15 +125,15 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
                         }
                     }
                 }
-                    cmd.executor.execute(
-                        event.author.toVextension(),
-                        event.channel,
-                        event.message,
-                        args.drop(1).toTypedArray(),
-                        event.isFromGuild,
-                        event.guild,
-                        this.jda
-                    )
+                cmd.executor.execute(
+                    event.author.toVextension(),
+                    event.channel,
+                    event.message,
+                    args.drop(1).toTypedArray(),
+                    event.isFromGuild,
+                    event.guild,
+                    this.jda
+                )
                 if (enableLogging) {
                     println("Command > ${cmd.name} executed by ${event.author.name} [ ${event.author.id} ]")
                 }

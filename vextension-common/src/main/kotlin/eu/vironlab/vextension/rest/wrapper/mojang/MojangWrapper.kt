@@ -59,7 +59,7 @@ interface MojangWrapper {
         val uuid = getUUID(name)
         if (uuid.isPresent) {
             return getPlayer(uuid.get())
-        }else {
+        } else {
             return Optional.ofNullable(null)
         }
     }

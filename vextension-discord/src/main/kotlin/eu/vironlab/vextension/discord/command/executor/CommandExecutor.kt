@@ -42,13 +42,20 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 
 
 interface CommandExecutor {
 
     val subCommands: MutableMap<String, SubCommandExecutor>
 
-    fun execute(source: CommandSource, channel: MessageChannel, message: Message, args: Array<String>, isGuild: Boolean, guild: Guild?, jda: JDA)
+    fun execute(
+        source: CommandSource,
+        channel: MessageChannel,
+        message: Message,
+        args: Array<String>,
+        isGuild: Boolean,
+        guild: Guild?,
+        jda: JDA
+    )
 
 }

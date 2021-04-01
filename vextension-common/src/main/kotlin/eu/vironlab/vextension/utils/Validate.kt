@@ -1,6 +1,5 @@
 package eu.vironlab.vextension.utils
 
-import org.jetbrains.kotlinx.serialization.compiler.backend.jvm.BOOLEAN
 import java.net.URL
 
 object Validate {
@@ -10,7 +9,8 @@ object Validate {
         try {
             URL(url)
             return true
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
         return false
     }
 
@@ -19,7 +19,7 @@ object Validate {
         try {
             bool.toBoolean()
             return true
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return false
         }
     }
@@ -29,7 +29,7 @@ object Validate {
         try {
             int.toInt()
             return true
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return false
         }
     }
@@ -39,7 +39,7 @@ object Validate {
         try {
             long.toLong()
             return true
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return false
         }
     }

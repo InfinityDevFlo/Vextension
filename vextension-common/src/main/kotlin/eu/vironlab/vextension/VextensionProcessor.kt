@@ -38,7 +38,6 @@
 package eu.vironlab.vextension
 
 import com.google.gson.GsonBuilder
-import com.google.inject.Inject
 import eu.vironlab.vextension.database.ORMValidationResult
 import eu.vironlab.vextension.database.SerializedORMObjectInfo
 import eu.vironlab.vextension.database.annotation.ORMIgnore

@@ -1,4 +1,3 @@
-
 /**
  *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
  * <p>
@@ -57,12 +56,12 @@ class WrappedSpecificDocumentStorage(Document: Document, storage: DocumentStorag
         return Optional.of(this)
     }
 
-    override fun write(file: File): Optional<SpecificDocumentStorage>  {
+    override fun write(file: File): Optional<SpecificDocumentStorage> {
         storage.write(Document, file)
         return Optional.of(this)
     }
 
-    override fun write(path: Path): Optional<SpecificDocumentStorage>   {
+    override fun write(path: Path): Optional<SpecificDocumentStorage> {
         storage.write(Document, path)
         return Optional.of(this)
     }
@@ -71,7 +70,7 @@ class WrappedSpecificDocumentStorage(Document: Document, storage: DocumentStorag
         return storage.toString(Document)
     }
 
-    override fun write(writer: Writer): Optional<SpecificDocumentStorage>  {
+    override fun write(writer: Writer): Optional<SpecificDocumentStorage> {
         storage.write(Document, writer)
         return Optional.of(this)
     }

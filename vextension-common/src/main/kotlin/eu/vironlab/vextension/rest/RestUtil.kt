@@ -11,7 +11,7 @@ object RestUtil {
     /**
      * Get a RestClient with the Default User-Agent
      */
-     val DEFAULT_CLIENT: RestClient = RestClient(DEFAULT_AGENT)
+    val DEFAULT_CLIENT: RestClient = RestClient(DEFAULT_AGENT)
 
     @JvmStatic
     fun getStatusCode(url: URL): Int {

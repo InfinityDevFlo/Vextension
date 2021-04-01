@@ -40,15 +40,15 @@ package eu.vironlab.vextension.document.storage
 
 import com.google.gson.JsonElement
 import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.DocumentManagement
 import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentManagement
+import java.io.Reader
+import java.io.Writer
+import java.util.function.Supplier
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 import org.yaml.snakeyaml.representer.Representer
-import java.io.Reader
-import java.io.Writer
-import java.util.function.Supplier
 
 class YamlDocumentStorage : DocumentStorage {
     private val yaml: ThreadLocal<Yaml> = ThreadLocal.withInitial(Supplier {

@@ -37,12 +37,11 @@
 
 package eu.vironlab.vextension.dependency.factory
 
-import com.google.gson.reflect.TypeToken
-import eu.vironlab.vextension.dependency.*
-import eu.vironlab.vextension.dependency.exception.InvalidPomException
+import eu.vironlab.vextension.dependency.Dependency
+import eu.vironlab.vextension.dependency.DependencyClassLoader
+import eu.vironlab.vextension.dependency.DependencyLoader
+import eu.vironlab.vextension.dependency.Repository
 import eu.vironlab.vextension.dependency.exception.NoRepositoryFoundException
-import eu.vironlab.vextension.dependency.exception.PomNotFoundException
-import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
 import java.lang.reflect.InvocationTargetException
@@ -51,7 +50,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Files
-import java.util.*
 
 internal class RepositoryImpl(override val url: String, override val name: String) : Repository
 

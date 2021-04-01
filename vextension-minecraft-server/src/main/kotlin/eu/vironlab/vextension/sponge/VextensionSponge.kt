@@ -40,7 +40,6 @@ package eu.vironlab.vextension.sponge
 import com.google.inject.Inject
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.DatabaseClient
 import org.slf4j.Logger
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameStartedServerEvent
@@ -53,7 +52,7 @@ import org.spongepowered.api.plugin.Plugin
     description = "Vextension for Sponge Plugins",
     authors = arrayOf("VironLab")
 )
-class VextensionSponge : Vextension  {
+class VextensionSponge : Vextension {
 
     @Inject
     private lateinit var logger: Logger

@@ -1,6 +1,5 @@
 package eu.vironlab.vextension.database
 
-import com.google.inject.Inject
 import eu.vironlab.vextension.database.annotation.ORMKey
 import eu.vironlab.vextension.database.annotation.ORMObject
 
