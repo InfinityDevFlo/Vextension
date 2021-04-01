@@ -58,7 +58,7 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension {
     //final override var databaseClient: DatabaseClient
 
     init {
-        initDocumentManagement()
+        //initDocumentManagement()
         //OldDependencyLoader.init()
         if (loadJda) {
             DiscordUtil.loadJDA()
