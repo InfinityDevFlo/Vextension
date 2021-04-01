@@ -40,6 +40,7 @@ package eu.vironlab.vextension.document
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.JsonDocumentStorage
 import eu.vironlab.vextension.document.storage.XMLDocumentStorage
@@ -219,13 +220,12 @@ object DocumentManagement {
     }
 }
 
-fun initDocumentManagement() {
-    /*OldDependencyLoader.require("com.google.code.gson:gson:2.8.6")
-    OldDependencyLoader.require("org.yaml:snakeyaml:1.27")
-    OldDependencyLoader.require("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
-    OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-    OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-core:2.12.1")
-    OldDependencyLoader.require("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
-    OldDependencyLoader.require("org.codehaus.woodstox:stax2-api:4.2.1")
-    */
+fun initDocumentManagement(dependencyLoader: DependencyLoader) {
+    dependencyLoader.download("com.google.code.gson:gson:2.8.6")
+    dependencyLoader.download("org.yaml:snakeyaml:1.27")
+    dependencyLoader.download("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
+    dependencyLoader.download("com.fasterxml.jackson.core:jackson-databind:2.12.1")
+    dependencyLoader.download("com.fasterxml.jackson.core:jackson-core:2.12.1")
+    dependencyLoader.download("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
+    dependencyLoader.download("org.codehaus.woodstox:stax2-api:4.2.1")
 }
