@@ -67,10 +67,6 @@ subprojects {
         shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     }
 
-
-
-
-
     tasks {
         //Set the Name of the Sources Jar
         val sourcesJar by creating(Jar::class) {
@@ -82,7 +78,7 @@ subprojects {
             archiveFileName.set("${project.name}-full.jar")
 
             //Configure Shadow
-            configurations = listOf(project.configurations.shadow.get())
+            configurations = listOf(project.configurations.shadow.get(), project.configurations.implementation.get())
             exclude("META-INF/**")
 
             //Include Commons

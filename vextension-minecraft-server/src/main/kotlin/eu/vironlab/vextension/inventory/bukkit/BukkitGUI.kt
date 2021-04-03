@@ -44,7 +44,6 @@ import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Bukkit
-import org.omg.CORBA.StringHolder
 import java.util.*
 import java.util.concurrent.CompletableFuture
 

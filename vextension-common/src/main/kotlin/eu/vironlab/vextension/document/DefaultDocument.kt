@@ -500,10 +500,13 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
     }
 
     override fun getDocument(key: String, def: Document): Document {
-        if (!this.contains(key)) {
-            this.insert(key, def)
+        val optionalValue = getDocument(key)
+        return if (optionalValue.isPresent) {
+            optionalValue.get()
+        }else {
+            insert(key, def)
+            def
         }
-        return this.getDocument(key).get()
     }
 
     override fun getDocuments(key: String, def: Collection<Document>): Collection<Document> {

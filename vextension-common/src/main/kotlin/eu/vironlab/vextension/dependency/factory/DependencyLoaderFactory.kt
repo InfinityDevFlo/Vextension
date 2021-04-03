@@ -61,17 +61,17 @@ class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
     }
 
     fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("maven-central", "https://repo1.maven.org/maven2/"))
+        this.repositories.add(RepositoryImpl( "https://repo1.maven.org/maven2/", "maven-central"))
         return this
     }
 
     fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("jcenter", "https://jcenter.bintray.com/"))
+        this.repositories.add(RepositoryImpl("https://jcenter.bintray.com/", "jcenter"))
         return this
     }
 
     fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("vironlab-snapshot", "https://repo.vironlab.eu/repository/snapshot/"))
+        this.repositories.add(RepositoryImpl( "https://repo.vironlab.eu/repository/maven-snapshot/", "vironlab-snapshot"))
         return this
     }
 

@@ -102,6 +102,7 @@ internal class DependencyLoaderImpl(
         val dest = File(folder, fileName)
         var server: String? = null
         for (it in repositories) {
+            println("${it.url}$filePath/$fileName")
             if (RestUtil.getStatusCode(URL("${it.url}$filePath/$fileName")).equals(200)) {
                 server = it.url
                 break
