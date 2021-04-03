@@ -46,8 +46,8 @@ import java.util.concurrent.Executors
 class DatabaseClientInjectorModule(val connectionData: ConnectionData) : AbstractModule() {
 
     override fun configure() {
-        bind(ExecutorService::class.java).to(Executors.newCachedThreadPool())
-        bind(ConnectionData::class.java).to(connectionData)
+        bind(ExecutorService::class.java).toInstance(Executors.newCachedThreadPool())
+        bind(ConnectionData::class.java).toInstance(connectionData)
     }
 
 }
