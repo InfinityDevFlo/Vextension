@@ -77,8 +77,6 @@ subprojects {
             //Set the Name of the Output File
             archiveFileName.set("${project.name}-full.jar")
 
-            //Configure Shadow
-            configurations = listOf(project.configurations.shadow.get(), project.configurations.implementation.get())
             exclude("META-INF/**")
 
             //Include Commons
