@@ -40,6 +40,7 @@ package eu.vironlab.vextension.database.impl.mongo
 import com.google.inject.Inject
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
+import eu.vironlab.vextension.annotation.LinkDataStore
 import com.mongodb.client.MongoDatabase as MongoDB
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
@@ -47,6 +48,7 @@ import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
 import eu.vironlab.vextension.document.Document
 
+@LinkDataStore<MongoDataStoreClient>(MongoDataStoreClient::class)
 open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionData) : DatabaseClient {
 
     val remoteConnectionData: RemoteConnectionData
