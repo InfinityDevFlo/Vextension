@@ -44,20 +44,18 @@ import java.util.concurrent.CompletableFuture
 
 interface DataStoreClient : DatabaseClient {
 
-    fun <K, V : MappingObject, M : V> getDataStore(
+    fun <K, V : MappingObject> getDataStore(
         name: String,
         clazz: Class<V>,
-        mappingClass: Class<V>,
         initializer: Callback<Document, V>
     ): DataStore<K, V>
 
     fun <K, V : MappingObject> getDataStoreAsync(
         name: String,
         clazz: Class<V>,
-        mappingClass: Class<V>,
         initializer: Callback<Document, V>
     ): CompletableFuture<DataStore<K, V>> {
-        return CompletableFuture.supplyAsync { getDataStore(name, clazz, mappingClass, initializer) }
+        return CompletableFuture.supplyAsync { getDataStore(name, clazz, initializer) }
     }
 
 }

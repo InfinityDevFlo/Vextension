@@ -48,10 +48,9 @@ import eu.vironlab.vextension.document.Document
 
 class MongoDataStoreClient @Inject constructor(val client: MongoDatabaseClient) : DataStoreClient,
     DatabaseClient by client {
-    override fun <K, V : MappingObject, M : V> getDataStore(
+    override fun <K, V : MappingObject> getDataStore(
         name: String,
         clazz: Class<V>,
-        mappingClass: Class<V>,
         initializer: Callback<Document, V>
     ): DataStore<K, V> {
         if (!containsDatabase(name)) {
