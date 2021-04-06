@@ -41,6 +41,12 @@ compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
 
 The common Module includes all Utils required for the other Modules and some things for your Project
 
+### Documentation
+
+https://docs.vironlab.eu/vextension/
+
+Still in work.
+
 ### Discord
 
 
