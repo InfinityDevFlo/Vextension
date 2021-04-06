@@ -5,8 +5,8 @@ pipeline {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "localhost:8081"
-        NEXUS_REPOSITORY = "maven-snapshot"
-        NEXUS_CREDENTIAL_ID = "jenkins"
+        NEXUS_REPOSITORY = "maven-public"
+        NEXUS_CREDENTIAL_ID = "nexus"
         PROJECT_VERSION = "1.1.0-SNAPSHOT"
     }
 
