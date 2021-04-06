@@ -35,20 +35,10 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.inject
+package eu.vironlab.vextension.concurrent
 
-import com.google.inject.AbstractModule
-import eu.vironlab.vextension.database.data.ConnectionData
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+interface Callback<I, O> {
 
-
-class ORMDatabaseClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) : AbstractModule() {
-
-    override fun configure() {
-        bind(ExecutorService::class.java).toInstance(Executors.newCachedThreadPool())
-        bind(ConnectionData::class.java).toInstance(connectionData)
-        bind(clientClass).toInstance(client)
-    }
+    fun call(input: I): O
 
 }

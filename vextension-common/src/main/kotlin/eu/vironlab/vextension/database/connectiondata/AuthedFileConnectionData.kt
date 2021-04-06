@@ -35,27 +35,11 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.annotation
+package eu.vironlab.vextension.database.connectiondata
 
-import eu.vironlab.vextension.database.ORMDatabaseClient
-import kotlin.reflect.KClass
+interface AuthedFileConnectionData : FileConnectionData {
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
-annotation class LinkORMClient<T : ORMDatabaseClient>(val ormClass: KClass<T>)
+    val username: String
+    val password: String
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.CLASS)
-annotation class ORMObject()
-
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
-annotation class ORMIgnore()
-
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
-annotation class ORMKey()
-
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
-annotation class ORMName(val name: String)
+}

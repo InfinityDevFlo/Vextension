@@ -37,10 +37,10 @@
 
 package eu.vironlab.vextension.database.factory
 
-import eu.vironlab.vextension.database.data.AuthedFileConnectionData
-import eu.vironlab.vextension.database.data.ConnectionData
-import eu.vironlab.vextension.database.data.FileConnectionData
-import eu.vironlab.vextension.database.data.RemoteConnectionData
+import eu.vironlab.vextension.database.connectiondata.AuthedFileConnectionData
+import eu.vironlab.vextension.database.connectiondata.ConnectionData
+import eu.vironlab.vextension.database.connectiondata.FileConnectionData
+import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
 import eu.vironlab.vextension.factory.Factory
 import java.io.File
 

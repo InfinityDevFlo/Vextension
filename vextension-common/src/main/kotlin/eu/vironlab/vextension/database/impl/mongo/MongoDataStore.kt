@@ -36,24 +36,27 @@
  */
 
 package eu.vironlab.vextension.database.impl.mongo
-
+import com.google.gson.reflect.TypeToken
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
-import com.mongodb.client.MongoCursor
-import eu.vironlab.vextension.database.Database
+import eu.vironlab.vextension.concurrent.Callback
+import eu.vironlab.vextension.database.data.DataStore
+import eu.vironlab.vextension.database.data.MappingObject
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
+import java.lang.reflect.Type
 import java.util.*
 import org.bson.Document as BsonDocument
 
-class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) :
-    Database<String, Document> {
 
-    val COLLECTION_KEY: String = "__key__"
+class MongoDataStore<K, V : MappingObject>(
+    override val name: String,
+    override val storeClass: Class<V>,
+    override val initializer: Callback<Document, V>,
+    val mongoCollection: MongoCollection<BsonDocument>
+) : DataStore<K, V> {
 
-    override fun contains(key: String): Boolean {
-        return this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
-    }
+    val COLLECTION_KEY = "__key__"
 
     private fun toBson(document: Document): BsonDocument {
         return BsonDocument.parse(document.toJson())
@@ -63,62 +66,66 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
         return DocumentManagement.newJsonDocument(document.getString(COLLECTION_KEY), document.toJson())
     }
 
-    override fun get(key: String): Optional<Document> {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
-        if (!cursor.hasNext()) {
-            return Optional.empty()
-        }
-        return Optional.of(fromBson(cursor.next()))
-    }
-
-    override fun get(key: String, def: Document): Document {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
-        return if (cursor.hasNext()) {
-            fromBson(cursor.next())
-        } else {
-            this.mongoCollection.insertOne(toBson(def.insert(COLLECTION_KEY, key)))
-            def
-        }
-    }
-
-    override fun insert(key: String, value: Document): Boolean {
-        if (contains(key)) {
-            return false
-        }
-        this.mongoCollection.insertOne(toBson(value.insert(COLLECTION_KEY, key)))
-        return true
-    }
-
-    override fun delete(key: String): Boolean {
-        if (!contains(key)) {
-            return false
-        }
-        this.mongoCollection.deleteMany(BasicDBObject(COLLECTION_KEY, key))
-        return true
-    }
-
-    override fun keys(): Collection<String> {
-        val rs = mutableListOf<String>()
-        this.mongoCollection.find(BasicDBObject()).cursor().forEach {
-            rs.add(it.getString(COLLECTION_KEY))
-        }
-        return rs
+    override fun contains(key: K): Boolean {
+        return this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
     }
 
     override fun contains(fieldName: String, fieldValue: Any): Boolean {
         return this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor().hasNext()
     }
 
-    override fun get(fieldName: String, fieldValue: Any): Collection<Document> {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor()
+    override fun get(key: K): Optional<V> {
+        val cursor = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
+        if (!cursor.hasNext()) {
+            return Optional.empty()
+        }
+        return Optional.of(this.initializer.call(fromBson(cursor.next())))
+    }
+
+    override fun get(fieldName: String, fieldValue: Any): Collection<V> {
+        val cursor = this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor()
         return if (cursor.hasNext()) {
-            val rs = mutableListOf<Document>(fromBson(cursor.next()))
+            val rs = mutableListOf<V>(this.initializer.call(fromBson(cursor.next())))
             while (cursor.hasNext()) {
-                rs.add(fromBson(cursor.next()))
+                rs.add(this.initializer.call(fromBson(cursor.next())))
             }
             rs
         } else {
-            listOf<Document>()
+            listOf<V>()
         }
     }
+
+    override fun get(key: K, def: V): V {
+        return if (!contains(key)) {
+            insert(key, def)
+            def
+        }else {
+            get(key).get()
+        }
+    }
+
+    override fun insert(key: K, value: V): Boolean {
+        if (contains(key)) {
+            return false
+        }
+        this.mongoCollection.insertOne(toBson(value.export().insert(COLLECTION_KEY, key!!)))
+        return true
+    }
+
+    override fun delete(key: K): Boolean {
+        if (contains(key)) {
+            this.mongoCollection.deleteOne(BasicDBObject(COLLECTION_KEY, key))
+            return true
+        }
+        return false
+    }
+
+    override fun keys(): Collection<K> {
+        val rs = mutableListOf<K>()
+        this.mongoCollection.find(BasicDBObject()).cursor().forEach {
+            rs.add(fromBson(it).get<K>(COLLECTION_KEY, object : TypeToken<K>() {}.type).get())
+        }
+        return rs
+    }
 }
+

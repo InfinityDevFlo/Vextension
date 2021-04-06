@@ -35,18 +35,10 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.concurrent
 
-import java.util.concurrent.CompletableFuture
+interface BiCallback<F, S, O> {
 
-/**
- * Adding ORM Support to the Database
- */
-interface ORMDatabaseClient : DatabaseClient {
+    fun call(firstInput: F, secondInput: S): O
 
-    fun <K, V> getDatabase(clazz: Class<V>): Database<K, V>
-
-    fun <K, V> getDatabaseAsync(clazz: Class<V>): CompletableFuture<Database<K, V>> {
-        return CompletableFuture.supplyAsync { getDatabase(clazz) }
-    }
 }

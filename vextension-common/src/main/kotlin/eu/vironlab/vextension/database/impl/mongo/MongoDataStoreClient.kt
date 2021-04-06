@@ -35,12 +35,30 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.data
+package eu.vironlab.vextension.database.impl.mongo
 
-import java.io.File
+import com.google.inject.Inject
+import eu.vironlab.vextension.concurrent.Callback
+import eu.vironlab.vextension.database.DatabaseClient
+import eu.vironlab.vextension.database.data.DataStore
+import eu.vironlab.vextension.database.data.DataStoreClient
+import eu.vironlab.vextension.database.data.MappingObject
+import eu.vironlab.vextension.document.Document
 
-interface FileConnectionData : ConnectionData {
 
-    val file: File
+class MongoDataStoreClient @Inject constructor(val client: MongoDatabaseClient) : DataStoreClient,
+    DatabaseClient by client {
+    override fun <K, V : MappingObject, M : V> getDataStore(
+        name: String,
+        clazz: Class<V>,
+        mappingClass: Class<V>,
+        initializer: Callback<Document, V>
+    ): DataStore<K, V> {
+        if (!containsDatabase(name)) {
+            this.client.mongoDatabase.createCollection(name)
+        }
+        return MongoDataStore<K, V>(name, clazz, initializer, this.client.mongoDatabase.getCollection(name))
+    }
+
 
 }

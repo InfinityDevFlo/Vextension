@@ -38,7 +38,8 @@
 package eu.vironlab.vextension.database.inject
 
 import com.google.inject.AbstractModule
-import eu.vironlab.vextension.database.data.ConnectionData
+import eu.vironlab.vextension.database.DatabaseClient
+import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -48,6 +49,16 @@ class DatabaseClientInjectorModule(val connectionData: ConnectionData) : Abstrac
     override fun configure() {
         bind(ExecutorService::class.java).toInstance(Executors.newCachedThreadPool())
         bind(ConnectionData::class.java).toInstance(connectionData)
+    }
+
+}
+
+class DataStoreClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) : AbstractModule() {
+
+    override fun configure() {
+        bind(ExecutorService::class.java).toInstance(Executors.newCachedThreadPool())
+        bind(ConnectionData::class.java).toInstance(connectionData)
+        bind(clientClass).toInstance(client)
     }
 
 }

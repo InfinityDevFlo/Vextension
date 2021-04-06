@@ -43,11 +43,11 @@ import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoDatabase as MongoDB
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.data.ConnectionData
-import eu.vironlab.vextension.database.data.RemoteConnectionData
+import eu.vironlab.vextension.database.connectiondata.ConnectionData
+import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
 import eu.vironlab.vextension.document.Document
 
-open class MongoDatabaseClient @Inject constructor(val connectionData: ConnectionData) : DatabaseClient {
+open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionData) : DatabaseClient {
 
     val remoteConnectionData: RemoteConnectionData
     lateinit var mongoClient: MongoClient

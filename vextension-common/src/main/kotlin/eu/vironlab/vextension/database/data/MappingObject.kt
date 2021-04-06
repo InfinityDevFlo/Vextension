@@ -37,4 +37,10 @@
 
 package eu.vironlab.vextension.database.data
 
-interface ConnectionData
+import eu.vironlab.vextension.document.Document
+
+interface MappingObject {
+
+    fun export(): Document
+
+}

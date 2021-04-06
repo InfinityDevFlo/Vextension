@@ -35,19 +35,29 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.database.data
 
+import eu.vironlab.vextension.concurrent.Callback
+import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.document.Document
+import java.util.concurrent.CompletableFuture
 
-/**
- * Make sure you have an empty contructor
- *
- * @param T is the Implementation Class
- */
-interface ORMModel<T> {
+interface DataStoreClient : DatabaseClient {
 
-    fun init(document: Document): T
+    fun <K, V : MappingObject, M : V> getDataStore(
+        name: String,
+        clazz: Class<V>,
+        mappingClass: Class<V>,
+        initializer: Callback<Document, V>
+    ): DataStore<K, V>
 
-    fun export(document: Document): Document
+    fun <K, V : MappingObject> getDataStoreAsync(
+        name: String,
+        clazz: Class<V>,
+        mappingClass: Class<V>,
+        initializer: Callback<Document, V>
+    ): CompletableFuture<DataStore<K, V>> {
+        return CompletableFuture.supplyAsync { getDataStore(name, clazz, mappingClass, initializer) }
+    }
 
 }

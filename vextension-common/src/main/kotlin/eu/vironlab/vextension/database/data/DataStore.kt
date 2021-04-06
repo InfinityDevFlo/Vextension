@@ -35,17 +35,17 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.mongo
+package eu.vironlab.vextension.database.data
 
-import com.google.inject.Inject
+import eu.vironlab.vextension.concurrent.BiCallback
+import eu.vironlab.vextension.concurrent.Callback
 import eu.vironlab.vextension.database.Database
-import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.ORMDatabaseClient
+import eu.vironlab.vextension.document.Document
 
+interface DataStore<K, V : MappingObject> : Database<K, V> {
 
-class MongoORMDatabaseClient @Inject constructor(val client: MongoDatabaseClient) : ORMDatabaseClient, DatabaseClient by client  {
-    override fun <K, V> getDatabase(clazz: Class<V>): Database<K, V> {
-        TODO("Not yet implemented")
-    }
+    val storeClass: Class<V>
+
+    val initializer: Callback<Document, V>
 
 }

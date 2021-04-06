@@ -38,12 +38,13 @@
 package eu.vironlab.vextension.database.factory
 
 import com.google.inject.Guice
+import eu.vironlab.vextension.annotation.LinkDataStore
 import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.database.ORMDatabaseClient
-import eu.vironlab.vextension.database.annotation.LinkORMClient
-import eu.vironlab.vextension.database.data.ConnectionData
+import eu.vironlab.vextension.database.connectiondata.ConnectionData
+import eu.vironlab.vextension.database.data.DataStore
+import eu.vironlab.vextension.database.data.DataStoreClient
+import eu.vironlab.vextension.database.inject.DataStoreClientInjectorModule
 import eu.vironlab.vextension.database.inject.DatabaseClientInjectorModule
-import eu.vironlab.vextension.database.inject.ORMDatabaseClientInjectorModule
 import eu.vironlab.vextension.factory.Factory
 
 
@@ -56,13 +57,13 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
         return this
     }
 
-    fun createOrm(): ORMDatabaseClient {
-        if (!implClass.isAnnotationPresent(LinkORMClient::class.java)) {
-            throw IllegalStateException("No ORM Link present")
+    fun createWithDataStore(): DataStoreClient {
+        if (!implClass.isAnnotationPresent(LinkDataStore::class.java)) {
+            throw IllegalStateException("No DataStore Implementation Present")
         }
-        val ormClass = implClass.getAnnotation(LinkORMClient::class.java).ormClass.java
-        val injector = Guice.createInjector(ORMDatabaseClientInjectorModule<T>(this.connectionData, implClass, create()))
-        return injector.getInstance(ormClass)
+        val storeClass = implClass.getAnnotation(LinkDataStore::class.java).store.java
+        val injector =  Guice.createInjector(DataStoreClientInjectorModule<T>(this.connectionData, implClass, create()))
+        return injector.getInstance(storeClass)
     }
 
     override fun create(): T {
@@ -71,17 +72,17 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
 
 }
 
-fun <T: DatabaseClient> createDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): T {
+fun <T : DatabaseClient> createDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): T {
     val clientFactory: DatabaseClientFactory<T> = DatabaseClientFactory(implClass)
     clientFactory.init()
     return clientFactory.create()
 }
 
-
-fun <T: DatabaseClient> createORMDatabaseClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): ORMDatabaseClient {
+fun <T: DatabaseClient> createDataStoreClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): DataStoreClient {
     val clientFactory: DatabaseClientFactory<T> = DatabaseClientFactory(implClass)
     clientFactory.init()
-    return clientFactory.createOrm()
+    return clientFactory.createWithDataStore()
 }
+
 
 

@@ -35,7 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.data
+package eu.vironlab.vextension.database.connectiondata
 
 interface RemoteConnectionData : ConnectionData {
 

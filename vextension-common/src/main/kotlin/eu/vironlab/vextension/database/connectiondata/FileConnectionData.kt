@@ -35,11 +35,12 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.data
+package eu.vironlab.vextension.database.connectiondata
 
-interface AuthedFileConnectionData : FileConnectionData {
+import java.io.File
 
-    val username: String
-    val password: String
+interface FileConnectionData : ConnectionData {
+
+    val file: File
 
 }
