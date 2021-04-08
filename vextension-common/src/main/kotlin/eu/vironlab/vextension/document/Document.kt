@@ -556,6 +556,8 @@ interface Document {
      */
     fun size(): Int
 
+    fun <T> toInstance(type: Type): T
+
     /**
      * Get all keys of the Document
      * @return all keys in a Collection

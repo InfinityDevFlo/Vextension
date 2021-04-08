@@ -224,6 +224,10 @@ fun createDocument(): Document {
     return DocumentManagement.newDocument()
 }
 
+fun createDocument(obj: Any): Document {
+    return DocumentManagement.newJsonDocument(DefaultDocument.GSON.toJson(obj))
+}
+
 fun initDocumentManagement(dependencyLoader: DependencyLoader) {
     dependencyLoader.download("com.google.code.gson:gson:2.8.6")
     dependencyLoader.download("org.yaml:snakeyaml:1.27")

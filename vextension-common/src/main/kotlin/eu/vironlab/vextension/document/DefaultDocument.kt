@@ -113,6 +113,10 @@ open class DefaultDocument() : Document {
         return jsonObject.size()
     }
 
+    override fun <T> toInstance(type: Type): T {
+        return GSON.fromJson(this.jsonObject, type)
+    }
+
     override fun isEmpty(): Boolean {
         return false
     }
