@@ -48,16 +48,22 @@ interface Database<K, V> : Nameable {
     fun contains(fieldName: String, fieldValue: Any): Boolean
 
     fun get(key: K): Optional<V>
-    
-    fun get(fieldName: String, fieldValue: Any,): Collection<V>
+
+    fun get(fieldName: String, fieldValue: Any): Collection<V>
 
     fun get(key: K, def: V): V
+
+    fun update(key: K, newValue: V): Boolean
 
     fun insert(key: K, value: V): Boolean
 
     fun delete(key: K): Boolean
 
     fun keys(): Collection<K>
+
+    fun updateAsync(key: K, newValue: V): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { update(key, newValue) }
+    }
 
     fun containsAsync(key: K): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { contains(key) }

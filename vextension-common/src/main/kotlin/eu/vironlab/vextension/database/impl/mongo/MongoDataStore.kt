@@ -36,6 +36,7 @@
  */
 
 package eu.vironlab.vextension.database.impl.mongo
+
 import com.google.gson.reflect.TypeToken
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
@@ -44,7 +45,6 @@ import eu.vironlab.vextension.database.data.DataStore
 import eu.vironlab.vextension.database.data.MappingObject
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentManagement
-import java.lang.reflect.Type
 import java.util.*
 import org.bson.Document as BsonDocument
 
@@ -99,7 +99,7 @@ class MongoDataStore<K, V : MappingObject>(
         return if (!contains(key)) {
             insert(key, def)
             def
-        }else {
+        } else {
             get(key).get()
         }
     }
@@ -126,6 +126,15 @@ class MongoDataStore<K, V : MappingObject>(
             rs.add(fromBson(it).get<K>(COLLECTION_KEY, object : TypeToken<K>() {}.type).get())
         }
         return rs
+    }
+
+    override fun update(key: K, newValue: V): Boolean {
+        return if (contains(key)) {
+            this.mongoCollection.updateOne(BasicDBObject(COLLECTION_KEY, key), toBson(newValue.export()))
+            true
+        } else {
+            false
+        }
     }
 }
 

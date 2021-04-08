@@ -121,4 +121,13 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
             listOf<Document>()
         }
     }
+
+    override fun update(key: String, newValue: Document): Boolean {
+        return if (contains(key)) {
+            this.mongoCollection.updateOne(BasicDBObject(COLLECTION_KEY, key), toBson(newValue))
+            true
+        } else {
+            false
+        }
+    }
 }
