@@ -88,14 +88,14 @@ interface DatabaseClient {
     /**
      * Get the Database with [name]
      */
-    fun getDatabase(name: String): Database<String, Document>
+    fun getDatabase(name: String): Database
 
     /**
      * Get the Database with [name] Async
      *
      * @see DatabaseClient.getDatabase([name])
      */
-    fun getDatabaseAsync(name: String): CompletableFuture<Database<String, Document>> {
+    fun getDatabaseAsync(name: String): CompletableFuture<Database> {
         return CompletableFuture.supplyAsync { getDatabase(name) }
     }
 

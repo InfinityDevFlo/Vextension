@@ -37,55 +37,56 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-interface Database<K, V> : Nameable {
+interface Database : Nameable {
 
-    fun contains(key: K): Boolean
+    fun contains(key: String): Boolean
 
     fun contains(fieldName: String, fieldValue: Any): Boolean
 
-    fun get(key: K): Optional<V>
+    fun get(key: String): Optional<Document>
 
-    fun get(fieldName: String, fieldValue: Any): Collection<V>
+    fun get(fieldName: String, fieldValue: Any): Collection<Document>
 
-    fun get(key: K, def: V): V
+    fun get(key: String, def: Document): Document
 
-    fun update(key: K, newValue: V): Boolean
+    fun update(key: String, newValue: Document): Boolean
 
-    fun insert(key: K, value: V): Boolean
+    fun insert(key: String, value: Document): Boolean
 
-    fun delete(key: K): Boolean
+    fun delete(key: String): Boolean
 
-    fun keys(): Collection<K>
+    fun keys(): Collection<String>
 
-    fun updateAsync(key: K, newValue: V): CompletableFuture<Boolean> {
+    fun updateAsync(key: String, newValue: Document): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { update(key, newValue) }
     }
 
-    fun containsAsync(key: K): CompletableFuture<Boolean> {
+    fun containsAsync(key: String): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { contains(key) }
     }
 
-    fun getAsync(key: K): CompletableFuture<Optional<V>> {
+    fun getAsync(key: String): CompletableFuture<Optional<Document>> {
         return CompletableFuture.supplyAsync { get(key) }
     }
 
-    fun getAsync(key: K, def: V): CompletableFuture<V> {
+    fun getAsync(key: String, def: Document): CompletableFuture<Document> {
         return CompletableFuture.supplyAsync { get(key, def) }
     }
 
-    fun insertAsync(key: K, value: V): CompletableFuture<Boolean> {
+    fun insertAsync(key: String, value: Document): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { insert(key, value) }
     }
 
-    fun deleteAsync(key: K): CompletableFuture<Boolean> {
+    fun deleteAsync(key: String): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { delete(key) }
     }
 
-    fun keysAsync(): CompletableFuture<Collection<K>> {
+    fun keysAsync(): CompletableFuture<Collection<String>> {
         return CompletableFuture.supplyAsync { keys() }
     }
 

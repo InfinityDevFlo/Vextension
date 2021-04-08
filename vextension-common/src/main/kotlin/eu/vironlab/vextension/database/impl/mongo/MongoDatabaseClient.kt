@@ -81,7 +81,7 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
         return this.mongoDatabase.listCollectionNames().contains(name)
     }
 
-    override fun getDatabase(name: String): Database<String, Document> {
+    override fun getDatabase(name: String): Database {
         if (!containsDatabase(name)) {
             this.mongoDatabase.createCollection(name)
         }

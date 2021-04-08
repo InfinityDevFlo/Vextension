@@ -47,7 +47,7 @@ import java.util.*
 import org.bson.Document as BsonDocument
 
 class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) :
-    Database<String, Document> {
+    Database {
 
     val COLLECTION_KEY: String = "__key__"
 
