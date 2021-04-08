@@ -38,12 +38,8 @@
 package eu.vironlab.vextension.database.factory
 
 import com.google.inject.Guice
-import eu.vironlab.vextension.annotation.LinkDataStore
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
-import eu.vironlab.vextension.database.data.DataStore
-import eu.vironlab.vextension.database.data.DataStoreClient
-import eu.vironlab.vextension.database.inject.DataStoreClientInjectorModule
 import eu.vironlab.vextension.database.inject.DatabaseClientInjectorModule
 import eu.vironlab.vextension.factory.Factory
 
@@ -56,16 +52,6 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
         this.connectionData = connectionData
         return this
     }
-
-    fun createWithDataStore(): DataStoreClient {
-        if (!implClass.isAnnotationPresent(LinkDataStore::class.java)) {
-            throw IllegalStateException("No DataStore Implementation Present")
-        }
-        val storeClass = implClass.getAnnotation(LinkDataStore::class.java).store.java
-        val injector =  Guice.createInjector(DataStoreClientInjectorModule<T>(this.connectionData, implClass, create()))
-        return injector.getInstance(storeClass)
-    }
-
     override fun create(): T {
         return Guice.createInjector(DatabaseClientInjectorModule(this.connectionData)).getInstance(implClass)
     }
@@ -78,11 +64,6 @@ fun <T : DatabaseClient> createDatabaseClient(implClass: Class<T>, init: Databas
     return clientFactory.create()
 }
 
-fun <T: DatabaseClient> createDataStoreClient(implClass: Class<T>, init: DatabaseClientFactory<T>.() -> Unit): DataStoreClient {
-    val clientFactory: DatabaseClientFactory<T> = DatabaseClientFactory(implClass)
-    clientFactory.init()
-    return clientFactory.createWithDataStore()
-}
 
 
 

@@ -312,6 +312,10 @@ class ConfigDocument(val file: File) : Document {
         return wrapped.size()
     }
 
+    override fun <T> toInstance(type: Type): T {
+        return wrapped.toInstance(type)
+    }
+
     override fun getKeys(): MutableCollection<String> {
         return wrapped.getKeys()
     }

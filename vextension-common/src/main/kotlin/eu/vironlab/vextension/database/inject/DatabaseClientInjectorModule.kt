@@ -53,12 +53,3 @@ class DatabaseClientInjectorModule(val connectionData: ConnectionData) : Abstrac
 
 }
 
-class DataStoreClientInjectorModule<T>(val connectionData: ConnectionData, val clientClass: Class<T>, val client: T) : AbstractModule() {
-
-    override fun configure() {
-        bind(ExecutorService::class.java).toInstance(Executors.newCachedThreadPool())
-        bind(ConnectionData::class.java).toInstance(connectionData)
-        bind(clientClass).toInstance(client)
-    }
-
-}
