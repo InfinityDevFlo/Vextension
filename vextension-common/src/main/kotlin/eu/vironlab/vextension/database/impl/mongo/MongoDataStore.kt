@@ -130,7 +130,10 @@ class MongoDataStore<K, V : MappingObject>(
 
     override fun update(key: K, newValue: V): Boolean {
         return if (contains(key)) {
-            this.mongoCollection.updateOne(BasicDBObject(COLLECTION_KEY, key!!), toBson(newValue.export()))
+            this.mongoCollection.replaceOne(
+                BasicDBObject(COLLECTION_KEY, key!!),
+                toBson(newValue.export()).append(COLLECTION_KEY, key)
+            )
             true
         } else {
             false

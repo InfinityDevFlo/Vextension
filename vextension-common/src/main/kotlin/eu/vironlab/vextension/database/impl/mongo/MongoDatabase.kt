@@ -124,7 +124,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
 
     override fun update(key: String, newValue: Document): Boolean {
         return if (contains(key)) {
-            this.mongoCollection.updateOne(BasicDBObject(COLLECTION_KEY, key), toBson(newValue))
+            this.mongoCollection.replaceOne(BasicDBObject(COLLECTION_KEY, key), toBson(newValue).append(COLLECTION_KEY, key))
             true
         } else {
             false

@@ -45,7 +45,6 @@ import com.google.gson.stream.JsonWriter
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import eu.vironlab.vextension.document.storage.WrappedSpecificDocumentStorage
-import eu.vironlab.vextension.lang.Nameable
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -56,8 +55,6 @@ import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.function.Consumer
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 open class DefaultDocument() : Document {
     private var jsonObject: JsonObject
@@ -67,7 +64,7 @@ open class DefaultDocument() : Document {
         this.jsonObject = JsonObject()
     }
 
-    constructor(jsonElement: JsonElement): this(){
+    constructor(jsonElement: JsonElement) : this() {
         jsonObject = jsonElement.getAsJsonObject()
     }
 
@@ -503,7 +500,7 @@ open class DefaultDocument() : Document {
         val optionalValue = getDocument(key)
         return if (optionalValue.isPresent) {
             optionalValue.get()
-        }else {
+        } else {
             insert(key, def)
             def
         }
