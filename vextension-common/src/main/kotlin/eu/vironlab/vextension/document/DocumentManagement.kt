@@ -72,8 +72,8 @@ object DocumentManagement {
      * Create a new Empty Document
      * @return a new EmptyDocument
      */
-    fun newDocument(name: String): DefaultDocument {
-        return DefaultDocument(name)
+    fun newDocument(): DefaultDocument {
+        return DefaultDocument()
     }
 
     /**
@@ -81,8 +81,8 @@ object DocumentManagement {
      * @param jsonElement is the JsonElement to create the Document
      * @return the created Document
      */
-    fun newDocument(name: String, jsonElement: JsonElement): DefaultDocument {
-        return DefaultDocument(name, jsonElement)
+    fun newDocument(jsonElement: JsonElement): DefaultDocument {
+        return DefaultDocument(jsonElement)
     }
 
     /**
@@ -90,8 +90,8 @@ object DocumentManagement {
      * @param jsonObject is the JsonObject, used to create the Document
      * @return the created Document
      */
-    fun newDocument(name: String, jsonObject: JsonObject): DefaultDocument {
-        return DefaultDocument(name, jsonObject)
+    fun newDocument(jsonObject: JsonObject): DefaultDocument {
+        return DefaultDocument(jsonObject)
     }
 
     /**
@@ -100,8 +100,8 @@ object DocumentManagement {
      * @param value is the value to insert with the key
      * @return the created Document, wich has inserted the key and value
      */
-    fun newDocument(name: String, key: String, value: String): DefaultDocument {
-        return DefaultDocument(name).insert(key, value)
+    fun newDocument(key: String, value: String): DefaultDocument {
+        return DefaultDocument().insert(key, value)
     }
 
     /**
@@ -110,8 +110,8 @@ object DocumentManagement {
      * @param value is the value to insert with the key
      * @return the created Document, wich has inserted the key and value
      */
-    fun newDocument(name: String, key: String, value: Number): DefaultDocument {
-        return DefaultDocument(name).insert(key, value)
+    fun newDocument(key: String, value: Number): DefaultDocument {
+        return DefaultDocument().insert(key, value)
     }
 
     /**
@@ -120,8 +120,8 @@ object DocumentManagement {
      * @param value is the value to insert with the key
      * @return the created Document, wich has inserted the key and value
      */
-    fun newDocument(name: String, key: String, value: Char): DefaultDocument {
-        return DefaultDocument(name).insert(key, value)
+    fun newDocument(key: String, value: Char): DefaultDocument {
+        return DefaultDocument().insert(key, value)
     }
 
     /**
@@ -130,8 +130,8 @@ object DocumentManagement {
      * @param value is the value to insert with the key
      * @return the created Document, wich has inserted the key and value
      */
-    fun newDocument(name: String, key: String, value: Boolean): DefaultDocument {
-        return DefaultDocument(name).insert(key, value)
+    fun newDocument(key: String, value: Boolean): DefaultDocument {
+        return DefaultDocument().insert(key, value)
     }
 
     /**
@@ -140,8 +140,8 @@ object DocumentManagement {
      * @param value is the value to insert with the key
      * @return the created Document, wich has inserted the key and value
      */
-    fun newDocument(name: String, key: String, value: Any): DefaultDocument {
-        return DefaultDocument(name).insert(key, value)
+    fun newDocument(key: String, value: Any): DefaultDocument {
+        return DefaultDocument().insert(key, value)
     }
 
     /**
@@ -149,8 +149,8 @@ object DocumentManagement {
      * @param bytes is the array with the data to create the document
      * @return the created Document
      */
-    fun newJsonDocument(name: String, bytes: ByteArray): DefaultDocument {
-        return newJsonDocument(name, String(bytes, StandardCharsets.UTF_8))
+    fun newJsonDocument(bytes: ByteArray): DefaultDocument {
+        return newJsonDocument(String(bytes, StandardCharsets.UTF_8))
     }
 
     /**
@@ -158,8 +158,8 @@ object DocumentManagement {
      * @param bytes is the array with the data to create the document
      * @return the created Document
      */
-    fun newYamlDocument(name: String, bytes: ByteArray): DefaultDocument {
-        return newYamlDocument(name, String(bytes, StandardCharsets.UTF_8))
+    fun newYamlDocument(bytes: ByteArray): DefaultDocument {
+        return newYamlDocument(String(bytes, StandardCharsets.UTF_8))
     }
 
     /**
@@ -167,8 +167,8 @@ object DocumentManagement {
      * @param path is the Path of the Data for the Document
      * @return the created Document
      */
-    fun newJsonDocument(name: String, path: Path): DefaultDocument {
-        return jsonStorage().read(name, path)
+    fun newJsonDocument(path: Path): DefaultDocument {
+        return jsonStorage().read(path)
     }
 
     /**
@@ -176,8 +176,8 @@ object DocumentManagement {
      * @param path is the Path of the Data for the Document
      * @return the created Document
      */
-    fun newYamlDocument(name: String, path: Path): DefaultDocument {
-        return yamlStorage().read(name, path)
+    fun newYamlDocument(path: Path): DefaultDocument {
+        return yamlStorage().read(path)
     }
 
     /**
@@ -185,8 +185,8 @@ object DocumentManagement {
      * @param input is the Json String for the Document
      * @return the created Document
      */
-    fun newJsonDocument(name: String, input: String): DefaultDocument {
-        return jsonStorage().read(name, input)
+    fun newJsonDocument(input: String): DefaultDocument {
+        return jsonStorage().read(input)
     }
 
     /**
@@ -194,8 +194,8 @@ object DocumentManagement {
      * @param input is the Yaml String for the Document
      * @return the created Document
      */
-    fun newYamlDocument(name: String, input: String): DefaultDocument {
-        return yamlStorage().read(name, input)
+    fun newYamlDocument(input: String): DefaultDocument {
+        return yamlStorage().read(input)
     }
 
     /**
@@ -218,6 +218,10 @@ object DocumentManagement {
     fun yamlStorage(): DocumentStorage {
         return YAML
     }
+}
+
+fun createDocument(): Document {
+    return DocumentManagement.newDocument()
 }
 
 fun initDocumentManagement(dependencyLoader: DependencyLoader) {

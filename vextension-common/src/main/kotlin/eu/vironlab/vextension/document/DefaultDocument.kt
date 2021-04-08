@@ -59,7 +59,7 @@ import java.util.function.Consumer
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class DefaultDocument(override val name: String) : Document, Nameable {
+open class DefaultDocument() : Document {
     private var jsonObject: JsonObject
 
 
@@ -67,7 +67,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         this.jsonObject = JsonObject()
     }
 
-    constructor(name: String, jsonElement: JsonElement) : this(name) {
+    constructor(jsonElement: JsonElement): this(){
         jsonObject = jsonElement.getAsJsonObject()
     }
 
@@ -222,7 +222,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
         }
         val jsonElement: JsonElement = jsonObject.get(key)
         return if (jsonElement.isJsonObject()) {
-            Optional.of(DefaultDocument(key, jsonElement))
+            Optional.of(DefaultDocument(jsonElement))
         } else {
             Optional.ofNullable(null)
         }
@@ -238,7 +238,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
             val Documents: MutableCollection<Document> = ArrayList()
             for (element in array) {
                 if (element.isJsonObject()) {
-                    Documents.add(DefaultDocument(key, element.getAsJsonObject()))
+                    Documents.add(DefaultDocument(element.getAsJsonObject()))
                 }
             }
             return Optional.of(Documents)
@@ -632,7 +632,7 @@ open class DefaultDocument(override val name: String) : Document, Nameable {
             override fun read(jsonReader: JsonReader): DefaultDocument? {
                 val jsonElement: JsonElement = TypeAdapters.JSON_ELEMENT.read(jsonReader)
                 return if (jsonElement != null && jsonElement.isJsonObject()) {
-                    DefaultDocument(jsonElement.hashCode().toString(), jsonElement)
+                    DefaultDocument(jsonElement)
                 } else {
                     null
                 }

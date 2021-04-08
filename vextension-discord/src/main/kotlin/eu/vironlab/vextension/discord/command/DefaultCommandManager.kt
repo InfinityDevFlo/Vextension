@@ -145,7 +145,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
                 event.channel.sendMessage(
                     this.commandNotFoundMessage.toEmbed(
                         event.author.avatarUrl!!,
-                        DocumentManagement.newDocument("message", "cmd", cmdName)
+                        DocumentManagement.newDocument("cmd", cmdName)
                     )
                 ).queue()
             }

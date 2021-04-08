@@ -60,7 +60,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
     }
 
     private fun fromBson(document: BsonDocument): Document {
-        return DocumentManagement.newJsonDocument(document.getString(COLLECTION_KEY), document.toJson())
+        return DocumentManagement.newJsonDocument(document.toJson())
     }
 
     override fun get(key: String): Optional<Document> {

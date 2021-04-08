@@ -64,11 +64,11 @@ class ConfigDocument(val file: File) : Document {
             writer.flush()
             writer.close()
         }
-        this.wrapped = DocumentManagement.newDocument(file.name)
+        this.wrapped = DocumentManagement.newDocument()
     }
 
     fun loadConfig() {
-        this.wrapped = DocumentManagement.newJsonDocument(file.name, file.toPath())
+        this.wrapped = DocumentManagement.newJsonDocument(file.toPath())
     }
 
     fun saveConfig() {

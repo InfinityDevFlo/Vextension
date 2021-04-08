@@ -63,7 +63,7 @@ class MongoDataStore<K, V : MappingObject>(
     }
 
     private fun fromBson(document: BsonDocument): Document {
-        return DocumentManagement.newJsonDocument(document.getString(COLLECTION_KEY), document.toJson())
+        return DocumentManagement.newJsonDocument(document.toJson())
     }
 
     override fun contains(key: K): Boolean {

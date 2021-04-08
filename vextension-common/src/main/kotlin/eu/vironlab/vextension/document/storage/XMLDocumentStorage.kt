@@ -17,10 +17,9 @@ class XMLDocumentStorage : DocumentStorage {
     private val xmlMapper: XmlMapper = XmlMapper()
     private val jsonMapper: ObjectMapper = ObjectMapper()
 
-    override fun read(name: String, reader: Reader): DefaultDocument {
+    override fun read(reader: Reader): DefaultDocument {
         BufferedReader(reader).use { bufferedReader ->
             return DocumentManagement.newDocument(
-                name,
                 JsonParser().parse(
                     jsonMapper.writeValueAsString(xmlMapper.readTree(bufferedReader)).toString()
                 ).asJsonObject

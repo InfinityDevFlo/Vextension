@@ -53,10 +53,9 @@ interface DocumentStorage {
      *
      * @return a new Document
      */
-    fun read(name: String, inputStream: InputStream): DefaultDocument {
+    fun read(inputStream: InputStream): DefaultDocument {
         InputStreamReader(inputStream, StandardCharsets.UTF_8).use { inputStreamReader ->
             return this.read(
-                name,
                 inputStreamReader
             )
         }
@@ -69,23 +68,23 @@ interface DocumentStorage {
      *
      * @return a new Document
      */
-    fun read(name: String, path: Path): DefaultDocument {
-        Files.newInputStream(path).use { stream -> return this.read(name, stream) }
+    fun read(path: Path): DefaultDocument {
+        Files.newInputStream(path).use { stream -> return this.read(stream) }
     }
 
-    fun read(name: String, file: File): DefaultDocument {
-        return this.read(name, file.toPath())
+    fun read(file: File): DefaultDocument {
+        return this.read(file.toPath())
     }
 
-    fun read(name: String, bytes: ByteArray): DefaultDocument {
-        return this.read(name, ByteArrayInputStream(bytes))
+    fun read(bytes: ByteArray): DefaultDocument {
+        return this.read(ByteArrayInputStream(bytes))
     }
 
-    fun read(name: String, input: String): DefaultDocument {
-        return this.read(name, StringReader(input))
+    fun read(input: String): DefaultDocument {
+        return this.read(StringReader(input))
     }
 
-    fun read(name: String, reader: Reader): DefaultDocument
+    fun read(reader: Reader): DefaultDocument
 
     fun write(Document: Document, outputStream: OutputStream) {
         try {
