@@ -36,13 +36,11 @@
  */
 package eu.vironlab.vextension.inventory.gui
 
-import eu.vironlab.vextension.inventory.entry.Entry
 import eu.vironlab.vextension.item.ItemStack
 import java.util.*
 
 interface DataGUI : GUI {
-
-    val comparator: Comparator<Entry>?
-    var contents: MutableList<ItemStack>
-
+    var comparator: Comparator<ItemStack>?
+    fun open(player: UUID, list: MutableCollection<ItemStack>)
+    var defaultList: MutableCollection<ItemStack>
 }

@@ -36,5 +36,12 @@
  */
 package eu.vironlab.vextension.inventory.entry
 
+import eu.vironlab.vextension.inventory.bukkit.BukkitDataGUI
+import eu.vironlab.vextension.inventory.bukkit.BukkitGUI
+import eu.vironlab.vextension.item.ItemStack
+
+
 interface Page {
+    var border: ItemStack?
+    fun create(items: MutableList<ItemStack>, page: Int, dataInst: BukkitDataGUI): BukkitGUI
 }
