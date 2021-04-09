@@ -65,7 +65,8 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             var last = 0
             val pages: MutableList<BukkitGUI> = mutableListOf()
-            for ((first, second) in (0..contents.size step if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9).withIndex()) {
+            val steps: Int = if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
+            for ((first, second) in (steps*-1..contents.size step steps).withIndex()) {
                 pages.add(BukkitPage().also {
                     it.border = this.border
                 }.create(list.toMutableList().subList(last, second), first, this))
@@ -81,26 +82,26 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                 when (index) {
                     0 -> {
                         page.setItem(lines * 9 - 1, item(Material.ARROW) {
-                            setName("Goto Page ${index + 1} ->")
+                            setName("Goto Page ${index + 2} ->")
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                     }
                     pages.lastIndex -> {
                         page.setItem((lines - 1) * 9, item(Material.ARROW) {
-                            setName("<- Goto Page ${index - 1}")
+                            setName("<- Goto Page $index")
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })
                     }
                     else -> {
                         page.setItem(lines * 9 - 1, item(Material.ARROW) {
-                            setName("Goto Page ${index + 1} ->")
+                            setName("Goto Page ${index + 2} ->")
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                         page.setItem((lines - 1) * 9, item(Material.ARROW) {
-                            setName("<- Goto Page ${index - 1}")
+                            setName("<- Goto Page $index")
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })

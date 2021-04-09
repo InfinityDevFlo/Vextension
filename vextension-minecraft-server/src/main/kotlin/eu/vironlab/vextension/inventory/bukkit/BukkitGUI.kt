@@ -106,7 +106,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     }
 
     fun addItem(item: ItemStack): BukkitGUI {
-        this.contents[contents.count()] = item
+        this.contents[contents.count() + if (border != null) 0 else 10] = item
         return this
     }
 }
