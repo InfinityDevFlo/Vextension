@@ -45,40 +45,40 @@ import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Bukkit
-import org.omg.CORBA.StringHolder
+import java.lang.IllegalArgumentException
 import java.util.*
 
-class BukkitGUI(override val lines: Int, override val name: String) : GUI{
-    override var border: Boolean = false
-    override var borderItem: ItemStack? = null
+class BukkitGUI(override val lines: Int, override val name: String) : GUI {
+    override var border: ItemStack? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         scheduleAsync {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
-            if (border && borderItem != null) {
+            if (border != null) {
                 //<editor-fold desc="Border creation" defaultstate="collapsed">
                 for (i: Int in 0..8) {
-                    inventory.setItem(i, borderItem!!)
+                        inventory.setItem(i, border!!)
                 }
                 for (i: Int in lines * 9 - 9 until inventory.size) {
-                    inventory.setItem(i, borderItem!!)
+                    inventory.setItem(i, border!!)
                 }
                 var i = 9
                 while (i < 9 * lines) {
-                    inventory.setItem(i, borderItem!!)
+                    inventory.setItem(i, border!!)
                     if (i % 9 == 0) i += 8
                     else i++
                 }
 
                 //</editor-fold>
             }
+            Thread.sleep(50)
             for ((index: Int, item: ItemStack) in contents) {
                 inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
+                Bukkit.getPlayer(player)?.openInventory(inventory) ?: throw IllegalArgumentException("Player doesn't exist")
             }
         }
     }
@@ -94,13 +94,9 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI{
         return this
     }
 
-    fun setBorder(border: Boolean): BukkitGUI {
-        this.border = border
-        return this
-    }
 
-    fun setBorderItem(borderItem: ItemStack?): BukkitGUI {
-        this.borderItem = borderItem
+    fun setBorder(border: ItemStack?): BukkitGUI {
+        this.border = border
         return this
     }
 
