@@ -13,11 +13,11 @@ rootProject.name = "Vextension"
 //List of all Submodules
 include("vextension-common")
 
-    //Discord
-    include("vextension-discord")
+//Discord
+include("vextension-discord")
 
-    //Minecraft Modules
-    include("vextension-minecraft-server")
-    include("vextension-minecraft-proxy")
+//Minecraft Modules
+include("vextension-minecraft-server")
+include("vextension-minecraft-proxy")
 
     
