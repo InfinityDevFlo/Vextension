@@ -49,6 +49,8 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
     override var comparator: Comparator<ItemStack>? = null
     override var border: ItemStack? = null
     override var defaultList: MutableCollection<ItemStack> = mutableListOf()
+    override var clickHandler: BiConsumer<ItemStack, UUID>? = null
+
     override fun open(player: UUID) {
         open(player, defaultList)
     }
@@ -64,23 +66,29 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
             val contents =
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val pages: MutableList<BukkitGUI> = mutableListOf()
-            val steps: Int = if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
+            val steps: Int =
+                if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
             var step = 0
             var index = 0
             while (step < contents.size) {
                 val currentStep = steps * index
-                pages.add(BukkitPage().also {
-                    it.border = this.border
-                }.create(list.toMutableList().subList(currentStep, if (currentStep + steps < list.size) currentStep + steps else list.size), index, this))
+                contents.toMutableList().subList(
+                    currentStep,
+                    if (currentStep + steps < contents.size) currentStep + steps else contents.size
+                )
+                pages.add(
+                    BukkitPage().also {
+                        it.border = this.border
+                    }.create(
+                        contents.toMutableList().subList(
+                            currentStep,
+                            if (currentStep + steps < contents.size) currentStep + steps else contents.size
+                        ), index, this
+                    )
+                )
                 index++
-                step += steps
+                step += steps + 1
             }
-            /*for ((first, second) in (steps*-1..contents.size step steps).withIndex()) {
-                pages.add(BukkitPage().also {
-                    it.border = this.border
-                }.create(list.toMutableList().subList(last, second), first, this))
-                last = second + 1
-            }*/
             for ((indexx, page) in pages.withIndex()) {
                 val indexUp: BiConsumer<ItemStack, UUID> = BiConsumer { _, uuid ->
                     pages[indexx + 1].open(uuid)
@@ -126,13 +134,18 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
         return this
     }
 
-    fun setBorder(border: ItemStack): BukkitDataGUI {
+    override fun setBorder(border: ItemStack?): BukkitDataGUI {
         this.border = border
         return this
     }
 
     fun setDefaultList(list: MutableCollection<ItemStack>): BukkitDataGUI {
         this.defaultList = list
+        return this
+    }
+
+    fun setClickHandler(handler: BiConsumer<ItemStack, UUID>?): BukkitDataGUI {
+        this.clickHandler = handler
         return this
     }
 }

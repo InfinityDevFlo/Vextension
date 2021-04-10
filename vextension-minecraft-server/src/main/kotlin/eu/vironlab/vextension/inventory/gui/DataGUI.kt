@@ -38,9 +38,12 @@ package eu.vironlab.vextension.inventory.gui
 
 import eu.vironlab.vextension.item.ItemStack
 import java.util.*
+import java.util.function.BiConsumer
 
 interface DataGUI : GUI {
     var comparator: Comparator<ItemStack>?
     fun open(player: UUID, list: MutableCollection<ItemStack>)
     var defaultList: MutableCollection<ItemStack>
+    var clickHandler: BiConsumer<ItemStack, UUID>?
+    var border: ItemStack?
 }

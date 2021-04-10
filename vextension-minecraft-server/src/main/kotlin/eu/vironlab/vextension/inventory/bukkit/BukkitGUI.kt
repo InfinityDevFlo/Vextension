@@ -49,36 +49,19 @@ import java.lang.IllegalArgumentException
 import java.util.*
 
 class BukkitGUI(override val lines: Int, override val name: String) : GUI {
-    override var border: ItemStack? = null
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         scheduleAsync {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
-            if (border != null) {
-                //<editor-fold desc="Border creation" defaultstate="collapsed">
-                for (i: Int in 0..8) {
-                        inventory.setItem(i, border!!)
-                }
-                for (i: Int in lines * 9 - 9 until inventory.size) {
-                    inventory.setItem(i, border!!)
-                }
-                var i = 9
-                while (i < 9 * lines) {
-                    inventory.setItem(i, border!!)
-                    if (i % 9 == 0) i += 8
-                    else i++
-                }
-
-                //</editor-fold>
-            }
             Thread.sleep(50)
             for ((index: Int, item: ItemStack) in contents) {
                 inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                Bukkit.getPlayer(player)?.openInventory(inventory) ?: throw IllegalArgumentException("Player doesn't exist")
+                Bukkit.getPlayer(player)?.openInventory(inventory)
+                    ?: throw IllegalArgumentException("Player doesn't exist")
             }
         }
     }
@@ -95,8 +78,27 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     }
 
 
-    fun setBorder(border: ItemStack?): BukkitGUI {
-        this.border = border
+    override fun setBorder(border: ItemStack?): BukkitGUI {
+        //<editor-fold desc="Border creation" defaultstate="collapsed">
+        for (i: Int in 0..8) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+        }
+        for (i: Int in lines * 9 - 9 until lines * 9) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+        }
+        var i = 9
+        while (i < 9 * lines) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+            if (i % 9 == 0) i += 8
+            else i++
+        }
+        //</editor-fold>
         return this
     }
 
@@ -106,7 +108,18 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     }
 
     fun addItem(item: ItemStack): BukkitGUI {
-        this.contents[contents.count() + if (border != null) 0 else 10] = item
+        var current = 0
+        var slot: Int? = null
+        for (i in contents.keys.toSortedSet().iterator()) {
+            //println("$ia $current")
+            if (i != current++) {
+                slot = current.minus(1)
+                break
+            }
+        }
+        slot ?: return this
+        println("$slot ${contents.containsKey(slot)}")
+        contents.putIfAbsent(slot, item)
         return this
     }
 }

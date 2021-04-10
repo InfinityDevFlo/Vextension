@@ -41,7 +41,7 @@ import java.util.*
 
 interface GUI {
     val lines: Int
-    var border: ItemStack?
     val name: String
     fun open(player: UUID)
+    fun setBorder(border: ItemStack?) : GUI
 }
