@@ -37,8 +37,7 @@
 
 package eu.vironlab.vextension.discord
 
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
+
 import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.document.wrapper.ConfigDocument
@@ -46,7 +45,7 @@ import java.io.File
 import net.dv8tion.jda.api.JDA
 
 
-abstract class DiscordBot(loadJda: Boolean = true) : Vextension {
+abstract class DiscordBot(loadJda: Boolean = true)  {
 
     abstract var jda: JDA
     abstract var commandManager: CommandManager
@@ -86,7 +85,6 @@ abstract class DiscordBot(loadJda: Boolean = true) : Vextension {
         this.databaseClient.init()
         DiscordUtil.userDatabase = this.databaseClient.getDatabase("discord_users")
         */
-        VextensionAPI.initialize(this)
     }
 
     fun shutdown() {

@@ -37,8 +37,11 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.document.Document
 import java.util.concurrent.CompletableFuture
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 /**
  * Client for Multiple Database Types
@@ -67,9 +70,7 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.dropDatabase([name])
      */
-    fun dropDatabaseAsync(name: String): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { dropDatabase(name) }
-    }
+    suspend fun dropDatabaseAsync(name: String): Boolean
 
     /**
      * Check if a Database with [name] exists
@@ -81,9 +82,7 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.containsDatabase([name])
      */
-    fun containsDatabaseAsync(name: String): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { containsDatabase(name) }
-    }
+    suspend fun containsDatabaseAsync(name: String): Boolean
 
     /**
      * Get the Database with [name]
@@ -95,8 +94,6 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase([name])
      */
-    fun getDatabaseAsync(name: String): CompletableFuture<Database> {
-        return CompletableFuture.supplyAsync { getDatabase(name) }
-    }
+    suspend fun getDatabaseAsync(name: String): Database
 
 }

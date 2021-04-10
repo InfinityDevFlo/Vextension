@@ -62,32 +62,17 @@ interface Database : Nameable {
 
     fun keys(): Collection<String>
 
-    fun updateAsync(key: String, newValue: Document): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { update(key, newValue) }
-    }
+    suspend fun updateAsync(key: String, newValue: Document): Boolean
 
-    fun containsAsync(key: String): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { contains(key) }
-    }
+    suspend fun containsAsync(key: String): Boolean
 
-    fun getAsync(key: String): CompletableFuture<Optional<Document>> {
-        return CompletableFuture.supplyAsync { get(key) }
-    }
+    suspend fun getAsync(key: String): Optional<Document>
 
-    fun getAsync(key: String, def: Document): CompletableFuture<Document> {
-        return CompletableFuture.supplyAsync { get(key, def) }
-    }
+    suspend fun getAsync(key: String, def: Document): Document
 
-    fun insertAsync(key: String, value: Document): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { insert(key, value) }
-    }
+    suspend fun insertAsync(key: String, value: Document): Boolean
 
-    fun deleteAsync(key: String): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { delete(key) }
-    }
+    suspend fun deleteAsync(key: String): Boolean
 
-    fun keysAsync(): CompletableFuture<Collection<String>> {
-        return CompletableFuture.supplyAsync { keys() }
-    }
-
+    suspend fun keysAsync(): Collection<String>
 }

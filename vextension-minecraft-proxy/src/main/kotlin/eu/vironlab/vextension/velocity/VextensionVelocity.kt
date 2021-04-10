@@ -40,8 +40,6 @@ package eu.vironlab.vextension.velocity
 import com.google.inject.Inject
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
 import org.slf4j.Logger
 
 @Plugin(
@@ -51,11 +49,7 @@ import org.slf4j.Logger
     description = "Vextension for Velocity",
     version = "1.0.0-SNAPSHOT"
 )
-class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
-
-    init {
-        VextensionAPI.initialize(this)
-    }
+class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) {
 
 
 }

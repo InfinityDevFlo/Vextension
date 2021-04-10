@@ -35,13 +35,42 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database
+package eu.vironlab.vextension.database.impl.sql
+
+import eu.vironlab.vextension.database.Database
+import eu.vironlab.vextension.database.DatabaseClient
 
 
-class SerializedORMObjectInfo(
-    val objClass: String,
-    val keyName: String,
-    val keyField: String,
-    val ignoredFields: Collection<String>,
-    val renamedFields: Map<String, String>
-)
+class SqlDatabaseClient : DatabaseClient {
+    override fun init() {
+        TODO("Not yet implemented")
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
+    }
+
+    override fun dropDatabase(name: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun dropDatabaseAsync(name: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun containsDatabase(name: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun containsDatabaseAsync(name: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDatabase(name: String): Database {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getDatabaseAsync(name: String): Database {
+        TODO("Not yet implemented")
+    }
+}

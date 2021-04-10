@@ -43,6 +43,9 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import eu.vironlab.vextension.document.DocumentFactory.documentJsonStorage
+import eu.vironlab.vextension.document.DocumentFactory.documentXmlStorage
+import eu.vironlab.vextension.document.DocumentFactory.documentYamlStorage
 import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.lang.reflect.Type

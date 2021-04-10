@@ -40,6 +40,20 @@ package eu.vironlab.vextension.extension
 import java.net.URL
 import java.util.*
 
+object StringExtension {
+    val UPPER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+
+    val LOWER_CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray()
+
+    val UPPER_LOWER_CHARS = UPPER_CHARS + LOWER_CHARS
+
+    val NUMBERS = "0123456789".toCharArray()
+
+    val CHARS = UPPER_CHARS + LOWER_CHARS + NUMBERS
+
+    val RANDOM: Random = Random()
+}
+
 /**
  * Check if the String is an Integer
  */
@@ -64,6 +78,23 @@ fun String.isBoolean(): Boolean {
     }
 }
 
+fun String.Companion.random(length: Int, numbers: Boolean = true): String {
+    val stringBuilder = StringBuilder()
+    synchronized(StringExtension::class.java) {
+        if (numbers) {
+            val size = StringExtension.CHARS.size
+            for (i in 0 until length) {
+                stringBuilder.append(StringExtension.CHARS[StringExtension.RANDOM.nextInt(size)])
+            }
+        }else {
+            val size = StringExtension.UPPER_LOWER_CHARS.size
+            for (i in 0 until length) {
+                stringBuilder.append(StringExtension.UPPER_LOWER_CHARS[StringExtension.RANDOM.nextInt(size)])
+            }
+        }
+    }
+    return stringBuilder.toString()
+}
 
 /**
  * Check if the String is an URL

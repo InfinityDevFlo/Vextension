@@ -39,13 +39,13 @@ package eu.vironlab.vextension.item.builder
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.TriConsumer
+import eu.vironlab.vextension.extension.random
 import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
-import eu.vironlab.vextension.utils.StringUtil
 import java.util.*
 import java.util.function.BiConsumer
 
@@ -66,14 +66,14 @@ class ItemFactory(
     private var clickHandler: BiConsumer<ItemStack, UUID>? = null
 
     override fun create(): ItemStack {
-        var key: String = StringUtil.randomString(64)
+        var key: String = String.random(64)
         when (ServerUtil.getServerType()) {
             ServerType.SPONGE -> {
                 TODO("MAKEN")
             }
             ServerType.BUKKIT -> {
                 while (VextensionBukkit.instance.items.containsKey(key)) {
-                    key = StringUtil.randomString(64)
+                    key = String.random(64)
                 }
             }
         }

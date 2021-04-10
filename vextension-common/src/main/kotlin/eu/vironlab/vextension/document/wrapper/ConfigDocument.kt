@@ -39,7 +39,7 @@ package eu.vironlab.vextension.document.wrapper
 
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.createDocument
-import eu.vironlab.vextension.document.documentJsonStorage
+import eu.vironlab.vextension.document.DocumentFactory.documentJsonStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.io.File
 

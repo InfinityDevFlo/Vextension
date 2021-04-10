@@ -35,74 +35,48 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.mongo
+package eu.vironlab.vextension.database.impl.sql
 
-import com.mongodb.BasicDBObject
-import com.mongodb.client.MongoCollection
-import com.mongodb.client.MongoCursor
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.createDocumentFromJson
 import java.util.*
-import org.bson.Document as BsonDocument
 
-class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) :
-    Database {
 
-    val COLLECTION_KEY: String = "__key__"
-
+class SqlDatabase(override val name: String) : Database {
     override fun contains(key: String): Boolean {
-        return this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
+        TODO("Not yet implemented")
     }
 
-    private fun toBson(document: Document): BsonDocument {
-        return BsonDocument.parse(document.toJson())
-    }
-
-    private fun fromBson(document: BsonDocument): Document {
-        return createDocumentFromJson(document.toJson())
+    override fun contains(fieldName: String, fieldValue: Any): Boolean {
+        TODO("Not yet implemented")
     }
 
     override fun get(key: String): Optional<Document> {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
-        if (!cursor.hasNext()) {
-            return Optional.empty()
-        }
-        return Optional.of(fromBson(cursor.next()))
+        TODO("Not yet implemented")
+    }
+
+    override fun get(fieldName: String, fieldValue: Any): Collection<Document> {
+        TODO("Not yet implemented")
     }
 
     override fun get(key: String, def: Document): Document {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
-        return if (cursor.hasNext()) {
-            fromBson(cursor.next())
-        } else {
-            this.mongoCollection.insertOne(toBson(def.append(COLLECTION_KEY, key)))
-            def
-        }
+        TODO("Not yet implemented")
+    }
+
+    override fun update(key: String, newValue: Document): Boolean {
+        TODO("Not yet implemented")
     }
 
     override fun insert(key: String, value: Document): Boolean {
-        if (contains(key)) {
-            return false
-        }
-        this.mongoCollection.insertOne(toBson(value.append(COLLECTION_KEY, key)))
-        return true
+        TODO("Not yet implemented")
     }
 
     override fun delete(key: String): Boolean {
-        if (!contains(key)) {
-            return false
-        }
-        this.mongoCollection.deleteMany(BasicDBObject(COLLECTION_KEY, key))
-        return true
+        TODO("Not yet implemented")
     }
 
     override fun keys(): Collection<String> {
-        val rs = mutableListOf<String>()
-        this.mongoCollection.find(BasicDBObject()).cursor().forEach {
-            rs.add(it.getString(COLLECTION_KEY))
-        }
-        return rs
+        TODO("Not yet implemented")
     }
 
     override suspend fun updateAsync(key: String, newValue: Document): Boolean {
@@ -131,31 +105,5 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
 
     override suspend fun keysAsync(): Collection<String> {
         TODO("Not yet implemented")
-    }
-
-    override fun contains(fieldName: String, fieldValue: Any): Boolean {
-        return this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor().hasNext()
-    }
-
-    override fun get(fieldName: String, fieldValue: Any): Collection<Document> {
-        val cursor: MongoCursor<BsonDocument> = this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor()
-        return if (cursor.hasNext()) {
-            val rs = mutableListOf<Document>(fromBson(cursor.next()))
-            while (cursor.hasNext()) {
-                rs.add(fromBson(cursor.next()))
-            }
-            rs
-        } else {
-            listOf<Document>()
-        }
-    }
-
-    override fun update(key: String, newValue: Document): Boolean {
-        return if (contains(key)) {
-            this.mongoCollection.replaceOne(BasicDBObject(COLLECTION_KEY, key), toBson(newValue).append(COLLECTION_KEY, key))
-            true
-        } else {
-            false
-        }
     }
 }

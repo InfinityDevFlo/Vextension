@@ -37,8 +37,6 @@
 
 package eu.vironlab.vextension.bukkit
 
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.bukkit.BukkitItemEventConsumer
 import org.bukkit.Bukkit
@@ -47,7 +45,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.plugin.java.JavaPlugin
 
 
-class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
+class VextensionBukkit : JavaPlugin(), CommandExecutor {
 
     val items: MutableMap<String, ItemStack> = mutableMapOf()
 
@@ -60,7 +58,6 @@ class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
     }
 
     override fun onLoad() {
-        VextensionAPI.initialize(this)
         instance = this
         key = NamespacedKey(instance, "vextension")
     }

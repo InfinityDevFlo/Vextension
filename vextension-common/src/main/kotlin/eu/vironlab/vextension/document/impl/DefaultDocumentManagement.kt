@@ -42,8 +42,8 @@ import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.DocumentFactory.documentJsonStorage
 import eu.vironlab.vextension.document.DocumentManagement
-import eu.vironlab.vextension.document.documentJsonStorage
 import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.wrapper.storage.DocumentSpecificStorageWrapper
