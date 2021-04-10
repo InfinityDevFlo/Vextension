@@ -62,17 +62,31 @@ interface Database : Nameable {
 
     fun keys(): Collection<String>
 
-    suspend fun updateAsync(key: String, newValue: Document): Boolean
+    suspend fun updateAsync(key: String, newValue: Document): Boolean {
+        return update(key, newValue)
+    }
 
-    suspend fun containsAsync(key: String): Boolean
+    suspend fun containsAsync(key: String): Boolean {
+        return contains(key)
+    }
 
-    suspend fun getAsync(key: String): Optional<Document>
+    suspend fun getAsync(key: String): Optional<Document> {
+        return get(key)
+    }
 
-    suspend fun getAsync(key: String, def: Document): Document
+    suspend fun getAsync(key: String, def: Document): Document {
+        return get(key, def)
+    }
 
-    suspend fun insertAsync(key: String, value: Document): Boolean
+    suspend fun insertAsync(key: String, value: Document): Boolean {
+        return insert(key, value)
+    }
 
-    suspend fun deleteAsync(key: String): Boolean
+    suspend fun deleteAsync(key: String): Boolean {
+        return delete(key)
+    }
 
-    suspend fun keysAsync(): Collection<String>
+    suspend fun keysAsync(): Collection<String> {
+        return keys()
+    }
 }

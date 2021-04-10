@@ -105,34 +105,6 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
         return rs
     }
 
-    override suspend fun updateAsync(key: String, newValue: Document): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun containsAsync(key: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getAsync(key: String): Optional<Document> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getAsync(key: String, def: Document): Document {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun insertAsync(key: String, value: Document): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteAsync(key: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun keysAsync(): Collection<String> {
-        TODO("Not yet implemented")
-    }
-
     override fun contains(fieldName: String, fieldValue: Any): Boolean {
         return this.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor().hasNext()
     }

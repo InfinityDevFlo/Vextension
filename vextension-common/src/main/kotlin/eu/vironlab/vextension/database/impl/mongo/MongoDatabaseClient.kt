@@ -77,16 +77,9 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
         return true
     }
 
-    override suspend fun dropDatabaseAsync(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
 
     override fun containsDatabase(name: String): Boolean {
         return this.mongoDatabase.listCollectionNames().contains(name)
-    }
-
-    override suspend fun containsDatabaseAsync(name: String): Boolean {
-        TODO("Not yet implemented")
     }
 
     override fun getDatabase(name: String): Database {
@@ -94,10 +87,6 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
             this.mongoDatabase.createCollection(name)
         }
         return MongoDatabase(name, this.mongoDatabase.getCollection(name))
-    }
-
-    override suspend fun getDatabaseAsync(name: String): Database {
-        TODO("Not yet implemented")
     }
 
 }

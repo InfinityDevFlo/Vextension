@@ -70,7 +70,9 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.dropDatabase([name])
      */
-    suspend fun dropDatabaseAsync(name: String): Boolean
+    suspend fun dropDatabaseAsync(name: String): Boolean {
+        return dropDatabase(name)
+    }
 
     /**
      * Check if a Database with [name] exists
@@ -82,7 +84,9 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.containsDatabase([name])
      */
-    suspend fun containsDatabaseAsync(name: String): Boolean
+    suspend fun containsDatabaseAsync(name: String): Boolean {
+        return containsDatabase(name)
+    }
 
     /**
      * Get the Database with [name]
@@ -94,6 +98,8 @@ interface DatabaseClient {
      *
      * @see DatabaseClient.getDatabase([name])
      */
-    suspend fun getDatabaseAsync(name: String): Database
+    suspend fun getDatabaseAsync(name: String): Database {
+        return getDatabase(name)
+    }
 
 }
