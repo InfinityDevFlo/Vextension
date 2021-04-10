@@ -66,7 +66,7 @@ class JsonDocumentStorage : DocumentStorage {
             return createDocument(
                 JsonParser.parseReader(
                     bufferedReader
-                ).getAsJsonObject()
+                ).asJsonObject
             )
         }
     }
