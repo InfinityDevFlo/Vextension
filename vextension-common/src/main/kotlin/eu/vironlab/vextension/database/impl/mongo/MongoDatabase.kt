@@ -42,7 +42,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoCursor
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
+import eu.vironlab.vextension.document.createDocumentFromJson
 import java.util.*
 import org.bson.Document as BsonDocument
 
@@ -60,7 +60,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
     }
 
     private fun fromBson(document: BsonDocument): Document {
-        return DocumentManagement.newJsonDocument(document.toJson())
+        return createDocumentFromJson(document.toJson())
     }
 
     override fun get(key: String): Optional<Document> {
@@ -76,7 +76,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
         return if (cursor.hasNext()) {
             fromBson(cursor.next())
         } else {
-            this.mongoCollection.insertOne(toBson(def.insert(COLLECTION_KEY, key)))
+            this.mongoCollection.insertOne(toBson(def.append(COLLECTION_KEY, key)))
             def
         }
     }
@@ -85,7 +85,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
         if (contains(key)) {
             return false
         }
-        this.mongoCollection.insertOne(toBson(value.insert(COLLECTION_KEY, key)))
+        this.mongoCollection.insertOne(toBson(value.append(COLLECTION_KEY, key)))
         return true
     }
 

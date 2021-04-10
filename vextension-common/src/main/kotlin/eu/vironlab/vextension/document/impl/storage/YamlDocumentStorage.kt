@@ -35,10 +35,45 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
 
-interface Callback<I, O> {
+package eu.vironlab.vextension.document.impl.storage
 
-    fun call(input: I): O
+import com.google.gson.JsonElement
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.createDocument
+import eu.vironlab.vextension.document.createDocumentFromJson
+import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
+import eu.vironlab.vextension.document.storage.DocumentStorage
+import java.io.Reader
+import java.io.Writer
+import java.util.function.Supplier
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.Constructor
+import org.yaml.snakeyaml.representer.Representer
 
+class YamlDocumentStorage : DocumentStorage {
+    private val yaml: ThreadLocal<Yaml> = ThreadLocal.withInitial(Supplier {
+        val options = DumperOptions()
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
+        Yaml(Constructor(), Representer(), options)
+    })
+
+    override fun <T> read(instance: T): Document {
+        return createDocumentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
+    }
+
+    override fun read(reader: Reader): Document {
+        val map: LinkedHashMap<*, *>? = yaml.get().loadAs<LinkedHashMap<*, *>>(reader, LinkedHashMap::class.java)
+        val element: JsonElement = DefaultDocumentManagement.GSON.toJsonTree(map)
+        return createDocument(element)
+    }
+
+    override fun <T> write(document: Document, clazz: Class<T>): T {
+        return DefaultDocumentManagement.GSON.fromJson(document.toJson(), clazz)
+    }
+
+    override fun write(Document: Document, writer: Writer) {
+        yaml.get().dump(Document.toPlainObjects(), writer)
+    }
 }

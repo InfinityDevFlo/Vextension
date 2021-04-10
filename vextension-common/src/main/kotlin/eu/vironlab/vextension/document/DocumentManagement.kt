@@ -35,205 +35,78 @@
  *<p>
  */
 
-
 package eu.vironlab.vextension.document
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.document.storage.DocumentStorage
-import eu.vironlab.vextension.document.storage.JsonDocumentStorage
-import eu.vironlab.vextension.document.storage.XMLDocumentStorage
-import eu.vironlab.vextension.document.storage.YamlDocumentStorage
-import java.nio.charset.StandardCharsets
-import java.nio.file.Path
 
-/**
- * Create new Documents and store existing ones
- */
-object DocumentManagement {
-
-    /**
-     * Get the JsonStorage for the Documents
-     */
-    private val JSON: DocumentStorage = JsonDocumentStorage()
-
-    /**
-     * Get the YamlStorage of the Documents
-     */
-    private val YAML: DocumentStorage = YamlDocumentStorage()
-
-    /**
-     * Get the XMLStorage of the Documents
-     */
-    private val XML: DocumentStorage = XMLDocumentStorage()
+interface DocumentManagement {
 
     /**
      * Create a new Empty Document
-     * @return a new EmptyDocument
+     * @return an empty Document
      */
-    fun newDocument(): DefaultDocument {
-        return DefaultDocument()
-    }
+    fun createDocument(): Document
 
     /**
-     * Create a new Document by JsonElement
+     * Create a create Document by JsonElement
      * @param jsonElement is the JsonElement to create the Document
      * @return the created Document
      */
-    fun newDocument(jsonElement: JsonElement): DefaultDocument {
-        return DefaultDocument(jsonElement)
-    }
+    fun createDocument(jsonElement: JsonElement): Document
 
     /**
-     * Create a new Document by JsonObject
+     * Create a create Document by JsonObject
      * @param jsonObject is the JsonObject, used to create the Document
      * @return the created Document
      */
-    fun newDocument(jsonObject: JsonObject): DefaultDocument {
-        return DefaultDocument(jsonObject)
-    }
+    fun createDocument(jsonObject: JsonObject): Document
 
     /**
-     * Create a new Document and Insert first key and value
-     * @param key is the key to insert
-     * @param value is the value to insert with the key
-     * @return the created Document, wich has inserted the key and value
+     * Create a create Document and Insert first key and value
+     * @param key is the key to append
+     * @param value is the value to append with the key
+     * @return the created Document, wich has appended the key and value
      */
-    fun newDocument(key: String, value: String): DefaultDocument {
-        return DefaultDocument().insert(key, value)
-    }
+    fun createDocument(key: String, value: String): Document
 
     /**
-     * Create a new Document and Insert first key and value
-     * @param key is the key to insert
-     * @param value is the value to insert with the key
-     * @return the created Document, wich has inserted the key and value
+     * Create a create Document and Insert first key and value
+     * @param key is the key to append
+     * @param value is the value to append with the key
+     * @return the created Document, wich has appended the key and value
      */
-    fun newDocument(key: String, value: Number): DefaultDocument {
-        return DefaultDocument().insert(key, value)
-    }
+    fun createDocument(key: String, value: Number): Document
 
     /**
-     * Create a new Document and Insert first key and value
-     * @param key is the key to insert
-     * @param value is the value to insert with the key
-     * @return the created Document, wich has inserted the key and value
+     * Create a create Document and Insert first key and value
+     * @param key is the key to append
+     * @param value is the value to append with the key
+     * @return the created Document, wich has appended the key and value
      */
-    fun newDocument(key: String, value: Char): DefaultDocument {
-        return DefaultDocument().insert(key, value)
-    }
+    fun createDocument(key: String, value: Char): Document
 
     /**
-     * Create a new Document and Insert first key and value
-     * @param key is the key to insert
-     * @param value is the value to insert with the key
-     * @return the created Document, wich has inserted the key and value
+     * Create a create Document and Insert first key and value
+     * @param key is the key to append
+     * @param value is the value to append with the key
+     * @return the created Document, wich has appended the key and value
      */
-    fun newDocument(key: String, value: Boolean): DefaultDocument {
-        return DefaultDocument().insert(key, value)
-    }
+    fun createDocument(key: String, value: Boolean): Document
 
     /**
-     * Create a new Document and Insert first key and value
-     * @param key is the key to insert
-     * @param value is the value to insert with the key
-     * @return the created Document, wich has inserted the key and value
+     * Create a create Document and Insert first key and value
+     * @param key is the key to append
+     * @param value is the value to append with the key
+     * @return the created Document, wich has appended the key and value
      */
-    fun newDocument(key: String, value: Any): DefaultDocument {
-        return DefaultDocument().insert(key, value)
-    }
+    fun createDocument(key: String, value: Any): Document
 
     /**
-     * Create a new JsonDocument by a Byte Array
-     * @param bytes is the array with the data to create the document
-     * @return the created Document
+     * Create a create Document and insert a class instance
+     * @param instance is the class instance to parse
+     * @return the created Document, wich has appended the values of the class instance
      */
-    fun newJsonDocument(bytes: ByteArray): DefaultDocument {
-        return newJsonDocument(String(bytes, StandardCharsets.UTF_8))
-    }
+    fun <T> createDocument(instance: T): Document
 
-    /**
-     * Create a new YamlDocument by a Byte Array
-     * @param bytes is the array with the data to create the document
-     * @return the created Document
-     */
-    fun newYamlDocument(bytes: ByteArray): DefaultDocument {
-        return newYamlDocument(String(bytes, StandardCharsets.UTF_8))
-    }
-
-    /**
-     * Create a new JsonDocument by a Path
-     * @param path is the Path of the Data for the Document
-     * @return the created Document
-     */
-    fun newJsonDocument(path: Path): DefaultDocument {
-        return jsonStorage().read(path)
-    }
-
-    /**
-     * Create a new YamlDocument by a Path
-     * @param path is the Path of the Data for the Document
-     * @return the created Document
-     */
-    fun newYamlDocument(path: Path): DefaultDocument {
-        return yamlStorage().read(path)
-    }
-
-    /**
-     * Create a new JsonDocument by a Json String
-     * @param input is the Json String for the Document
-     * @return the created Document
-     */
-    fun newJsonDocument(input: String): DefaultDocument {
-        return jsonStorage().read(input)
-    }
-
-    /**
-     * Create a new YamlDocument by a Yaml String
-     * @param input is the Yaml String for the Document
-     * @return the created Document
-     */
-    fun newYamlDocument(input: String): DefaultDocument {
-        return yamlStorage().read(input)
-    }
-
-    /**
-     * @return the XMLStorage
-     */
-    fun xmlStorage(): DocumentStorage {
-        return XML
-    }
-
-    /**
-     * @return the JsonStorage
-     */
-    fun jsonStorage(): DocumentStorage {
-        return JSON
-    }
-
-    /**
-     * @return the YamlStorage
-     */
-    fun yamlStorage(): DocumentStorage {
-        return YAML
-    }
-}
-
-fun createDocument(): Document {
-    return DocumentManagement.newDocument()
-}
-
-fun createDocument(obj: Any): Document {
-    return DocumentManagement.newJsonDocument(DefaultDocument.GSON.toJson(obj))
-}
-
-fun initDocumentManagement(dependencyLoader: DependencyLoader) {
-    dependencyLoader.download("com.google.code.gson:gson:2.8.6")
-    dependencyLoader.download("org.yaml:snakeyaml:1.27")
-    dependencyLoader.download("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
-    dependencyLoader.download("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-    dependencyLoader.download("com.fasterxml.jackson.core:jackson-core:2.12.1")
-    dependencyLoader.download("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
-    dependencyLoader.download("org.codehaus.woodstox:stax2-api:4.2.1")
 }

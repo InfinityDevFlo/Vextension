@@ -7,7 +7,7 @@ pipeline {
         NEXUS_URL = "localhost:8081"
         NEXUS_REPOSITORY = "maven-snapshot"
         NEXUS_CREDENTIAL_ID = "nexus"
-        PROJECT_VERSION = "1.1.0-SNAPSHOT"
+        PROJECT_VERSION = "2.0.0-SNAPSHOT"
     }
 
     stages {

@@ -35,22 +35,10 @@
  *<p>
  */
 
-package eu.vironlab.vextension.discord.role
+package eu.vironlab.vextension.concurrent.callback
 
-import net.dv8tion.jda.api.entities.Role
+interface BiCallback<F, S, O> {
 
+    fun call(firstInput: F, secondInput: S): O
 
-class VextensionRole(jda: Role): Role by jda {
-
-    //val properties: Document = DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").getOrDefault(this.id, DocumentManagement.newDocument(this.id))
-
-
-    fun updateProperties() {
-        //DiscordUtil.databaseClient.getDatabase("discord_roles_${this.guild.id}").update(this.id, this.properties)
-    }
-
-}
-
-fun Role.toVextension(): VextensionRole {
-    return VextensionRole(this)
 }

@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.document.storage
 
-import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -53,13 +52,15 @@ interface DocumentStorage {
      *
      * @return a new Document
      */
-    fun read(inputStream: InputStream): DefaultDocument {
+    fun read(inputStream: InputStream): Document {
         InputStreamReader(inputStream, StandardCharsets.UTF_8).use { inputStreamReader ->
             return this.read(
                 inputStreamReader
             )
         }
     }
+
+    fun <T> read(instance: T): Document
 
     /**
      * Get a Document by a Path of a File
@@ -68,29 +69,31 @@ interface DocumentStorage {
      *
      * @return a new Document
      */
-    fun read(path: Path): DefaultDocument {
+    fun read(path: Path): Document {
         Files.newInputStream(path).use { stream -> return this.read(stream) }
     }
 
-    fun read(file: File): DefaultDocument {
+    fun read(file: File): Document {
         return this.read(file.toPath())
     }
 
-    fun read(bytes: ByteArray): DefaultDocument {
+    fun read(bytes: ByteArray): Document {
         return this.read(ByteArrayInputStream(bytes))
     }
 
-    fun read(input: String): DefaultDocument {
+    fun read(input: String): Document {
         return this.read(StringReader(input))
     }
 
-    fun read(reader: Reader): DefaultDocument
+    fun read(reader: Reader): Document
 
-    fun write(Document: Document, outputStream: OutputStream) {
+    fun <T> write(document: Document, clazz: Class<T>): T
+
+    fun write(document: Document, outputStream: OutputStream) {
         try {
             OutputStreamWriter(outputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
                 this.write(
-                    Document,
+                    document,
                     outputStreamWriter
                 )
             }
@@ -99,26 +102,26 @@ interface DocumentStorage {
         }
     }
 
-    fun write(Document: Document, file: File) {
-        this.write(Document, file.toPath())
+    fun write(document: Document, file: File) {
+        this.write(document, file.toPath())
     }
 
-    fun write(Document: Document, path: Path) {
+    fun write(document: Document, path: Path) {
         val parent = path.parent
         try {
             if (parent != null) {
                 Files.createDirectories(parent)
             }
-            Files.newOutputStream(path).use { stream -> this.write(Document, stream) }
+            Files.newOutputStream(path).use { stream -> this.write(document, stream) }
         } catch (exception: IOException) {
             exception.printStackTrace()
         }
     }
 
-    fun toString(Document: Document): String {
+    fun toString(document: Document): String {
         try {
             StringWriter().use { writer ->
-                this.write(Document, writer)
+                this.write(document, writer)
                 return writer.toString()
             }
         } catch (exception: IOException) {
@@ -127,5 +130,5 @@ interface DocumentStorage {
         return ""
     }
 
-    fun write(Document: Document, writer: Writer)
+    fun write(document: Document, writer: Writer)
 }

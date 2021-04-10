@@ -43,8 +43,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
-import eu.vironlab.vextension.document.storage.SpecificDocumentStorage
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -71,91 +71,91 @@ interface Document {
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: Any): Document
+    fun append(key: String, value: Any): Document
 
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: Number): Document
+    fun append(key: String, value: Number): Document
 
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: Boolean): Document
+    fun append(key: String, value: Boolean): Document
 
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: String): Document
+    fun append(key: String, value: String): Document
 
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: Char): Document
+    fun append(key: String, value: Char): Document
 
     /**
      * Insert a Value identified by the key
      * @param key is the key to identify
-     * @param value is the value to insert
+     * @param value is the value to append
      * @return the current Document instance
      */
-    fun insert(key: String, value: Document): Document
+    fun append(key: String, value: Document): Document
 
     /**
      * Insert a full document into the existing Document instance
-     * @param Document is the Document to insert
+     * @param Document is the Document to append
      * @return the current Document instance
      */
-    fun insert(Document: Document): Document
+    fun append(Document: Document): Document
 
     /**
      * Insert a full JsonObject into the existing Document
-     * @param jsonObject is the JsonObject to insert
+     * @param jsonObject is the JsonObject to append
      * @return the current Document instance
      */
-    fun insert(jsonObject: JsonObject): Document
+    fun append(jsonObject: JsonObject): Document
 
 
     /**
      * Insert a byte Array identified by a key
      * @param key is the key for identify the array
-     * @param bytes is the array to insert
+     * @param bytes is the array to append
      * @return the current Document instance
      */
-    fun insert(key: String, bytes: ByteArray): Document
+    fun append(key: String, bytes: ByteArray): Document
 
     /**
      * Insert the full map into the Document
-     * @param map is the Document to insert
+     * @param map is the Document to append
      * @return the current Document instance
      */
-    fun insert(map: Map<String, Any>): Document
+    fun append(map: Map<String, Any>): Document
 
     /**
      * Insert a JsonElement in the Document
      *
      * @param key is the key for the JsonElement
-     * @param value is the JsonElement to insert into the Document
+     * @param value is the JsonElement to append into the Document
      */
-    fun insert(key: String, value: JsonElement): Document
+    fun append(key: String, value: JsonElement): Document
 
     /**
-     * Get an already inserted Document by a key
+     * Get an already appended Document by a key
      * @param key is the key for getting the Document
      * @return the Document if it exists
      */
@@ -337,7 +337,7 @@ interface Document {
     operator fun <T> get(key: String, gson: Gson, clazz: Class<T>): Optional<T>
 
     /**
-     * Get an Integer and insert a value if the key does not exist
+     * Get an Integer and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -346,7 +346,7 @@ interface Document {
     fun getInt(key: String, def: Int): Int
 
     /**
-     * Get a Shot and insert a value if the key does not exist
+     * Get a Shot and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -355,7 +355,7 @@ interface Document {
     fun getShort(key: String, def: Short): Short
 
     /**
-     * Get a Boolean and insert a value if the key does not exist
+     * Get a Boolean and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -364,7 +364,7 @@ interface Document {
     fun getBoolean(key: String, def: Boolean): Boolean
 
     /**
-     * Get a Long and insert a value if the key does not exist
+     * Get a Long and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -373,7 +373,7 @@ interface Document {
     fun getLong(key: String, def: Long): Long
 
     /**
-     * Get a Double and insert a value if the key does not exist
+     * Get a Double and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -382,7 +382,7 @@ interface Document {
     fun getDouble(key: String, def: Double): Double
 
     /**
-     * Get a Float and insert a value if the key does not exist
+     * Get a Float and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -400,7 +400,7 @@ interface Document {
         if (rs.isPresent) {
             return rs.get()
         } else {
-            insert(key, def)
+            append(key, def)
             return def
         }
     }
@@ -414,13 +414,13 @@ interface Document {
         if (contains(key)) {
             return getMap<K, V>(key).get()
         } else {
-            insert(key, def)
+            append(key, def)
             return def
         }
     }
 
     /**
-     * Get a String and insert a value if the key does not exist
+     * Get a String and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -429,7 +429,7 @@ interface Document {
     fun getString(key: String, def: String): String
 
     /**
-     * Get a Document and insert a value if the key does not exist
+     * Get a Document and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -438,7 +438,7 @@ interface Document {
     fun getDocument(key: String, def: Document): Document
 
     /**
-     * Get a Collection with Documents and insert a value if the key does not exist
+     * Get a Collection with Documents and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -447,7 +447,7 @@ interface Document {
     fun getDocuments(key: String, def: Collection<Document>): Collection<Document>
 
     /**
-     * Get a JsonArray and insert a value if the key does not exist
+     * Get a JsonArray and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -456,7 +456,7 @@ interface Document {
     fun getJsonArray(key: String, def: JsonArray): JsonArray
 
     /**
-     * Get a JsonObject and insert a value if the key does not exist
+     * Get a JsonObject and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -465,7 +465,7 @@ interface Document {
     fun getJsonObject(key: String, def: JsonObject): JsonObject
 
     /**
-     * Get a Byte Array and insert a value if the key does not exist
+     * Get a Byte Array and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -475,7 +475,7 @@ interface Document {
 
 
     /**
-     * Get a BigInteger and insert a value if the key does not exist
+     * Get a BigInteger and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -484,7 +484,7 @@ interface Document {
     fun getBigInteger(key: String, def: BigInteger): BigInteger
 
     /**
-     * Get a BigDecimal and insert a value if the key does not exist
+     * Get a BigDecimal and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -493,7 +493,7 @@ interface Document {
     fun getBigDecimal(key: String, def: BigDecimal): BigDecimal
 
     /**
-     * Get a Char and insert a value if the key does not exist
+     * Get a Char and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
      * @param def is the Default value to set if the key does not exist
@@ -504,19 +504,30 @@ interface Document {
     /**
      * @return the current Document as JsonStorage
      */
-    fun asJson(): SpecificDocumentStorage
+    fun jsonStorage(): DocumentSpecificStorage {
+        return storage(documentJsonStorage)
+    }
 
     /**
      * @return the current Document as YamlStorage
      */
-    fun asYaml(): SpecificDocumentStorage
+    fun yamlStorage(): DocumentSpecificStorage {
+        return storage(documentYamlStorage)
+    }
+
+    /**
+     * @return the current Document as XMLStorage
+     */
+    fun xmlStorage(): DocumentSpecificStorage {
+        return storage(documentXmlStorage)
+    }
 
     /**
      * Get the Document as SpecificDocumentStorage by an IDocumentStorage instance
      * @param storage is the Storage to get the specific Storage
      * @return the SpecificStorage
      */
-    fun storage(storage: DocumentStorage): SpecificDocumentStorage
+    fun storage(storage: DocumentStorage): DocumentSpecificStorage
 
     /**
      * Execute the Unit to all keys of the Document
@@ -568,7 +579,7 @@ interface Document {
      * Serialize the current Document to String
      */
     fun toJson(): String {
-        return asJson().serializeToString()
+        return jsonStorage().serializeToString()
     }
 
 

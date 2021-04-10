@@ -44,39 +44,11 @@ import java.io.Writer
 import java.nio.file.Path
 import java.util.*
 
-class WrappedSpecificDocumentStorage(Document: Document, storage: DocumentStorage) : SpecificDocumentStorage {
-    private val storage: DocumentStorage
-    private val Document: Document
-    override fun document(): Document {
-        return Document
-    }
-
-    override fun write(outputStream: OutputStream): Optional<SpecificDocumentStorage> {
-        storage.write(Document, outputStream)
-        return Optional.of(this)
-    }
-
-    override fun write(file: File): Optional<SpecificDocumentStorage> {
-        storage.write(Document, file)
-        return Optional.of(this)
-    }
-
-    override fun write(path: Path): Optional<SpecificDocumentStorage> {
-        storage.write(Document, path)
-        return Optional.of(this)
-    }
-
-    override fun serializeToString(): String {
-        return storage.toString(Document)
-    }
-
-    override fun write(writer: Writer): Optional<SpecificDocumentStorage> {
-        storage.write(Document, writer)
-        return Optional.of(this)
-    }
-
-    init {
-        this.Document = Document
-        this.storage = storage
-    }
+interface DocumentSpecificStorage {
+    val document: Document
+    fun write(outputStream: OutputStream): DocumentSpecificStorage
+    fun write(file: File): DocumentSpecificStorage
+    fun write(path: Path): DocumentSpecificStorage
+    fun serializeToString(): String
+    fun write(writer: Writer): DocumentSpecificStorage
 }

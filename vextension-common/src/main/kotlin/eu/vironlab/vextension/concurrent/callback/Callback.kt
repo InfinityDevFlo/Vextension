@@ -35,33 +35,10 @@
  *<p>
  */
 
+package eu.vironlab.vextension.concurrent.callback
 
-package eu.vironlab.vextension.document.storage
+interface Callback<I, O> {
 
-import com.google.gson.JsonParser
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import java.io.BufferedReader
-import java.io.Reader
-import java.io.Writer
+    fun call(input: I): O
 
-class JsonDocumentStorage : DocumentStorage {
-    override fun write(Document: Document, writer: Writer) {
-        DefaultDocument.GSON.toJson(Document.toJsonObject(), writer)
-    }
-
-    fun toJson(): String {
-        return toString()
-    }
-
-    override fun read(reader: Reader): DefaultDocument {
-        BufferedReader(reader).use { bufferedReader ->
-            return DocumentManagement.newDocument(
-                JsonParser.parseReader(
-                    bufferedReader
-                ).getAsJsonObject()
-            )
-        }
-    }
 }

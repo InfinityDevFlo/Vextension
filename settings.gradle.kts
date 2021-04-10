@@ -11,13 +11,15 @@ pluginManagement {
 rootProject.name = "Vextension"
 
 //List of all Submodules
-include("vextension-common")
 
-//Discord
-include("vextension-discord")
+    //Common Module
+    include("vextension-common")
 
-//Minecraft Modules
-include("vextension-minecraft-server")
-include("vextension-minecraft-proxy")
+    //Discord
+    include("vextension-discord")
+
+    //Minecraft Modules
+    include("vextension-minecraft-server")
+    include("vextension-minecraft-proxy")
 
     

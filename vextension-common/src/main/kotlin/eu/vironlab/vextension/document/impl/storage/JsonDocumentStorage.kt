@@ -35,10 +35,43 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
 
-interface BiCallback<F, S, O> {
+package eu.vironlab.vextension.document.impl.storage
 
-    fun call(firstInput: F, secondInput: S): O
+import com.google.gson.JsonParser
+import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.createDocument
+import eu.vironlab.vextension.document.createDocumentFromJson
+import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
+import eu.vironlab.vextension.document.storage.DocumentStorage
+import java.io.BufferedReader
+import java.io.Reader
+import java.io.Writer
 
+class JsonDocumentStorage : DocumentStorage {
+    override fun write(Document: Document, writer: Writer) {
+        DefaultDocumentManagement.GSON.toJson(Document.toJsonObject(), writer)
+    }
+
+    fun toJson(): String {
+        return toString()
+    }
+
+    override fun <T> read(instance: T): Document {
+        return createDocumentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
+    }
+
+    override fun read(reader: Reader): Document {
+        BufferedReader(reader).use { bufferedReader ->
+            return createDocument(
+                JsonParser.parseReader(
+                    bufferedReader
+                ).getAsJsonObject()
+            )
+        }
+    }
+
+    override fun <T> write(document: Document, clazz: Class<T>): T {
+        return DefaultDocumentManagement.GSON.fromJson(document.toJson(), clazz)
+    }
 }

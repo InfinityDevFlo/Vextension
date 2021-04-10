@@ -35,35 +35,35 @@
  *<p>
  */
 
+package eu.vironlab.vextension.document.wrapper
 
-package eu.vironlab.vextension.document.storage
-
-import com.google.gson.JsonElement
-import eu.vironlab.vextension.document.DefaultDocument
 import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
-import java.io.Reader
-import java.io.Writer
-import java.util.function.Supplier
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
-import org.yaml.snakeyaml.representer.Representer
+import eu.vironlab.vextension.document.createDocument
+import eu.vironlab.vextension.document.documentJsonStorage
+import eu.vironlab.vextension.document.storage.DocumentStorage
+import java.io.File
 
-class YamlDocumentStorage : DocumentStorage {
-    private val yaml: ThreadLocal<Yaml> = ThreadLocal.withInitial(Supplier {
-        val options = DumperOptions()
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-        Yaml(Constructor(), Representer(), options)
-    })
+class ConfigDocument(val file: File, private var wrapped: Document) : Document by wrapped {
+    constructor(file: File) : this(file, createDocument())
 
-    override fun read(reader: Reader): DefaultDocument {
-        val map: LinkedHashMap<*, *>? = yaml.get().loadAs<LinkedHashMap<*, *>>(reader, LinkedHashMap::class.java)
-        val element: JsonElement = DefaultDocument.GSON.toJsonTree(map)
-        return DocumentManagement.newDocument(element)
+    companion object {
+        @JvmStatic
+        var storage: DocumentStorage = documentJsonStorage
     }
 
-    override fun write(Document: Document, writer: Writer) {
-        yaml.get().dump(Document.toPlainObjects(), writer)
+    init {
+        if (!file.exists()) {
+            file.createNewFile()
+            this.wrapped.storage(storage).write(file)
+        }
     }
+
+    fun loadConfig() {
+        this.wrapped = storage.read(file)
+    }
+
+    fun saveConfig() {
+        wrapped.storage(storage).write(file)
+    }
+
 }

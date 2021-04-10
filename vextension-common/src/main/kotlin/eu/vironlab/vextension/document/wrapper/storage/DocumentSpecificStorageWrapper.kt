@@ -35,21 +35,41 @@
  *<p>
  */
 
-
-package eu.vironlab.vextension.document.storage
+package eu.vironlab.vextension.document.wrapper.storage
 
 import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
+import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.io.File
 import java.io.OutputStream
 import java.io.Writer
 import java.nio.file.Path
-import java.util.*
 
-interface SpecificDocumentStorage {
-    fun document(): Document
-    fun write(outputStream: OutputStream): Optional<SpecificDocumentStorage>
-    fun write(file: File): Optional<SpecificDocumentStorage>
-    fun write(path: Path): Optional<SpecificDocumentStorage>
-    fun serializeToString(): String
-    fun write(writer: Writer): Optional<SpecificDocumentStorage>
+
+class DocumentSpecificStorageWrapper(override val document: Document, val wrapped: DocumentStorage) :
+    DocumentSpecificStorage {
+    override fun write(outputStream: OutputStream): DocumentSpecificStorage {
+        wrapped.write(document, outputStream)
+        return this
+    }
+
+    override fun write(file: File): DocumentSpecificStorage {
+        wrapped.write(document, file)
+        return this
+    }
+
+    override fun write(path: Path): DocumentSpecificStorage {
+        wrapped.write(document, path)
+        return this
+    }
+
+    override fun write(writer: Writer): DocumentSpecificStorage {
+        wrapped.write(document, writer)
+        return this
+    }
+
+    override fun serializeToString(): String {
+        return wrapped.toString(document)
+    }
+
 }

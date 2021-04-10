@@ -41,8 +41,7 @@ import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.discord.command.CommandManager
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
-import eu.vironlab.vextension.document.ConfigDocument
-import eu.vironlab.vextension.document.initDocumentManagement
+import eu.vironlab.vextension.document.wrapper.ConfigDocument
 import java.io.File
 import net.dv8tion.jda.api.JDA
 

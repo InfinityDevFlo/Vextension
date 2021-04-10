@@ -35,7 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent
+package eu.vironlab.vextension.concurrent.callback
 
 interface ThrowableCallback<I, O> {
 
