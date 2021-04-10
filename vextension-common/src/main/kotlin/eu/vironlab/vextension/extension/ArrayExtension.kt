@@ -42,3 +42,11 @@ fun <T> Array<T>.asMutableList(): MutableList<T> {
     rs.addAll(this)
     return rs
 }
+
+inline fun <reified T> Array<out T>.toClean(): Array<T> {
+    val rs = mutableListOf<T>()
+    for (entry in this) {
+        rs.add(entry)
+    }
+    return rs.toTypedArray()
+}

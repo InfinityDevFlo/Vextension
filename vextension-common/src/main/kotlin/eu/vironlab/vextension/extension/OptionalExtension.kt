@@ -37,57 +37,12 @@
 
 package eu.vironlab.vextension.extension
 
-import java.net.URL
 import java.util.*
 
-/**
- * Check if the String is an Integer
- */
-fun String.isInt(): Boolean {
-    try {
-        this.toInt()
-        return true
-    } catch (e: Exception) {
-        return false
-    }
-}
-
-/**
- * Check if the String is a Boolean
- */
-fun String.isBoolean(): Boolean {
-    try {
-        this.toBoolean()
-        return true
-    } catch (e: Exception) {
-        return false
-    }
-}
-
-
-/**
- * Check if the String is an URL
- */
-fun String.isUrl(): Boolean {
-    try {
-        URL(this)
-        return true
-    } catch (e: Exception) {
-        return false
-    }
-}
-
-fun String.toUUID(): UUID {
-    return if (contains("-")) {
-        UUID.fromString(this)
-    } else {
-        var uuid = ""
-        for (i in 0..31) {
-            uuid += this[i]
-            if (i == 7 || i == 11 || i == 15 || i == 19) {
-                uuid = "$uuid-"
-            }
-        }
-        UUID.fromString(uuid)
+fun <B, R> Optional<B>.cast(): Optional<R> {
+    return if (!this.isPresent) {
+        Optional.empty()
+    }else {
+        Optional.ofNullable(get() as R)
     }
 }

@@ -40,15 +40,13 @@ package eu.vironlab.vextension.rest
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.createDocumentFromJson
-import eu.vironlab.vextension.document.documentJsonStorage
+import eu.vironlab.vextension.document.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
-import eu.vironlab.vextension.document.documentXmlStorage
+
 /**
  * Client for HTTP Requests
  */
@@ -136,7 +134,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-            val document = documentXmlStorage.read(input)
+            val document = DocumentFactory.documentXmlStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {
@@ -161,7 +159,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.inputStream))
-            val document = documentJsonStorage.read(input)
+            val document = DocumentFactory.documentJsonStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {

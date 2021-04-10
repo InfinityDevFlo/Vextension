@@ -39,69 +39,120 @@ package eu.vironlab.vextension.document
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
 import eu.vironlab.vextension.document.impl.storage.JsonDocumentStorage
 import eu.vironlab.vextension.document.impl.storage.XMLDocumentStorage
 import eu.vironlab.vextension.document.impl.storage.YamlDocumentStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
-import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
+
+object DocumentFactory {
+    @JvmStatic
+    var documentXmlStorage: DocumentStorage = XMLDocumentStorage()
+
+    @JvmStatic
+    var documentJsonStorage: DocumentStorage = JsonDocumentStorage()
+
+    @JvmStatic
+    var documentYamlStorage: DocumentStorage = YamlDocumentStorage()
+
+    @JvmStatic
+    var documentManagement: DocumentManagement = DefaultDocumentManagement()
 
 
-var documentXmlStorage: DocumentStorage = XMLDocumentStorage()
+    @JvmStatic
+    fun createDocument(): Document {
+        return documentManagement.createDocument()
+    }
 
-var documentJsonStorage: DocumentStorage = JsonDocumentStorage()
+    @JvmStatic
+    fun createDocument(jsonElement: JsonElement): Document {
+        return documentManagement.createDocument(jsonElement)
+    }
 
+    @JvmStatic
+    fun createDocumentFromJson(json: String): Document {
+        return documentJsonStorage.read(json)
+    }
 
-var documentYamlStorage: DocumentStorage = YamlDocumentStorage()
+    @JvmStatic
+    fun createDocument(jsonObject: JsonObject): Document {
+        return documentManagement.createDocument(jsonObject)
+    }
 
-var documentManager: DocumentManagement = DefaultDocumentManagement()
+    @JvmStatic
+    fun createDocument(key: String, value: String): Document {
+        return documentManagement.createDocument(key, value)
+    }
 
+    @JvmStatic
+    fun createDocument(key: String, value: Number): Document {
+        return documentManagement.createDocument(key, value)
+    }
 
+    @JvmStatic
+    fun createDocument(key: String, value: Char): Document {
+        return documentManagement.createDocument(key, value)
+    }
+
+    @JvmStatic
+    fun createDocument(key: String, value: Boolean): Document {
+        return documentManagement.createDocument(key, value)
+    }
+
+    @JvmStatic
+    fun createDocument(key: String, value: Any): Document {
+        return documentManagement.createDocument(key, value)
+    }
+
+    @JvmStatic
+    fun <T> createDocument(obj: T): Document {
+        return documentManagement.createDocument(obj)
+    }
+}
 
 fun createDocument(): Document {
-    return documentManager.createDocument()
+    return DocumentFactory.documentManagement.createDocument()
 }
 
 
 fun createDocument(jsonElement: JsonElement): Document {
-    return documentManager.createDocument(jsonElement)
+    return DocumentFactory.documentManagement.createDocument(jsonElement)
 }
 
 fun createDocumentFromJson(json: String): Document {
-    return documentJsonStorage.read(json)
+    return DocumentFactory.documentJsonStorage.read(json)
 }
 
 fun createDocument(jsonObject: JsonObject): Document {
-    return documentManager.createDocument(jsonObject)
+    return DocumentFactory.documentManagement.createDocument(jsonObject)
 }
 
 
 fun createDocument(key: String, value: String): Document {
-    return documentManager.createDocument(key, value)
+    return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
 fun createDocument(key: String, value: Number): Document {
-    return documentManager.createDocument(key, value)
+    return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
 fun createDocument(key: String, value: Char): Document {
-    return documentManager.createDocument(key, value)
+    return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
 fun createDocument(key: String, value: Boolean): Document {
-    return documentManager.createDocument(key, value)
+    return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
 fun createDocument(key: String, value: Any): Document {
-    return documentManager.createDocument(key, value)
+    return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
 fun <T> createDocument(obj: T): Document {
-    return documentManager.createDocument(obj)
+    return DocumentFactory.documentManagement.createDocument(obj)
 }
-
-    

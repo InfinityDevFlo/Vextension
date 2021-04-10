@@ -37,57 +37,32 @@
 
 package eu.vironlab.vextension.extension
 
-import java.net.URL
 import java.util.*
 
-/**
- * Check if the String is an Integer
- */
-fun String.isInt(): Boolean {
-    try {
-        this.toInt()
-        return true
-    } catch (e: Exception) {
-        return false
-    }
+fun parseLine(line: String): Properties? {
+    return if (line.trim { it <= ' ' }.isEmpty()) {
+        null
+    } else parseLine(line.split(" ").toTypedArray())
 }
 
-/**
- * Check if the String is a Boolean
- */
-fun String.isBoolean(): Boolean {
-    try {
-        this.toBoolean()
-        return true
-    } catch (e: Exception) {
-        return false
-    }
-}
-
-
-/**
- * Check if the String is an URL
- */
-fun String.isUrl(): Boolean {
-    try {
-        URL(this)
-        return true
-    } catch (e: Exception) {
-        return false
-    }
-}
-
-fun String.toUUID(): UUID {
-    return if (contains("-")) {
-        UUID.fromString(this)
-    } else {
-        var uuid = ""
-        for (i in 0..31) {
-            uuid += this[i]
-            if (i == 7 || i == 11 || i == 15 || i == 19) {
-                uuid = "$uuid-"
-            }
+fun parseLine(args: Array<String>): Properties {
+    val properties = Properties()
+    for (argument in args) {
+        if (argument.isEmpty() || argument == " ") {
+            continue
         }
-        UUID.fromString(uuid)
+        if (argument.contains("=")) {
+            val x = argument.indexOf("=")
+            properties[argument.substring(0, x).replaceFirst("-".toRegex(), "")
+                .replaceFirst("-".toRegex(), "")] =
+                argument.substring(x + 1)
+            continue
+        }
+        if (argument.contains("--") || argument.contains("-")) {
+            properties[argument.replaceFirst("-".toRegex(), "").replaceFirst("-".toRegex(), "")] = "true"
+            continue
+        }
+        properties[argument] = "true"
     }
+    return properties
 }
