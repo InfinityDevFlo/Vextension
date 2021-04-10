@@ -68,9 +68,10 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
             var step = 0
             var index = 0
             while (step < contents.size) {
+                val currentStep = steps * index
                 pages.add(BukkitPage().also {
                     it.border = this.border
-                }.create(list.toMutableList().subList(steps * index, steps * (index + 1)), index, this))
+                }.create(list.toMutableList().subList(currentStep, if (currentStep + steps < list.size) currentStep + steps else list.size), index, this))
                 index++
                 step += steps
             }
