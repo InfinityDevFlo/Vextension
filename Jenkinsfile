@@ -53,7 +53,7 @@ pipeline {
         }
         stage("Sources") {
             steps {
-                sh "./gradlew sourcesJar";
+                sh "./gradlew kotlinSourcesJar";
             }
             post {
                 success {

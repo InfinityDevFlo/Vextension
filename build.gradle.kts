@@ -69,8 +69,20 @@ subprojects {
 
     tasks {
         //Set the Name of the Sources Jar
-        val sourcesJar by creating(Jar::class) {
+        kotlinSourcesJar {
             archiveFileName.set("${project.name}-sources.jar")
+            doFirst {
+                //Set Manifest
+                manifest {
+                    attributes["Implementation-Title"] = project.name
+                    attributes["Implementation-Version"] = findProperty("version").toString()
+                    attributes["Specification-Version"] = findProperty("version").toString()
+                    attributes["Implementation-Vendor"] = "VironLab.eu"
+                    attributes["Built-By"] = System.getProperty("user.name")
+                    attributes["Build-Jdk"] = System.getProperty("java.version")
+                    attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+                }
+            }
         }
 
         shadowJar {
