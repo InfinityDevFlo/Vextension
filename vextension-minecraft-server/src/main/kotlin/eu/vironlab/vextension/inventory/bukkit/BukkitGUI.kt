@@ -38,6 +38,7 @@ package eu.vironlab.vextension.inventory.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.extension.setItem
@@ -60,8 +61,8 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                 inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                Bukkit.getPlayer(player)?.openInventory(inventory)
-                    ?: throw IllegalArgumentException("Player doesn't exist")
+                player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
+                    .openInventory(inventory)
             }
         }
     }
@@ -111,7 +112,6 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         var current = 0
         var slot: Int? = null
         for (i in contents.keys.toSortedSet().iterator()) {
-            //println("$ia $current")
             if (i != current++) {
                 slot = current.minus(1)
                 break
