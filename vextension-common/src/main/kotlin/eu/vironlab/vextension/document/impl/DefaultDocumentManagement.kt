@@ -608,7 +608,6 @@ internal class DefaultDocumentManagement : DocumentManagement {
             return this.getChar(key).get()
         }
 
-
         override fun storage(storage: DocumentStorage): DocumentSpecificStorage {
             return DocumentSpecificStorageWrapper(this, storage)
         }
