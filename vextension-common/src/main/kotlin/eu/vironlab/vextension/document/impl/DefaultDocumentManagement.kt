@@ -653,16 +653,6 @@ internal class DefaultDocumentManagement : DocumentManagement {
     }
 
     companion object {
-        @JvmStatic
-        fun downloadDocumentDependencies(dependencyLoader: DependencyLoader) {
-            dependencyLoader.download("com.google.code.gson:gson:2.8.6")
-            dependencyLoader.download("org.yaml:snakeyaml:1.27")
-            dependencyLoader.download("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.1")
-            dependencyLoader.download("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-            dependencyLoader.download("com.fasterxml.jackson.core:jackson-core:2.12.1")
-            dependencyLoader.download("com.fasterxml.jackson.core:jackson-annotations:2.12.1")
-            dependencyLoader.download("org.codehaus.woodstox:stax2-api:4.2.1")
-        }
 
         @JvmStatic
         private val TYPE_ADAPTER: TypeAdapter<DefaultDocument?> = object : TypeAdapter<DefaultDocument?>() {
