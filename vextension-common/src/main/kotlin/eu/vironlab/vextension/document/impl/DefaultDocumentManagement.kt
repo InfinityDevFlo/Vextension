@@ -39,6 +39,7 @@ package eu.vironlab.vextension.document.impl
 
 import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
+import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import eu.vironlab.vextension.dependency.DependencyLoader
@@ -651,6 +652,12 @@ internal class DefaultDocumentManagement : DocumentManagement {
 
     }
 
+    class DocumentInstanceCreator : InstanceCreator<Document> {
+        override fun createInstance(type: Type): Document {
+            return DefaultDocument()
+        }
+    }
+
     companion object {
 
         @JvmStatic
@@ -675,6 +682,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
             .serializeNulls()
             .disableHtmlEscaping()
             .setPrettyPrinting()
+            .registerTypeAdapter(object : TypeToken<Document>() {}.type, DocumentInstanceCreator())
             .registerTypeAdapterFactory(TypeAdapters.newTypeHierarchyFactory(DefaultDocument::class.java, TYPE_ADAPTER))
             .create()
     }

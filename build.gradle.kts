@@ -44,6 +44,7 @@ allprojects {
         maven("https://repo.vironlab.eu/repository/snapshot/")
         maven("https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/")
         maven("https://repo.cloudnetservice.eu/repository/snapshots/")
+        maven("https://m2.dv8tion.net/releases/")
     }
 
     //Define Version and Group

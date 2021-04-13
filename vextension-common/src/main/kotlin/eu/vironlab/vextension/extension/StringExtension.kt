@@ -108,6 +108,15 @@ fun String.isUrl(): Boolean {
     }
 }
 
+fun String.isUUID(): Boolean {
+    try {
+        this.toUUID()
+        return true
+    }catch (e: Exception) {
+        return false
+    }
+}
+
 fun String.toUUID(): UUID {
     return if (contains("-")) {
         UUID.fromString(this)
