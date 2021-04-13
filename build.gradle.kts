@@ -34,6 +34,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        maven( "https://m2.dv8tion.net/releases/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.destroystokyo.com/repository/maven-public/")
