@@ -77,7 +77,7 @@ class ConnectionDataFactory : Factory<ConnectionData> {
     ) : RemoteConnectionData
 
     internal inner class AuthedFileConnectionDataImpl(
-        override val file: File, override val username: String,
+        override val file: File, override val user: String,
         override val password: String
     ) : AuthedFileConnectionData
 }

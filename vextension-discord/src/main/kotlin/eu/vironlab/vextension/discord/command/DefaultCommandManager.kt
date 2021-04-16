@@ -38,12 +38,12 @@
 package eu.vironlab.vextension.discord.command
 
 import eu.vironlab.vextension.discord.DiscordUtil
-import eu.vironlab.vextension.document.createDocument
 import eu.vironlab.vextension.discord.command.annotation.Command
 import eu.vironlab.vextension.discord.command.executor.CommandExecutor
 import eu.vironlab.vextension.discord.embed.SimpleEmbedConfiguration
 import eu.vironlab.vextension.discord.embed.toHex
 import eu.vironlab.vextension.discord.extension.toVextension
+import eu.vironlab.vextension.document.document
 import java.awt.Color
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
@@ -145,7 +145,7 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
                 event.channel.sendMessage(
                     this.commandNotFoundMessage.toEmbed(
                         event.author.avatarUrl!!,
-                        createDocument("cmd", cmdName)
+                        document("cmd", cmdName)
                     )
                 ).queue()
             }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.JsonParser
 import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.createDocument
-import eu.vironlab.vextension.document.createDocumentFromJson
+import eu.vironlab.vextension.document.document
+import eu.vironlab.vextension.document.documentFromJson
 import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.io.BufferedReader
@@ -20,12 +20,12 @@ class XMLDocumentStorage : DocumentStorage {
     private val jsonMapper: ObjectMapper = ObjectMapper()
 
     override fun <T> read(instance: T): Document {
-        return createDocumentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
+        return documentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
     }
 
     override fun read(reader: Reader): Document {
         BufferedReader(reader).use { bufferedReader ->
-            return createDocument(
+            return document(
                 JsonParser().parse(
                     jsonMapper.writeValueAsString(xmlMapper.readTree(bufferedReader)).toString()
                 ).asJsonObject

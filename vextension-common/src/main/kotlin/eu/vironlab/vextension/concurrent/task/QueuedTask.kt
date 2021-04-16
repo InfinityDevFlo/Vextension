@@ -35,11 +35,25 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.callback
+package eu.vironlab.vextension.concurrent.task
 
-interface ThrowableCallback<I, O> {
+import java.util.function.Consumer
 
-    @Throws(Throwable::class)
-    fun call(input: I): O
+interface QueuedTask<R> {
+
+    fun queue()
+
+    fun queue(resultAction: (R) -> Unit)
+
+
+    fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit)
+
+    fun complete(): R
+
+    fun complete(resultAction: (R) -> Unit)
+
+    fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit)
+
+    fun <C> complete(returnCallback: (R) -> C): C
 
 }

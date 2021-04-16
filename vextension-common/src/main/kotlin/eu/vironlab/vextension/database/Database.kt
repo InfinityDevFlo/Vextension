@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
@@ -44,49 +45,22 @@ import java.util.concurrent.CompletableFuture
 
 interface Database : Nameable {
 
-    fun contains(key: String): Boolean
+    fun contains(key: String): QueuedTask<Boolean>
 
-    fun contains(fieldName: String, fieldValue: Any): Boolean
+    fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
 
-    fun get(key: String): Optional<Document>
+    fun get(key: String): QueuedTask<Optional<Document>>
 
-    fun get(fieldName: String, fieldValue: Any): Collection<Document>
+    fun get(fieldName: String, fieldValue: Any): QueuedTask<Collection<Document>>
 
-    fun get(key: String, def: Document): Document
+    fun get(key: String, def: Document): QueuedTask<Document>
 
-    fun update(key: String, newValue: Document): Boolean
+    fun update(key: String, newValue: Document): QueuedTask<Boolean>
 
-    fun insert(key: String, value: Document): Boolean
+    fun insert(key: String, value: Document): QueuedTask<Boolean>
 
-    fun delete(key: String): Boolean
+    fun delete(key: String): QueuedTask<Boolean>
 
-    fun keys(): Collection<String>
+    fun keys(): QueuedTask<Collection<String>>
 
-    suspend fun updateAsync(key: String, newValue: Document): Boolean {
-        return update(key, newValue)
-    }
-
-    suspend fun containsAsync(key: String): Boolean {
-        return contains(key)
-    }
-
-    suspend fun getAsync(key: String): Optional<Document> {
-        return get(key)
-    }
-
-    suspend fun getAsync(key: String, def: Document): Document {
-        return get(key, def)
-    }
-
-    suspend fun insertAsync(key: String, value: Document): Boolean {
-        return insert(key, value)
-    }
-
-    suspend fun deleteAsync(key: String): Boolean {
-        return delete(key)
-    }
-
-    suspend fun keysAsync(): Collection<String> {
-        return keys()
-    }
 }

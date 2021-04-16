@@ -35,42 +35,8 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql
+package eu.vironlab.vextension.concurrent.task
 
-import eu.vironlab.vextension.database.Database
-import eu.vironlab.vextension.database.DatabaseClient
-
-
-class SqlDatabaseClient : DatabaseClient {
-    override fun init() {
-        TODO("Not yet implemented")
-    }
-
-    override fun close() {
-        TODO("Not yet implemented")
-    }
-
-    override fun dropDatabase(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun dropDatabaseAsync(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun containsDatabase(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun containsDatabaseAsync(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDatabase(name: String): Database {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getDatabaseAsync(name: String): Database {
-        TODO("Not yet implemented")
-    }
+fun <T, R> queueTask(callback: (T) -> R, callParam: T): QueuedTask<R> {
+    return QueuedTaskProvider.instance.createTask(callback, callParam)
 }

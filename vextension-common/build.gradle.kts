@@ -6,3 +6,4 @@ dependencies {
     implementation(findProperty("coords_jackson").toString())
     implementation(findProperty("coords_snakeyml").toString())
 }
+

@@ -39,7 +39,7 @@ package eu.vironlab.vextension.database.connectiondata
 
 interface AuthedFileConnectionData : FileConnectionData {
 
-    val username: String
+    val user: String
     val password: String
 
 }

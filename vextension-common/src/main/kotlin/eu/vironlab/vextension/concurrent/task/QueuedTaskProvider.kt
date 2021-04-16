@@ -35,10 +35,17 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.callback
+package eu.vironlab.vextension.concurrent.task
 
-interface Callback<I, O> {
+import eu.vironlab.vextension.concurrent.task.impl.DefaultQueuedTaskProvider
 
-    fun call(input: I): O
+abstract class QueuedTaskProvider {
+
+    companion object {
+        @JvmStatic
+        var instance: QueuedTaskProvider = DefaultQueuedTaskProvider()
+    }
+
+    abstract fun <T, R> createTask(callback: (T) -> R, callParam: T): QueuedTask<R>
 
 }

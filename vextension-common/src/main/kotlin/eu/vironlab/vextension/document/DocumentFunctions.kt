@@ -122,49 +122,49 @@ object DocumentFactory {
     }
 }
 
-fun createDocument(): Document {
+fun document(): Document {
     return DocumentFactory.documentManagement.createDocument()
 }
 
 
-fun createDocument(jsonElement: JsonElement): Document {
+fun document(jsonElement: JsonElement): Document {
     return DocumentFactory.documentManagement.createDocument(jsonElement)
 }
 
-fun createDocumentFromJson(json: String): Document {
+fun documentFromJson(json: String): Document {
     return DocumentFactory.documentJsonStorage.read(json)
 }
 
-fun createDocument(jsonObject: JsonObject): Document {
+fun document(jsonObject: JsonObject): Document {
     return DocumentFactory.documentManagement.createDocument(jsonObject)
 }
 
 
-fun createDocument(key: String, value: String): Document {
+fun document(key: String, value: String): Document {
     return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
-fun createDocument(key: String, value: Number): Document {
+fun document(key: String, value: Number): Document {
     return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
-fun createDocument(key: String, value: Char): Document {
+fun document(key: String, value: Char): Document {
     return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
-fun createDocument(key: String, value: Boolean): Document {
+fun document(key: String, value: Boolean): Document {
     return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
-fun createDocument(key: String, value: Any): Document {
+fun document(key: String, value: Any): Document {
     return DocumentFactory.documentManagement.createDocument(key, value)
 }
 
 
-fun <T> createDocument(obj: T): Document {
+fun <T> document(obj: T): Document {
     return DocumentFactory.documentManagement.createDocument(obj)
 }

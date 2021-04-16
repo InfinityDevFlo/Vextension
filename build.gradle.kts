@@ -63,9 +63,9 @@ subprojects {
 
     //Define Dependencies for all Modules
     dependencies {
-        shadow("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
-        shadow("org.jetbrains.kotlin:kotlin-serialization:1.4.31")
-        shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
+        implementation("org.jetbrains.kotlin:kotlin-serialization:1.4.31")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     }
 
     tasks {

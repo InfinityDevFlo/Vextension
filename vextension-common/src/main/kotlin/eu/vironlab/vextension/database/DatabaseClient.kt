@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.concurrent.task.QueuedTask
 import java.util.concurrent.CompletableFuture
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -51,55 +52,29 @@ interface DatabaseClient {
     /**
      * Init the Client and open the Connection
      */
-    fun init()
+    fun init(): QueuedTask<Unit>
 
     /**
      * Close the connection of the Client
      */
-    fun close()
+    fun close(): QueuedTask<Unit>
 
     /**
      * Delete a Database with [name]
      *
      * @return true if the Database is Deleted, false if there is an error or the Database does not exist
      */
-    fun dropDatabase(name: String): Boolean
-
-    /**
-     * Async Method for dropDatabase
-     *
-     * @see DatabaseClient.dropDatabase([name])
-     */
-    suspend fun dropDatabaseAsync(name: String): Boolean {
-        return dropDatabase(name)
-    }
+    fun dropDatabase(name: String): QueuedTask<Boolean>
 
     /**
      * Check if a Database with [name] exists
      */
-    fun containsDatabase(name: String): Boolean
-
-    /**
-     * Async method for containsDatabase
-     *
-     * @see DatabaseClient.containsDatabase([name])
-     */
-    suspend fun containsDatabaseAsync(name: String): Boolean {
-        return containsDatabase(name)
-    }
+    fun containsDatabase(name: String): QueuedTask<Boolean>
 
     /**
      * Get the Database with [name]
      */
-    fun getDatabase(name: String): Database
+    fun getDatabase(name: String): QueuedTask<Database>
 
-    /**
-     * Get the Database with [name] Async
-     *
-     * @see DatabaseClient.getDatabase([name])
-     */
-    suspend fun getDatabaseAsync(name: String): Database {
-        return getDatabase(name)
-    }
 
 }

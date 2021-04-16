@@ -40,8 +40,8 @@ package eu.vironlab.vextension.document.impl.storage
 
 import com.google.gson.JsonParser
 import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.createDocument
-import eu.vironlab.vextension.document.createDocumentFromJson
+import eu.vironlab.vextension.document.document
+import eu.vironlab.vextension.document.documentFromJson
 import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.io.BufferedReader
@@ -58,12 +58,12 @@ class JsonDocumentStorage : DocumentStorage {
     }
 
     override fun <T> read(instance: T): Document {
-        return createDocumentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
+        return documentFromJson(DefaultDocumentManagement.GSON.toJson(instance))
     }
 
     override fun read(reader: Reader): Document {
         BufferedReader(reader).use { bufferedReader ->
-            return createDocument(
+            return document(
                 JsonParser.parseReader(
                     bufferedReader
                 ).asJsonObject

@@ -43,7 +43,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentFactory
-import eu.vironlab.vextension.document.createDocument
+import eu.vironlab.vextension.document.document
 import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import eu.vironlab.vextension.document.wrapper.storage.DocumentSpecificStorageWrapper
@@ -55,7 +55,7 @@ import java.util.*
 import java.util.function.Consumer
 
 class ConfigDocument(val file: File, private var wrapped: Document) : Document {
-    constructor(file: File) : this(file, createDocument())
+    constructor(file: File) : this(file, document())
 
     companion object {
         @JvmStatic

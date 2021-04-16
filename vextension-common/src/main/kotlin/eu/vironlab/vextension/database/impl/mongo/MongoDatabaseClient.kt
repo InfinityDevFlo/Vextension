@@ -40,12 +40,13 @@ package eu.vironlab.vextension.database.impl.mongo
 import com.google.inject.Inject
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
-import com.mongodb.client.MongoDatabase as MongoDB
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
-import eu.vironlab.vextension.document.Document
+import com.mongodb.client.MongoDatabase as MongoDB
 
 open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionData) : DatabaseClient {
 
@@ -60,33 +61,40 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
         this.remoteConnectionData = connectionData as RemoteConnectionData
     }
 
-    override fun init() {
-        this.mongoClient = MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
-        this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
+    override fun init(): QueuedTask<Unit> {
+        return queueTask({
+            this.mongoClient =
+                MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
+            this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
+        }, Unit)
     }
 
-    override fun close() {
-        mongoClient.close()
+    override fun close(): QueuedTask<Unit> {
+        return queueTask({ mongoClient.close(); }, Unit)
     }
 
-    override fun dropDatabase(name: String): Boolean {
-        if (!containsDatabase(name)) {
-            return false
-        }
-        this.mongoDatabase.getCollection(name).drop()
-        return true
+    override fun dropDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask({
+            if (!containsDatabase(name).complete()) {
+                false
+            }
+            this.mongoDatabase.getCollection(name).drop()
+            true
+        }, name)
     }
 
 
-    override fun containsDatabase(name: String): Boolean {
-        return this.mongoDatabase.listCollectionNames().contains(name)
+    override fun containsDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask({ this.mongoDatabase.listCollectionNames().contains(name) }, name)
     }
 
-    override fun getDatabase(name: String): Database {
-        if (!containsDatabase(name)) {
-            this.mongoDatabase.createCollection(name)
-        }
-        return MongoDatabase(name, this.mongoDatabase.getCollection(name))
+    override fun getDatabase(name: String): QueuedTask<Database> {
+        return queueTask({
+            if (!containsDatabase(name).complete()) {
+                this.mongoDatabase.createCollection(name)
+            }
+            MongoDatabase(name, this.mongoDatabase.getCollection(name))
+        }, name)
     }
 
 }
