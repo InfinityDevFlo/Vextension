@@ -82,9 +82,9 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
             val cmdName = args[0].substring(1)
             var cmd: CommandData? = null
             if (commands.containsKey(cmdName)) {
-                cmd = commands.get(cmdName)
+                cmd = commands[cmdName]
             } else if (aliases.containsKey(cmdName)) {
-                cmd = commands.get(aliases.get(cmdName))
+                cmd = commands[aliases[cmdName]]
             }
             if (cmd != null) {
                 if (event.isFromGuild) {
@@ -115,7 +115,11 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
                                 event.message,
                                 finalArgs.drop(1).toTypedArray(),
                                 event.isFromGuild,
-                                event.guild,
+                                try {
+                                    event.guild
+                                } catch (e: Exception) {
+                                    null
+                                },
                                 this.jda
                             )
                             if (enableLogging) {
@@ -131,7 +135,11 @@ class DefaultCommandManager(override val prefix: String, val jda: JDA, val enabl
                     event.message,
                     args.drop(1).toTypedArray(),
                     event.isFromGuild,
-                    event.guild,
+                    try {
+                        event.guild
+                    } catch (e: Exception) {
+                        null
+                    },
                     this.jda
                 )
                 if (enableLogging) {
