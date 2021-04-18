@@ -23,7 +23,7 @@ maven {
 }
 
 //Repository - Kotlin DSL
-maven("https://repo.vironlab.eu/repository/snapshot/")
+maven("https://repo.vironlab.eu/repository/maven-snapshot/")
 
 //Dependency - Common
 compileOnly("eu.vironlab.vextension:vextension-common:2.0.0-SNAPSHOT")
