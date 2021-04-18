@@ -46,6 +46,6 @@ abstract class QueuedTaskProvider {
         var instance: QueuedTaskProvider = DefaultQueuedTaskProvider()
     }
 
-    abstract fun <T, R> createTask(callback: (T) -> R, callParam: T): QueuedTask<R>
+    abstract fun <R> createTask(callback: (Unit) -> R): QueuedTask<R>
 
 }

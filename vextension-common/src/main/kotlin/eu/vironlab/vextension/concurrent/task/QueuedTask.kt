@@ -37,14 +37,11 @@
 
 package eu.vironlab.vextension.concurrent.task
 
-import java.util.function.Consumer
-
 interface QueuedTask<R> {
 
     fun queue()
 
     fun queue(resultAction: (R) -> Unit)
-
 
     fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit)
 

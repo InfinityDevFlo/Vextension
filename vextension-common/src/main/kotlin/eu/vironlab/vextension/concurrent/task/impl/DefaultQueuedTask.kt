@@ -42,23 +42,23 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class DefaultQueuedTask<T, R>(val callback: (T) -> R, val callParam: T) : QueuedTask<R> {
+class DefaultQueuedTask<R>(val callback: (Unit) -> R) : QueuedTask<R> {
     override fun queue() {
         GlobalScope.launch {
-            callback.invoke(callParam)
+            callback.invoke(Unit)
         }
     }
 
     override fun queue(resultAction: (R) -> Unit) {
         GlobalScope.launch {
-            resultAction.invoke(callback.invoke(callParam))
+            resultAction.invoke(callback.invoke(Unit))
         }
     }
 
     override fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
         GlobalScope.launch {
             try {
-                resultAction.invoke(callback.invoke(callParam))
+                resultAction.invoke(callback.invoke(Unit))
             } catch (e: Throwable) {
                 errorAction.invoke(e)
             }
@@ -66,20 +66,20 @@ class DefaultQueuedTask<T, R>(val callback: (T) -> R, val callParam: T) : Queued
     }
 
     override fun complete(): R {
-        return callback.invoke(callParam)
+        return callback.invoke(Unit)
     }
 
     override fun complete(resultAction: (R) -> Unit) {
-        return resultAction.invoke(callback.invoke(callParam))
+        return resultAction.invoke(callback.invoke(Unit))
     }
 
     override fun <C> complete(returnCallback: (R) -> C): C {
-        return returnCallback.invoke(callback.invoke(callParam))
+        return returnCallback.invoke(callback.invoke(Unit))
     }
 
     override fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
         try {
-            resultAction.invoke(callback.invoke(callParam))
+            resultAction.invoke(callback.invoke(Unit))
         } catch (e: Throwable) {
             errorAction.invoke(e)
         }

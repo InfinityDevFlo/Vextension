@@ -37,6 +37,6 @@
 
 package eu.vironlab.vextension.concurrent.task
 
-fun <T, R> queueTask(callback: (T) -> R, callParam: T): QueuedTask<R> {
-    return QueuedTaskProvider.instance.createTask(callback, callParam)
+fun <R> queueTask(callback: (Unit) -> R): QueuedTask<R> {
+    return QueuedTaskProvider.instance.createTask(callback)
 }

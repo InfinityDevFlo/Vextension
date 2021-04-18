@@ -35,23 +35,16 @@
  *<p>
  */
 
-package eu.vironlab.vextension.velocity
+package eu.vironlab.vextension.database.impl.sql
 
-import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
-import com.velocitypowered.api.proxy.ProxyServer
-import org.slf4j.Logger
+import eu.vironlab.vextension.database.DatabaseClient
+import java.sql.ResultSet
 
-@Plugin(
-    name = "Vextension",
-    authors = arrayOf("VironLab"),
-    id = "vextension_velocity",
-    description = "Vextension for Velocity",
-    version = "1.0.0-SNAPSHOT"
-)
-class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) {
 
-    init {
-        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
-    }
+abstract class AbstractSqlDatabaseClient : DatabaseClient {
+
+    abstract fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T
+
+    abstract fun executeUpdate(query: String): Int
+
 }

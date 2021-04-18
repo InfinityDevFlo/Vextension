@@ -60,6 +60,7 @@ class VextensionBukkit : JavaPlugin(), CommandExecutor {
     override fun onLoad() {
         instance = this
         key = NamespacedKey(instance, "vextension")
+        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
 
     override fun onEnable() {

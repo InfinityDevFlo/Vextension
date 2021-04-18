@@ -40,7 +40,6 @@ package eu.vironlab.vextension.database.impl.mongo
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoCursor
-import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
@@ -55,9 +54,9 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
     val COLLECTION_KEY: String = "__key__"
 
     override fun contains(key: String): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             this@MongoDatabase.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor().hasNext()
-        }, key)
+        }
     }
 
     private fun toBson(document: Document): BsonDocument {
@@ -69,7 +68,7 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
     }
 
     override fun get(key: String): QueuedTask<Optional<Document>> {
-        return queueTask({
+        return queueTask {
             val cursor: MongoCursor<BsonDocument> =
                 this@MongoDatabase.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
             if (!cursor.hasNext()) {
@@ -77,11 +76,11 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
             } else {
                 Optional.of(fromBson(cursor.next()))
             }
-        }, key)
+        }
     }
 
     override fun get(key: String, def: Document): QueuedTask<Document> {
-        return queueTask({
+        return queueTask {
             val cursor: MongoCursor<BsonDocument> =
                 this@MongoDatabase.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
             if (cursor.hasNext()) {
@@ -90,49 +89,49 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
                 this@MongoDatabase.mongoCollection.insertOne(toBson(def.append(COLLECTION_KEY, key)))
                 def
             }
-        }, DataPair<String, Document>(key, def))
+        }
     }
 
     override fun insert(key: String, value: Document): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             if (contains(key).complete()) {
                 false
             } else {
                 this@MongoDatabase.mongoCollection.insertOne(toBson(value.append(COLLECTION_KEY, key)))
                 true
             }
-        }, DataPair(key, value))
+        }
     }
 
     override fun delete(key: String): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             if (!contains(key).complete()) {
                 false
             } else {
                 this@MongoDatabase.mongoCollection.deleteMany(BasicDBObject(COLLECTION_KEY, key))
                 true
             }
-        }, key)
+        }
     }
 
     override fun keys(): QueuedTask<Collection<String>> {
-        return queueTask({
+        return queueTask {
             val rs = mutableListOf<String>()
             this@MongoDatabase.mongoCollection.find(BasicDBObject()).cursor().forEach {
                 rs.add(it.getString(COLLECTION_KEY))
             }
             rs
-        }, 0)
+        }
     }
 
     override fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             this@MongoDatabase.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor().hasNext()
-        }, DataPair(fieldName, fieldValue))
+        }
     }
 
     override fun get(fieldName: String, fieldValue: Any): QueuedTask<Collection<Document>> {
-        return queueTask({
+        return queueTask {
             val cursor: MongoCursor<BsonDocument> =
                 this@MongoDatabase.mongoCollection.find(BasicDBObject(fieldName, fieldValue)).cursor()
             if (cursor.hasNext()) {
@@ -144,11 +143,11 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
             } else {
                 listOf<Document>()
             }
-        }, DataPair(fieldName, fieldValue))
+        }
     }
 
     override fun update(key: String, newValue: Document): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             if (contains(key).complete()) {
                 this@MongoDatabase.mongoCollection.replaceOne(
                     BasicDBObject(COLLECTION_KEY, key),
@@ -158,6 +157,15 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
             } else {
                 false
             }
-        }, DataPair(key, newValue))
+        }
+    }
+
+    fun test() {
+        this.get("hans").queue {
+            if (it.isPresent) {
+                val doc = it.get()
+                doc.toJson()
+            }
+        }
     }
 }

@@ -38,11 +38,15 @@
 package eu.vironlab.vextension.bungee
 
 import eu.vironlab.vextension.database.DatabaseClient
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 
 
 class VextensionBungee : Plugin(),  Listener {
 
+    override fun onLoad() {
+        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
+    }
 
 }

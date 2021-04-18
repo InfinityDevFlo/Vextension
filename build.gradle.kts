@@ -17,8 +17,8 @@ plugins {
     id("java")
     id("maven")
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version "1.4.31"
-    kotlin("kapt") version "1.4.31"
+    kotlin("jvm") version "1.4.32"
+    kotlin("kapt") version "1.4.32"
     id("org.jetbrains.dokka") version "1.4.20"
 }
 
@@ -36,6 +36,7 @@ allprojects {
         jcenter()
         maven( "https://m2.dv8tion.net/releases/")
         maven("https://oss.sonatype.org/content/groups/public/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://papermc.io/repo/repository/maven-public/")
         maven("https://repo.destroystokyo.com/repository/maven-public/")
         maven("https://repo.velocitypowered.com/releases/")
@@ -64,10 +65,12 @@ subprojects {
 
     //Define Dependencies for all Modules
     dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
-        implementation("org.jetbrains.kotlin:kotlin-serialization:1.4.31")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+        implementation("org.jetbrains.kotlin:kotlin-serialization")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     }
+
+
 
     tasks {
         //Set the Name of the Sources Jar

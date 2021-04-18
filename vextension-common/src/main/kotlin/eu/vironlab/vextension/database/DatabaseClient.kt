@@ -38,6 +38,7 @@
 package eu.vironlab.vextension.database
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.lang.Nameable
 import java.util.concurrent.CompletableFuture
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 /**
  * Client for Multiple Database Types
  */
-interface DatabaseClient {
+interface DatabaseClient : Nameable {
 
     /**
      * Init the Client and open the Connection

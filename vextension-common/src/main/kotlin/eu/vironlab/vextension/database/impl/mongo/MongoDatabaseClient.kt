@@ -62,39 +62,41 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
     }
 
     override fun init(): QueuedTask<Unit> {
-        return queueTask({
+        return queueTask {
             this.mongoClient =
                 MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
             this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
-        }, Unit)
+        }
     }
 
     override fun close(): QueuedTask<Unit> {
-        return queueTask({ mongoClient.close(); }, Unit)
+        return queueTask { mongoClient.close(); }
     }
 
     override fun dropDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask({
+        return queueTask {
             if (!containsDatabase(name).complete()) {
                 false
             }
             this.mongoDatabase.getCollection(name).drop()
             true
-        }, name)
+        }
     }
 
 
     override fun containsDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask({ this.mongoDatabase.listCollectionNames().contains(name) }, name)
+        return queueTask { this.mongoDatabase.listCollectionNames().contains(name) }
     }
 
     override fun getDatabase(name: String): QueuedTask<Database> {
-        return queueTask({
+        return queueTask {
             if (!containsDatabase(name).complete()) {
                 this.mongoDatabase.createCollection(name)
             }
             MongoDatabase(name, this.mongoDatabase.getCollection(name))
-        }, name)
+        }
     }
+
+    override val name: String = "mongodb"
 
 }

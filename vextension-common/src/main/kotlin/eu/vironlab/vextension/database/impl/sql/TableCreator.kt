@@ -35,23 +35,32 @@
  *<p>
  */
 
-package eu.vironlab.vextension.velocity
+package eu.vironlab.vextension.database.impl.sql
 
-import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
-import com.velocitypowered.api.proxy.ProxyServer
-import org.slf4j.Logger
+class TableCreator(val name: String, val key: TableEntry) {
 
-@Plugin(
-    name = "Vextension",
-    authors = arrayOf("VironLab"),
-    id = "vextension_velocity",
-    description = "Vextension for Velocity",
-    version = "1.0.0-SNAPSHOT"
-)
-class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) {
 
-    init {
-        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
+    val entries: MutableCollection<TableEntry> = mutableListOf(key)
+
+    fun addEntry(tableEntry: TableEntry): TableCreator {
+        this.entries.add(tableEntry)
+        return this
     }
+
+    internal fun createQuery(): String {
+        val query: StringBuilder = StringBuilder("CREATE TABLE IF NOT EXISTS `${name}` (")
+        for (entry in entries) {
+            query.append(" `${entry.name}` ${entry.type.toString()}${if (entry.length != 0) {"(" + entry.length + ")"} else ""} ${if (entry.notNull) {" NOT NULL"} else ""} , ")
+        }
+        return query.toString().let {
+            it.substring(0, it.length - 2)
+        }.plus(");")
+    }
+
+}
+
+data class TableEntry(val name: String, val type: ColumnType, val documentName: String = name, val length: Int = 0, val notNull: Boolean = true)
+
+enum class ColumnType {
+    TEXT, LONGTEXT, INT, VARCHAR, BIGINT
 }
