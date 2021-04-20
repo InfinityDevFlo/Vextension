@@ -58,11 +58,11 @@ object StringExtension {
  * Check if the String is an Integer
  */
 fun String.isInt(): Boolean {
-    try {
+    return try {
         this.toInt()
-        return true
+        true
     } catch (e: Exception) {
-        return false
+        false
     }
 }
 
@@ -70,11 +70,11 @@ fun String.isInt(): Boolean {
  * Check if the String is a Boolean
  */
 fun String.isBoolean(): Boolean {
-    try {
+    return try {
         this.toBoolean()
-        return true
+        true
     } catch (e: Exception) {
-        return false
+        false
     }
 }
 
@@ -100,20 +100,20 @@ fun String.Companion.random(length: Int, numbers: Boolean = true): String {
  * Check if the String is an URL
  */
 fun String.isUrl(): Boolean {
-    try {
+    return try {
         URL(this)
-        return true
+        true
     } catch (e: Exception) {
-        return false
+        false
     }
 }
 
 fun String.isUUID(): Boolean {
-    try {
+    return try {
         this.toUUID()
-        return true
+        true
     }catch (e: Exception) {
-        return false
+        false
     }
 }
 

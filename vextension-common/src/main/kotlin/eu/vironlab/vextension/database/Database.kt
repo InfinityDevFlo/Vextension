@@ -41,7 +41,6 @@ import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
 interface Database : Nameable {
 

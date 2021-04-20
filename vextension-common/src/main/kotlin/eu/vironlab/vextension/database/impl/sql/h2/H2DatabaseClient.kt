@@ -35,67 +35,82 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.mongo
+package eu.vironlab.vextension.database.impl.sql.h2
 
 import com.google.inject.Inject
-import com.mongodb.client.MongoClient
-import com.mongodb.client.MongoClients
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
-import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
-import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
-import com.mongodb.client.MongoDatabase as MongoDB
+import eu.vironlab.vextension.database.connectiondata.FileConnectionData
+import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabaseClient
+import eu.vironlab.vextension.database.impl.sql.mariadb.MariaDatabase
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.SQLException
+import org.h2.Driver
 
-open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionData) : DatabaseClient() {
 
-    val remoteConnectionData: RemoteConnectionData
-    lateinit var mongoClient: MongoClient
-    lateinit var mongoDatabase: MongoDB
+class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDatabaseClient() {
+
+    companion object {
+        init {
+            Driver.load()
+        }
+    }
+
+    val connectionData: FileConnectionData
+    lateinit var connection: Connection
 
     init {
-        if (connectionData !is RemoteConnectionData) {
-            throw IllegalStateException("Cannot load MongoDB Client without RemoteConnectionData")
+        if (data !is FileConnectionData) {
+            throw IllegalStateException("Cannot create h2 Database without FileConnectionData")
         }
-        this.remoteConnectionData = connectionData as RemoteConnectionData
+        this.connectionData = data as FileConnectionData
+    }
+
+    override fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T {
+        try {
+            connection.prepareStatement(query)?.use {
+                try {
+                    it.executeQuery()?.use { resultSet -> return action.invoke(resultSet) }
+                } catch (throwable: Exception) {
+                    return default
+                }
+            }
+        } catch (exception: SQLException) {
+            exception.printStackTrace()
+        }
+        return default
+    }
+
+    override fun executeUpdate(query: String): Int {
+        try {
+            connection.prepareStatement(query)?.use { return it.executeUpdate() }
+        } catch (exception: SQLException) {
+            exception.printStackTrace()
+        }
+        return -1
     }
 
     override fun init(): Boolean {
-        this.mongoClient =
-            MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
-        this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
+        if (!this.connectionData.file.exists()) {
+            Files.createDirectories(this.connectionData.file.toPath())
+        }
+        this.connection = DriverManager.getConnection("jdbc:h2:${this.connectionData.file.absolutePath}")
         return true
     }
 
-    override fun close() {
-        mongoClient.close();
-    }
-
-    override fun dropDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask {
-            if (!containsDatabase(name).complete()) {
-                false
-            }
-            this.mongoDatabase.getCollection(name).drop()
-            true
-        }
-    }
-
-
-    override fun containsDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask { this.mongoDatabase.listCollectionNames().contains(name) }
-    }
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            this.invalidateCache()
             val optionalDB = this.dbCache.get(name)
             return@queueTask if (!optionalDB.isPresent) {
-                if (!containsDatabase(name).complete()) {
-                    this.mongoDatabase.createCollection(name)
-                }
-                val db = MongoDatabase(name, this.mongoDatabase.getCollection(name))
+                val db = H2Database(name, this)
                 this.dbCache.add(name, System.currentTimeMillis(), db)
                 db
             } else {
@@ -104,6 +119,9 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
         }
     }
 
-    override val name: String = "mongodb"
+    override val name: String = "h2"
 
+    override fun close() {
+        connection.close()
+    }
 }

@@ -37,14 +37,32 @@
 
 package eu.vironlab.vextension.database.impl.sql
 
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.DatabaseClient
 import java.sql.ResultSet
 
 
-abstract class AbstractSqlDatabaseClient : DatabaseClient {
+abstract class AbstractSqlDatabaseClient : DatabaseClient() {
 
     abstract fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T
 
     abstract fun executeUpdate(query: String): Int
+
+    override fun dropDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask { executeUpdate("DROP TABLE IF EXISTS `${name}`") != -1 }
+    }
+
+    override fun containsDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask {
+            executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'", false) {
+                val rs = mutableListOf<String>()
+                while (it.next()) {
+                    rs.add(it.getString("table_name"))
+                }
+                rs.contains(name)
+            }
+        }
+    }
 
 }

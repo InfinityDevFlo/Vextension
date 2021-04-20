@@ -39,6 +39,7 @@ package eu.vironlab.vextension.rest.wrapper.mojang
 
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
+import eu.vironlab.vextension.extension.toUUID
 import eu.vironlab.vextension.rest.wrapper.mojang.user.MojangUser
 import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistory
 import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistoryEntry
@@ -72,7 +73,7 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
         val request = MojangConstants.CLIENT.getJsonDocument(MojangConstants.UUID_REQUEST_URL + name)
         var result: UUID? = null
         request.ifPresent {
-            result = it.getString("id").get().appendToUUID()
+            result = it.getString("id").get().toUUID()
         }
         return Optional.ofNullable(result)
     }

@@ -35,34 +35,10 @@
  *<p>
  */
 
-package eu.vironlab.vextension.extension
+package eu.vironlab.vextension.database.impl.sql.h2
 
-import java.util.*
+import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabase
 
-fun parseLine(line: String): Properties? {
-    return if (line.trim { it <= ' ' }.isEmpty()) {
-        null
-    } else parseLine(line.split(" ").toTypedArray())
-}
 
-fun parseLine(args: Array<String>): Properties {
-    val properties = Properties()
-    for (argument in args) {
-        if (argument.isEmpty() || argument == " ") {
-            continue
-        }
-        if (argument.contains("=")) {
-            val x = argument.indexOf("=")
-            properties[argument.substring(0, x).replaceFirst("-".toRegex(), "")
-                .replaceFirst("-".toRegex(), "")] =
-                argument.substring(x + 1)
-            continue
-        }
-        if (argument.contains("--") || argument.contains("-")) {
-            properties[argument.replaceFirst("-".toRegex(), "").replaceFirst("-".toRegex(), "")] = "true"
-            continue
-        }
-        properties[argument] = "true"
-    }
-    return properties
+class H2Database(override val name: String, client: H2DatabaseClient) : AbstractSqlDatabase(name, client) {
 }

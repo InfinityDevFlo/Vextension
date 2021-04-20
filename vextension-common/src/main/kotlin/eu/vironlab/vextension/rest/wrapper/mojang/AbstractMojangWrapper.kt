@@ -49,17 +49,6 @@ abstract class AbstractMojangWrapper : MojangWrapper {
         ).get()
     }
 
-    protected fun String.appendToUUID(): UUID {
-        var uuid = ""
-        for (i in 0..31) {
-            uuid += this[i]
-            if (i == 7 || i == 11 || i == 15 || i == 19) {
-                uuid = "$uuid-"
-            }
-        }
-        return UUID.fromString(uuid)
-    }
-
     inner class PropertyToken(val name: String, val value: String, val signature: String)
 
 

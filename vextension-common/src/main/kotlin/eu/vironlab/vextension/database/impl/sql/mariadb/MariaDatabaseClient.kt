@@ -88,57 +88,49 @@ class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSq
         return -1
     }
 
-    override fun init(): QueuedTask<Unit> {
-        return queueTask {
-            val hikariConfig: HikariConfig = HikariConfig().let {
-                for (arg in arrayOf(
-                    "cachePrepStmts",
-                    "useServerPrepStmts",
-                    "useLocalSessionState",
-                    "rewriteBatchedStatements",
-                    "cacheResultSetMetadata",
-                    "cacheServerConfiguration",
-                    "elideSetAutoCommits"
-                )) {
-                    it.addDataSourceProperty(arg, "true")
-                }
-                it.addDataSourceProperty("prepStmtCacheSize", "250");
-                it.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-                it.addDataSourceProperty("maintainTimeStats", "false");
-                it.jdbcUrl =
-                    "jdbc:mysql://${connectionData.host}:${connectionData.port}/${connectionData.database}?serverTimezone=UTC"
-                it.driverClassName = "com.mysql.cj.jdbc.Driver";
-                it.username = connectionData.user
-                it.password = connectionData.password
-                it
+    override fun init(): Boolean {
+        val hikariConfig: HikariConfig = HikariConfig().let {
+            for (arg in arrayOf(
+                "cachePrepStmts",
+                "useServerPrepStmts",
+                "useLocalSessionState",
+                "rewriteBatchedStatements",
+                "cacheResultSetMetadata",
+                "cacheServerConfiguration",
+                "elideSetAutoCommits"
+            )) {
+                it.addDataSourceProperty(arg, "true")
             }
-            this.dataSource = HikariDataSource(hikariConfig)
-            this.connection = dataSource.connection
+            it.addDataSourceProperty("prepStmtCacheSize", "250");
+            it.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            it.addDataSourceProperty("maintainTimeStats", "false");
+            it.jdbcUrl =
+                "jdbc:mysql://${connectionData.host}:${connectionData.port}/${connectionData.database}?serverTimezone=UTC"
+            it.driverClassName = "com.mysql.cj.jdbc.Driver";
+            it.username = connectionData.user
+            it.password = connectionData.password
+            it
         }
+        this.dataSource = HikariDataSource(hikariConfig)
+        this.connection = dataSource.connection
+        return true
     }
 
-    override fun close(): QueuedTask<Unit> {
-        return queueTask { dataSource.close() }
-    }
-
-    override fun dropDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask { executeUpdate("DROP TABLE IF EXISTS `${name}`") != -1 }
-    }
-
-    override fun containsDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask {
-            executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES  where TABLE_SCHEMA='PUBLIC'", false) {
-                val rs = mutableListOf<String>()
-                while (it.next()) {
-                    rs.add(it.getString("table_name"))
-                }
-                rs.contains(name)
-            }
-        }
+    override fun close() {
+        return dataSource.close()
     }
 
     override fun getDatabase(name: String): QueuedTask<Database> {
-        return queueTask { MariaDatabase(name, this) }
+        return queueTask {
+            val optionalDB = this.dbCache.get(name)
+            return@queueTask if (!optionalDB.isPresent) {
+                val db = MariaDatabase(name, this)
+                this.dbCache.add(name, System.currentTimeMillis(), db)
+                db
+            } else {
+                optionalDB.get().second
+            }
+        }
     }
 
     override val name: String = "mariadb"

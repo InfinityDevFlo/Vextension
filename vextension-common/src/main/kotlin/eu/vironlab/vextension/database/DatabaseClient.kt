@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.database
 
+import eu.vironlab.vextension.collection.TripleMap
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.lang.Nameable
 import java.util.concurrent.CompletableFuture
@@ -48,34 +49,39 @@ import kotlinx.coroutines.launch
 /**
  * Client for Multiple Database Types
  */
-interface DatabaseClient : Nameable {
+abstract class DatabaseClient : Nameable, AutoCloseable {
+
+    protected val dbCache: TripleMap<String, Long, Database> = TripleMap()
+
+    protected open fun invalidateCache() {
+        for ((key, value) in this.dbCache.entrySet()) {
+            if (value.first < System.currentTimeMillis()) {
+                this.dbCache.remove(key)
+            }
+        }
+    }
 
     /**
      * Init the Client and open the Connection
      */
-    fun init(): QueuedTask<Unit>
-
-    /**
-     * Close the connection of the Client
-     */
-    fun close(): QueuedTask<Unit>
+    abstract fun init(): Boolean
 
     /**
      * Delete a Database with [name]
      *
      * @return true if the Database is Deleted, false if there is an error or the Database does not exist
      */
-    fun dropDatabase(name: String): QueuedTask<Boolean>
+    abstract fun dropDatabase(name: String): QueuedTask<Boolean>
 
     /**
      * Check if a Database with [name] exists
      */
-    fun containsDatabase(name: String): QueuedTask<Boolean>
+    abstract fun containsDatabase(name: String): QueuedTask<Boolean>
 
     /**
      * Get the Database with [name]
      */
-    fun getDatabase(name: String): QueuedTask<Database>
+    abstract fun getDatabase(name: String): QueuedTask<Database>
 
 
 }
