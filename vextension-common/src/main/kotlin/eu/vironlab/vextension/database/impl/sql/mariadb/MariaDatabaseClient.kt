@@ -66,7 +66,6 @@ class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSq
     }
 
     override fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T {
-        println(query)
         var exception: Throwable? = null
         try {
             connection.prepareStatement(query)?.use {

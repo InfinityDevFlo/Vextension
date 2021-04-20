@@ -67,8 +67,6 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
 
 
     override fun contains(key: String): QueuedTask<Boolean> {
-        println(TABLE_KEY)
-        println(key)
         return contains(TABLE_KEY, key)
     }
 
@@ -90,7 +88,6 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
             val query = "INSERT INTO `${name}` (${insertValueNames}) VALUES (${
                 valueObjs.toString().let { it.substring(0, it.length - 2) }
             } ) "
-            println(query)
             client.executeUpdate(query) != -1
         }
     }
@@ -140,7 +137,6 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
     override fun get(key: String): QueuedTask<Optional<Document>> {
         return queueTask {
             if (!contains(key).complete()) {
-                println(1)
                 return@queueTask Optional.empty()
             }
             return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE `$TABLE_KEY`='${key}'", Throwable::printStackTrace) {
@@ -151,10 +147,8 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
                             rs.append(entry.documentName, it.getObject(entry.name))
                         }
                     }
-                    println(3)
                     return@executeQuery Optional.ofNullable(rs)
                 } else {
-                    println(2)
                     Optional.empty()
                 }
             }
