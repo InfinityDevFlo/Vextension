@@ -45,37 +45,39 @@ import eu.vironlab.vextension.document.document
 import java.sql.ResultSet
 import java.util.*
 
-abstract class AbstractSqlDatabase(override val name: String, val client: AbstractSqlDatabaseClient) : Database {
+abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDatabaseClient) : Database {
 
     val TABLE_KEY: String
     val creator: TableCreator
     val insertValueNames: String
 
     init {
-        if (!SqlRegistry.creators.containsKey(name)) {
+        if (!SqlRegistry.creators.containsKey(dbname)) {
             throw IllegalStateException("Cannot Create SqlTable without registered Creator")
         }
-        this.creator = SqlRegistry.creators.get(name)!!
+        this.creator = SqlRegistry.creators.get(dbname)!!
         this.TABLE_KEY = creator.key.name
         client.executeUpdate(creator.createQuery())
         val valueNames: StringBuilder = StringBuilder(" ")
         creator.entries.forEach {
-            valueNames.append("${it.name}, ")
+            valueNames.append("`${it.name}`, ")
         }
-        this.insertValueNames = valueNames.toString().let { it.substring(0, it.length) }
+        this.insertValueNames = valueNames.toString().substring(0, valueNames.toString().length - 2)
     }
 
+
     override fun contains(key: String): QueuedTask<Boolean> {
+        println(TABLE_KEY)
+        println(key)
         return contains(TABLE_KEY, key)
     }
 
     override fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
         return queueTask {
             client.executeQuery(
-                "SELECT $TABLE_KEY FROM `${name}` WHERE ${fieldName}=${fieldValue}",
-                false,
-                ResultSet::next,
-            )
+                "SELECT `$TABLE_KEY` FROM `${name}` WHERE `${fieldName}`='${fieldValue}'"
+            , Throwable::printStackTrace, ResultSet::next)
+
         }
     }
 
@@ -83,11 +85,12 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
         return queueTask {
             val valueObjs: StringBuilder = StringBuilder()
             creator.entries.forEach {
-                valueObjs.append(value.get(it.documentName).get().toString())
+                valueObjs.append("'${value.getString(it.documentName).get().toString()}', ")
             }
             val query = "INSERT INTO `${name}` (${insertValueNames}) VALUES (${
                 valueObjs.toString().let { it.substring(0, it.length - 2) }
             } ) "
+            println(query)
             client.executeUpdate(query) != -1
         }
     }
@@ -96,7 +99,7 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
         return queueTask {
             val update: StringBuilder = StringBuilder()
             creator.entries.forEach {
-                update.append("`${it.name}` = '${newValue.get(it.documentName).get().toString()}', ")
+                update.append("`${it.name}` = '${newValue.getString(it.documentName).get().toString()}', ")
             }
             val query = "UPDATE `${name}` SET ${
                 update.toString().let { it.substring(0, it.length - 2) }
@@ -113,7 +116,7 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
 
     override fun keys(): QueuedTask<Collection<String>> {
         return queueTask {
-            client.executeQuery("SELECT * FROM `${name}`", mutableListOf()) {
+            client.executeQuery("SELECT * FROM `${name}`", Throwable::printStackTrace) {
                 val rs: MutableCollection<String> = mutableListOf()
                 while (it.next()) {
                     rs.add(it.getString(creator.key.name))
@@ -137,9 +140,10 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
     override fun get(key: String): QueuedTask<Optional<Document>> {
         return queueTask {
             if (!contains(key).complete()) {
+                println(1)
                 return@queueTask Optional.empty()
             }
-            return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE $TABLE_KEY=${key}", Optional.empty()) {
+            return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE `$TABLE_KEY`='${key}'", Throwable::printStackTrace) {
                 if (it.next()) {
                     val rs: Document = document()
                     for (entry in creator.entries) {
@@ -147,8 +151,10 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
                             rs.append(entry.documentName, it.getObject(entry.name))
                         }
                     }
+                    println(3)
                     return@executeQuery Optional.ofNullable(rs)
-                }else {
+                } else {
+                    println(2)
                     Optional.empty()
                 }
             }
@@ -160,7 +166,9 @@ abstract class AbstractSqlDatabase(override val name: String, val client: Abstra
             if (!contains(fieldName, fieldValue).complete()) {
                 return@queueTask mutableListOf()
             }
-            return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE ${fieldName}=${fieldValue}", mutableListOf()) {
+            return@queueTask client.executeQuery(
+                "SELECT * FROM `${name}` WHERE ${fieldName}=${fieldValue}", Throwable::printStackTrace
+            ) {
                 val rs = mutableListOf<Document>()
                 while (it.next()) {
                     val temprs: Document = document()

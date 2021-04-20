@@ -40,5 +40,4 @@ package eu.vironlab.vextension.database.impl.sql.h2
 import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabase
 
 
-class H2Database(override val name: String, client: H2DatabaseClient) : AbstractSqlDatabase(name, client) {
-}
+class H2Database(override val name: String, client: H2DatabaseClient) : AbstractSqlDatabase(name, client)

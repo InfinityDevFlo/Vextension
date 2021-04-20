@@ -49,6 +49,7 @@ import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabaseClient
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
+import org.mariadb.jdbc.Driver
 
 
 class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
@@ -64,19 +65,24 @@ class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSq
         this.connectionData = data
     }
 
-    override fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T {
+    override fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T {
+        println(query)
+        var exception: Throwable? = null
         try {
             connection.prepareStatement(query)?.use {
                 try {
                     it.executeQuery()?.use { resultSet -> return action.invoke(resultSet) }
-                } catch (throwable: Exception) {
-                    return default
+                } catch (ex: Exception) {
+                    exception = ex
                 }
             }
-        } catch (exception: SQLException) {
-            exception.printStackTrace()
+        } catch (ex: SQLException) {
+            exception = ex
         }
-        return default
+        if (exception != null) {
+            errorAction.invoke(exception!!)
+        }
+        throw IllegalStateException("There was an error while executing the query")
     }
 
     override fun executeUpdate(query: String): Int {
@@ -106,7 +112,7 @@ class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSq
             it.addDataSourceProperty("maintainTimeStats", "false");
             it.jdbcUrl =
                 "jdbc:mysql://${connectionData.host}:${connectionData.port}/${connectionData.database}?serverTimezone=UTC"
-            it.driverClassName = "com.mysql.cj.jdbc.Driver";
+            it.driverClassName = Driver::class.java.canonicalName;
             it.username = connectionData.user
             it.password = connectionData.password
             it

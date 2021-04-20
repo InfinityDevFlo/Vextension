@@ -73,19 +73,21 @@ class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDat
         this.connectionData = data as FileConnectionData
     }
 
-    override fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T {
+    override fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T {
+        var exception: Throwable? = null
         try {
             connection.prepareStatement(query)?.use {
-                try {
+               try {
                     it.executeQuery()?.use { resultSet -> return action.invoke(resultSet) }
-                } catch (throwable: Exception) {
-                    return default
+                } catch (ex: Exception) {
+                    exception = ex
                 }
             }
-        } catch (exception: SQLException) {
-            exception.printStackTrace()
+        } catch (ex: SQLException) { exception = ex }
+        if (exception != null) {
+            errorAction.invoke(exception!!)
         }
-        return default
+        throw IllegalStateException("There was an error while executing the query")
     }
 
     override fun executeUpdate(query: String): Int {
@@ -98,9 +100,6 @@ class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDat
     }
 
     override fun init(): Boolean {
-        if (!this.connectionData.file.exists()) {
-            Files.createDirectories(this.connectionData.file.toPath())
-        }
         this.connection = DriverManager.getConnection("jdbc:h2:${this.connectionData.file.absolutePath}")
         return true
     }

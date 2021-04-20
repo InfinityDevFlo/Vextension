@@ -45,7 +45,7 @@ import java.sql.ResultSet
 
 abstract class AbstractSqlDatabaseClient : DatabaseClient() {
 
-    abstract fun <T> executeQuery(query: String, default: T, action: (ResultSet) -> T): T
+    abstract fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T
 
     abstract fun executeUpdate(query: String): Int
 
@@ -55,7 +55,7 @@ abstract class AbstractSqlDatabaseClient : DatabaseClient() {
 
     override fun containsDatabase(name: String): QueuedTask<Boolean> {
         return queueTask {
-            executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'", false) {
+            executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'", Throwable::printStackTrace) {
                 val rs = mutableListOf<String>()
                 while (it.next()) {
                     rs.add(it.getString("table_name"))
