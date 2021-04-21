@@ -39,4 +39,4 @@ package eu.vironlab.vextension.database.impl.sql.mariadb
 
 import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabase
 
-class MariaDatabase(override val name: String, val mariaClient: MariaDatabaseClient) : AbstractSqlDatabase(name, mariaClient)
+class MariaDatabase(override val name: String, mariaClient: MariaDatabaseClient) : AbstractSqlDatabase(name, mariaClient)
