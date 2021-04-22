@@ -35,17 +35,52 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.task
+package eu.vironlab.vextension.concurrent.task.impl
 
-import eu.vironlab.vextension.concurrent.task.impl.DefaultCorountineQueuedTaskProvider
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import java.util.concurrent.ExecutorService
 
-abstract class QueuedTaskProvider {
 
-    companion object {
-        @JvmStatic
-        var instance: QueuedTaskProvider = DefaultCorountineQueuedTaskProvider()
+class DefaultAsyncQueuedTask<R>(val callback: (Unit) -> R, val executorService: ExecutorService) : QueuedTask<R> {
+    override fun queue() {
+        executorService.execute {
+            callback.invoke(Unit)
+        }
     }
 
-    abstract fun <R> createTask(callback: (Unit) -> R): QueuedTask<R>
+    override fun queue(resultAction: (R) -> Unit) {
+        executorService.execute {
+            resultAction.invoke(callback.invoke(Unit))
+        }
+    }
 
+    override fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
+        executorService.execute {
+            try {
+                resultAction.invoke(callback.invoke(Unit))
+            }catch (e: Throwable) {
+                errorAction.invoke(e)
+            }
+        }
+    }
+
+    override fun complete(): R {
+        return callback.invoke(Unit)
+    }
+
+    override fun complete(resultAction: (R) -> Unit) {
+        return resultAction.invoke(callback.invoke(Unit))
+    }
+
+    override fun <C> complete(returnCallback: (R) -> C): C {
+        return returnCallback.invoke(callback.invoke(Unit))
+    }
+
+    override fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
+        try {
+            resultAction.invoke(callback.invoke(Unit))
+        } catch (e: Throwable) {
+            errorAction.invoke(e)
+        }
+    }
 }

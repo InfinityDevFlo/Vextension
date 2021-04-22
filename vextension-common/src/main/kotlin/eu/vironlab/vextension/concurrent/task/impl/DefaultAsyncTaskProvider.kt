@@ -38,50 +38,15 @@
 package eu.vironlab.vextension.concurrent.task.impl
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import eu.vironlab.vextension.concurrent.task.QueuedTaskProvider
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
-class DefaultQueuedTask<R>(val callback: (Unit) -> R) : QueuedTask<R> {
-    override fun queue() {
-        GlobalScope.launch {
-            callback.invoke(Unit)
-        }
-    }
+class DefaultAsyncTaskProvider : QueuedTaskProvider() {
+    val executorService: ExecutorService = Executors.newCachedThreadPool()
 
-    override fun queue(resultAction: (R) -> Unit) {
-        GlobalScope.launch {
-            resultAction.invoke(callback.invoke(Unit))
-        }
-    }
-
-    override fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
-        GlobalScope.launch {
-            try {
-                resultAction.invoke(callback.invoke(Unit))
-            } catch (e: Throwable) {
-                errorAction.invoke(e)
-            }
-        }
-    }
-
-    override fun complete(): R {
-        return callback.invoke(Unit)
-    }
-
-    override fun complete(resultAction: (R) -> Unit) {
-        return resultAction.invoke(callback.invoke(Unit))
-    }
-
-    override fun <C> complete(returnCallback: (R) -> C): C {
-        return returnCallback.invoke(callback.invoke(Unit))
-    }
-
-    override fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
-        try {
-            resultAction.invoke(callback.invoke(Unit))
-        } catch (e: Throwable) {
-            errorAction.invoke(e)
-        }
+    override fun <R> createTask(callback: (Unit) -> R): QueuedTask<R> {
+        return DefaultAsyncQueuedTask<R>(callback, executorService)
     }
 }

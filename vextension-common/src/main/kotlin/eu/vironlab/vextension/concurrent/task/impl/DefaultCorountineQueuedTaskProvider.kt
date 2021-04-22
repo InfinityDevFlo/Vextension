@@ -2,9 +2,11 @@ package eu.vironlab.vextension.concurrent.task.impl
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.QueuedTaskProvider
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-class DefaultQueuedTaskProvider : QueuedTaskProvider() {
+class DefaultCorountineQueuedTaskProvider : QueuedTaskProvider() {
     override fun <R> createTask(callback: (Unit) -> R): QueuedTask<R> {
-        return DefaultQueuedTask<R>(callback)
+        return DefaultCorountineQueuedTask<R>(callback)
     }
 }
