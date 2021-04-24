@@ -159,13 +159,4 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
             }
         }
     }
-
-    fun test() {
-        this.get("hans").queue {
-            if (it.isPresent) {
-                val doc = it.get()
-                doc.toJson()
-            }
-        }
-    }
 }

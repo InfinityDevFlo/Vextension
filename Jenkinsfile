@@ -26,7 +26,6 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord.jar', fingerprint: true
                 }
             }
         }
@@ -39,7 +38,6 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-full.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-full.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-full.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord-full.jar', fingerprint: true
                 }
             }
         }
@@ -92,24 +90,6 @@ pipeline {
                                                     artifactId: "vextension-common",
                                                     classifier: '',
                                                     file      : "vextension-common/build/pom/pom.xml",
-                                                    type      : "pom"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-discord",
-                                                    classifier: '',
-                                                    file      : "vextension-discord/build/libs/vextension-discord.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-discord",
-                                                    classifier: 'sources',
-                                                    file      : "vextension-discord/build/libs/vextension-discord-sources.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-discord",
-                                                    classifier: '',
-                                                    file      : "vextension-discord/build/pom/pom.xml",
                                                     type      : "pom"
                                             ],
                                             [
