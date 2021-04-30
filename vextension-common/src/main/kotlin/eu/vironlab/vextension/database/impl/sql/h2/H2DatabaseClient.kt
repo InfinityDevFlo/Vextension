@@ -44,10 +44,6 @@ import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.FileConnectionData
 import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabaseClient
-import eu.vironlab.vextension.database.impl.sql.mariadb.MariaDatabase
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
@@ -55,7 +51,7 @@ import java.sql.SQLException
 import org.h2.Driver
 
 
-class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDatabaseClient() {
+class H2DatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
 
     companion object {
         init {
@@ -77,13 +73,15 @@ class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDat
         var exception: Throwable? = null
         try {
             connection.prepareStatement(query)?.use {
-               try {
+                try {
                     it.executeQuery()?.use { resultSet -> return action.invoke(resultSet) }
                 } catch (ex: Exception) {
                     exception = ex
                 }
             }
-        } catch (ex: SQLException) { exception = ex }
+        } catch (ex: SQLException) {
+            exception = ex
+        }
         if (exception != null) {
             errorAction.invoke(exception!!)
         }
@@ -107,14 +105,7 @@ class H2DatabaseClient @Inject constructor(data: ConnectionData): AbstractSqlDat
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            val optionalDB = this.dbCache.get(name)
-            return@queueTask if (!optionalDB.isPresent) {
-                val db = H2Database(name, this)
-                this.dbCache.add(name, System.currentTimeMillis(), db)
-                db
-            } else {
-                optionalDB.get().second
-            }
+            return@queueTask H2Database(name, this)
         }
     }
 

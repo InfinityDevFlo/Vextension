@@ -89,18 +89,7 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            this.invalidateCache()
-            val optionalDB = this.dbCache.get(name)
-            return@queueTask if (!optionalDB.isPresent) {
-                if (!containsDatabase(name).complete()) {
-                    this.mongoDatabase.createCollection(name)
-                }
-                val db = MongoDatabase(name, this.mongoDatabase.getCollection(name))
-                this.dbCache.add(name, System.currentTimeMillis(), db)
-                db
-            } else {
-                optionalDB.get().second
-            }
+            return@queueTask MongoDatabase(name, this.mongoDatabase.getCollection(name))
         }
     }
 

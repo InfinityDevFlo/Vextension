@@ -40,6 +40,7 @@ package eu.vironlab.vextension.database.impl.sql.mariadb
 import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
@@ -127,14 +128,7 @@ class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSq
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            val optionalDB = this.dbCache.get(name)
-            return@queueTask if (!optionalDB.isPresent) {
-                val db = MariaDatabase(name, this)
-                this.dbCache.add(name, System.currentTimeMillis(), db)
-                db
-            } else {
-                optionalDB.get().second
-            }
+            return@queueTask MariaDatabase(name, this)
         }
     }
 

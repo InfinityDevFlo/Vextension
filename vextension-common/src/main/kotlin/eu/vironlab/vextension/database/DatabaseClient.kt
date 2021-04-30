@@ -37,29 +37,17 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.collection.TripleMap
+import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.lang.Nameable
-import java.util.concurrent.CompletableFuture
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * Client for Multiple Database Types
  */
 abstract class DatabaseClient : Nameable, AutoCloseable {
-
-    protected val dbCache: TripleMap<String, Long, Database> = TripleMap()
-
-    protected open fun invalidateCache() {
-        for ((key, value) in this.dbCache.entrySet()) {
-            if (value.first < System.currentTimeMillis()) {
-                this.dbCache.remove(key)
-            }
-        }
-    }
 
     /**
      * Init the Client and open the Connection
