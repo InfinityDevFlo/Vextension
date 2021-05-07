@@ -42,25 +42,67 @@ import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
 import java.util.*
 
+/**
+ * All Database Actions return a QueuedTask instance to use the Database Sync or Async -> You can change the QueuedTaskProvider if you dont want to use Coroutines as Provider for the Async Calls
+ */
 interface Database : Nameable {
 
+    /**
+     * Check if [key] is in the Database
+     */
     fun contains(key: String): QueuedTask<Boolean>
 
+    /**
+     * Check if there is [fieldValue] with the key: [fieldValue] in the Database
+     */
     fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
 
+    /**
+     * Get the Value of [key]
+     *
+     * @return an Optional instance wich is Empty if there was no Object in the Database
+     */
     fun get(key: String): QueuedTask<Optional<Document>>
 
+    /**
+     * Get the Value of the entry from [fieldName] with the value: [fieldValue]
+     *
+     * @return an Optional instance wich is Empty if there was no Object in the Database
+     */
     fun get(fieldName: String, fieldValue: Any): QueuedTask<Collection<Document>>
 
+    /**
+     * Get the Value of [key] if present or else insert [def]
+     *
+     * @see Database.get([key])
+     *
+     * @return the Document from the Database is present or else [def]
+     */
     fun get(key: String, def: Document): QueuedTask<Document>
 
+    /**
+     * Update a existing value of [key] to [newValue]
+     */
     fun update(key: String, newValue: Document): QueuedTask<Boolean>
 
+    /**
+     * Insert [value] identified by [key]
+     */
     fun insert(key: String, value: Document): QueuedTask<Boolean>
 
+    /**
+     * Delete the Document identified by [key]
+     */
     fun delete(key: String): QueuedTask<Boolean>
+
+    /**
+     * Delete the Documents identified by [fieldValue] in the [fieldName] Field
+     */
     fun delete(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
 
+    /**
+     * Get all Key from the Database
+     */
     fun keys(): QueuedTask<Collection<String>>
 
 }
