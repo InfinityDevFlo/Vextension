@@ -44,9 +44,9 @@ pipeline {
         stage("Docs") {
             steps {
                 sh "./gradlew dokkaHtmlMultiModule";
-                sh "rm -r /var/www/docs/vextension-v1.1.0"
-                sh "mkdir /var/www/docs/vextension-v1.1.0"
-                sh "cp -r build/vextension-v1.1.0 /var/www/docs/"
+                sh "rm -r /var/www/docs/vextension-v2.0.0"
+                sh "mkdir /var/www/docs/vextension-v2.0.0"
+                sh "cp -r build/vextension-v2.0.0 /var/www/docs/"
             }
         }
         stage("Sources") {
