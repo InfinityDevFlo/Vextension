@@ -111,6 +111,12 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
         }
     }
 
+    override fun delete(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
+        return queueTask {
+            client.executeUpdate("DELETE FROM `${name}` WHERE ${fieldName}=${fieldValue}") != -1
+        }
+    }
+
     override fun keys(): QueuedTask<Collection<String>> {
         return queueTask {
             client.executeQuery("SELECT * FROM `${name}`", Throwable::printStackTrace) {

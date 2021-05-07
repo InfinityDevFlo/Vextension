@@ -89,7 +89,7 @@ open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionDat
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            return@queueTask MongoDatabase(name, this.mongoDatabase.getCollection(name))
+            return@queueTask MongoDatabase(name, this)
         }
     }
 

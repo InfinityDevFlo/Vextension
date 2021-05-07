@@ -59,6 +59,7 @@ interface Database : Nameable {
     fun insert(key: String, value: Document): QueuedTask<Boolean>
 
     fun delete(key: String): QueuedTask<Boolean>
+    fun delete(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
 
     fun keys(): QueuedTask<Collection<String>>
 

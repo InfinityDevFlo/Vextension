@@ -48,10 +48,18 @@ import eu.vironlab.vextension.document.documentFromJson
 import java.util.*
 import org.bson.Document as BsonDocument
 
-class MongoDatabase(override val name: String, val mongoCollection: MongoCollection<BsonDocument>) :
+class MongoDatabase(override val name: String, client: MongoDatabaseClient) :
     Database {
 
+    val mongoCollection: MongoCollection<BsonDocument>
     val COLLECTION_KEY: String = "__key__"
+
+    init {
+        if(!client.mongoDatabase.listCollectionNames().contains(name)) {
+            client.mongoDatabase.createCollection(name)
+        }
+        this.mongoCollection = client.mongoDatabase.getCollection(name)
+    }
 
     override fun contains(key: String): QueuedTask<Boolean> {
         return queueTask {
@@ -109,6 +117,17 @@ class MongoDatabase(override val name: String, val mongoCollection: MongoCollect
                 false
             } else {
                 this@MongoDatabase.mongoCollection.deleteMany(BasicDBObject(COLLECTION_KEY, key))
+                true
+            }
+        }
+    }
+
+    override fun delete(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
+        return queueTask {
+            if (!contains(fieldName, fieldValue).complete()) {
+                false
+            } else {
+                this@MongoDatabase.mongoCollection.deleteMany(BasicDBObject(fieldName, fieldValue))
                 true
             }
         }
