@@ -62,7 +62,7 @@ interface Database : Nameable {
      *
      * @return an Optional instance wich is Empty if there was no Object in the Database
      */
-    fun get(key: String): QueuedTask<Optional<Document>>
+    fun get(key: String): QueuedTask<Document?>
 
     /**
      * Get the Value of the entry from [fieldName] with the value: [fieldValue]

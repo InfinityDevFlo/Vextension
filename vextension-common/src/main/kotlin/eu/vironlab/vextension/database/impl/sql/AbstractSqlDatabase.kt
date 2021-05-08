@@ -131,19 +131,17 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
 
     override fun get(key: String, def: Document): QueuedTask<Document> {
         return queueTask {
-            if (contains(key).complete()) {
-                get(key).complete().get()
-            } else {
+            return@queueTask get(key).complete() ?: run {
                 insert(key, def).complete()
                 def
             }
         }
     }
 
-    override fun get(key: String): QueuedTask<Optional<Document>> {
+    override fun get(key: String): QueuedTask<Document?> {
         return queueTask {
             if (!contains(key).complete()) {
-                return@queueTask Optional.empty()
+                return@queueTask null
             }
             return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE `$TABLE_KEY`='${key}'", Throwable::printStackTrace) {
                 if (it.next()) {
@@ -153,9 +151,9 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
                             rs.append(entry.documentName, it.getObject(entry.name))
                         }
                     }
-                    return@executeQuery Optional.ofNullable(rs)
+                    return@executeQuery rs
                 } else {
-                    Optional.empty()
+                    null
                 }
             }
         }

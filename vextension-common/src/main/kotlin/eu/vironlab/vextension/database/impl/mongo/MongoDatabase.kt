@@ -75,14 +75,14 @@ class MongoDatabase(override val name: String, client: MongoDatabaseClient) :
         return documentFromJson(document.toJson())
     }
 
-    override fun get(key: String): QueuedTask<Optional<Document>> {
+    override fun get(key: String): QueuedTask<Document?> {
         return queueTask {
             val cursor: MongoCursor<BsonDocument> =
                 this@MongoDatabase.mongoCollection.find(BasicDBObject(COLLECTION_KEY, key)).cursor()
             if (!cursor.hasNext()) {
-                Optional.empty()
+                null
             } else {
-                Optional.of(fromBson(cursor.next()))
+                fromBson(cursor.next())
             }
         }
     }

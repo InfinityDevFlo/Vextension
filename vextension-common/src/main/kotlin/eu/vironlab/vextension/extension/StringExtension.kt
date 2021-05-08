@@ -96,6 +96,10 @@ fun String.Companion.random(length: Int, numbers: Boolean = true): String {
     return stringBuilder.toString()
 }
 
+fun String.containsIgnoreCase(searchQuery: String): Boolean {
+    return this.toLowerCase().contains(searchQuery.toLowerCase())
+}
+
 /**
  * Check if the String is an URL
  */
