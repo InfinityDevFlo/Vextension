@@ -42,7 +42,6 @@ import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.DocumentFactory.documentJsonStorage
 import eu.vironlab.vextension.document.DocumentManagement
@@ -257,21 +256,21 @@ internal class DefaultDocumentManagement : DocumentManagement {
             return append(JsonParser.parseReader(reader).getAsJsonObject())
         }
 
-        override fun getDocument(key: String): Optional<Document> {
+        override fun getDocument(key: String): Document? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonObject()) {
-                Optional.of(DefaultDocument(jsonElement))
+                DefaultDocument(jsonElement)
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getDocuments(key: String): Optional<Collection<Document>> {
+        override fun getDocuments(key: String): Collection<Document>? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             if (jsonElement.isJsonArray()) {
@@ -282,331 +281,315 @@ internal class DefaultDocumentManagement : DocumentManagement {
                         Documents.add(DefaultDocument(element.getAsJsonObject()))
                     }
                 }
-                return Optional.of(Documents)
+                return Documents
             }
-            return Optional.empty()
+            return null
         }
 
-        override fun getInt(key: String): Optional<Int> {
+        override fun getInt(key: String): Int? {
             if (!contains(key)) {
-                return Optional.ofNullable(0)
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsInt())
+                jsonElement.getAsInt()
             } else {
-                return Optional.ofNullable(0)
+                null
             }
         }
 
-        override fun getDouble(key: String): Optional<Double> {
+        override fun getDouble(key: String): Double? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.of(jsonElement.getAsDouble())
+                jsonElement.getAsDouble()
             } else {
-                return Optional.empty()
+                return null
             }
         }
 
-        override fun getFloat(key: String): Optional<Float> {
+        override fun getFloat(key: String): Float? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsFloat())
+                jsonElement.getAsFloat()
             } else {
-                return Optional.empty()
+                return null
             }
         }
 
-        override fun getByte(key: String): Optional<Byte> {
+        override fun getByte(key: String): Byte? {
             if (!contains(key)) {
-                return Optional.ofNullable(0)
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsByte())
+                jsonElement.getAsByte()
             } else {
-                Optional.ofNullable(0)
+                null
             }
         }
 
-        override fun getShort(key: String): Optional<Short> {
+        override fun getShort(key: String): Short? {
             if (!contains(key)) {
-                return Optional.ofNullable(0)
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsShort())
+                jsonElement.getAsShort()
             } else {
-                Optional.ofNullable(0)
+                null
             }
         }
 
-        override fun getLong(key: String): Optional<Long> {
+        override fun getLong(key: String): Long? {
             if (!contains(key)) {
-                return Optional.ofNullable(0)
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsLong())
+                jsonElement.getAsLong()
             } else {
-                Optional.ofNullable(0)
+                null
             }
         }
 
-        override fun getBoolean(key: String): Optional<Boolean> {
+        override fun getBoolean(key: String): Boolean? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsBoolean())
+                jsonElement.getAsBoolean()
             } else {
-                Optional.ofNullable(false)
+                false
             }
         }
 
-        override fun getString(key: String): Optional<String> {
+        override fun getString(key: String): String? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsString())
+                jsonElement.getAsString()
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getChar(key: String): Optional<Char> {
+        override fun getChar(key: String): Char? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsString().toCharArray()[0])
+                jsonElement.getAsString().toCharArray()[0]
             } else {
-                return Optional.empty()
+                return null
             }
         }
 
-        override fun getBigDecimal(key: String): Optional<BigDecimal> {
+        override fun getBigDecimal(key: String): BigDecimal? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsBigDecimal())
+                jsonElement.getAsBigDecimal()
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getBigInteger(key: String): Optional<BigInteger> {
+        override fun getBigInteger(key: String): BigInteger? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonPrimitive()) {
-                Optional.ofNullable(jsonElement.getAsBigInteger())
+                jsonElement.getAsBigInteger()
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getJsonArray(key: String): Optional<JsonArray> {
+        override fun getJsonArray(key: String): JsonArray? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonArray) {
-                Optional.ofNullable(jsonElement.asJsonArray)
+                jsonElement.asJsonArray
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getJsonObject(key: String): Optional<JsonObject> {
+        override fun getJsonObject(key: String): JsonObject? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
             return if (jsonElement.isJsonObject) {
-                Optional.ofNullable(jsonElement.asJsonObject)
+                jsonElement.asJsonObject
             } else {
-                Optional.empty()
+                null
             }
         }
 
-        override fun getBinary(key: String): Optional<ByteArray> {
+        override fun getBinary(key: String): ByteArray? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
-            return Optional.ofNullable(Base64.getDecoder().decode(this.getString(key).get()))
+            return Base64.getDecoder().decode(this.getString(key)!!)
         }
 
-        override operator fun <T> get(key: String, clazz: Class<T>): Optional<T> {
+        override operator fun <T> get(key: String, clazz: Class<T>): T? {
             return this[key, GSON, clazz]
         }
 
-        override fun <T> get(key: String, type: Type): Optional<T> {
+        override fun <T> get(key: String, type: Type): T? {
             return get(key, GSON, type)
         }
 
-        fun <T> get(key: String, gson: Gson, type: Type): Optional<T> {
-            if (!contains(key)) {
-                return Optional.empty()
-            }
-            val jsonElement = get(key)
-            return if (!jsonElement.isPresent) {
-                Optional.empty()
-            } else {
-                Optional.ofNullable(gson.fromJson(jsonElement.get(), type))
-            }
+        fun <T> get(key: String, gson: Gson, type: Type): T? {
+            return gson.fromJson(get(key), type)
         }
 
-        override operator fun <T> get(key: String, gson: Gson, clazz: Class<T>): Optional<T> {
-            val jsonElement = get(key)
-            return Optional.ofNullable(gson.fromJson(jsonElement.get(), clazz))
+        override operator fun <T> get(key: String, gson: Gson, clazz: Class<T>): T? {
+            return gson.fromJson(get(key), clazz)
         }
 
-        override fun get(key: String): Optional<JsonElement> {
+        override fun get(key: String): JsonElement? {
             if (!contains(key)) {
-                return Optional.empty()
+                return null
             }
-            val obj = getJsonObject(key)
-            if (!obj.isPresent) {
-                return Optional.empty()
-            }
-            return Optional.ofNullable(obj.get())
+            return getJsonObject(key)
         }
 
 
         override fun getInt(key: String, def: Int): Int {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getInt(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getInt(key).get()
         }
 
         override fun getShort(key: String, def: Short): Short {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getShort(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getShort(key).get()
         }
 
         override fun getBoolean(key: String, def: Boolean): Boolean {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getBoolean(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getBoolean(key).get()
         }
 
         override fun getLong(key: String, def: Long): Long {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getLong(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getLong(key).get()
         }
 
         override fun getDouble(key: String, def: Double): Double {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getDouble(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getDouble(key).get()
         }
 
         override fun getFloat(key: String, def: Float): Float {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getFloat(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getFloat(key).get()
         }
 
         override fun getString(key: String, def: String): String {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getString(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getString(key).get()
         }
 
         override fun getDocument(key: String, def: Document): Document {
-            val optionalValue = getDocument(key)
-            return if (optionalValue.isPresent) {
-                optionalValue.get()
-            } else {
+            return getDocument(key) ?: run {
                 append(key, def)
                 def
             }
         }
 
         override fun getDocuments(key: String, def: Collection<Document>): Collection<Document> {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getDocuments(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getDocuments(key).get()
         }
 
         override fun getJsonArray(key: String, def: JsonArray): JsonArray {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getJsonArray(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getJsonArray(key).get()
         }
 
         override fun getJsonObject(key: String, def: JsonObject): JsonObject {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getJsonObject(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getJsonObject(key).get()
         }
 
         override fun getBinary(key: String, def: ByteArray): ByteArray {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getBinary(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getBinary(key).get()
         }
 
         override fun <T> get(key: String, type: Type, def: T): T {
-            if (!this.contains(key)) {
-                this.append(key, def as Any)
+            return get(key, type) ?: run {
+                append(key, def as Any)
+                def
             }
-            return get<T>(key, type).get()
         }
 
         override fun <T> get(key: String, clazz: Class<T>, def: T): T {
-            if (!this.contains(key)) {
-                this.append(key, def as Any)
+            return get(key, clazz) ?: run {
+                append(key, def as Any)
+                def
             }
-            return this[key, clazz].get()
         }
 
         override fun getBigInteger(key: String, def: BigInteger): BigInteger {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getBigInteger(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getBigInteger(key).get()
         }
 
         override fun getBigDecimal(key: String, def: BigDecimal): BigDecimal {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getBigDecimal(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getBigDecimal(key).get()
         }
 
         override fun getChar(key: String, def: Char): Char {
-            if (!this.contains(key)) {
-                this.append(key, def)
+            return getChar(key) ?: run {
+                append(key, def)
+                def
             }
-            return this.getChar(key).get()
         }
 
         override fun storage(storage: DocumentStorage): DocumentSpecificStorage {
@@ -677,6 +660,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 }
             }
         }
+
         @JvmStatic
         var GSON: Gson = GsonBuilder()
             .serializeNulls()

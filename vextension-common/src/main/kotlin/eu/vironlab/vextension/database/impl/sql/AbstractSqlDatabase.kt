@@ -83,7 +83,7 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
         return queueTask {
             val valueObjs: StringBuilder = StringBuilder()
             creator.entries.forEach {
-                valueObjs.append("'${value.getString(it.documentName).get().toString()}', ")
+                valueObjs.append("'${value.getString(it.documentName).toString()}', ")
             }
             val query = "INSERT INTO `${name}` (${insertValueNames}) VALUES (${
                 valueObjs.toString().let { it.substring(0, it.length - 2) }
@@ -96,7 +96,7 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
         return queueTask {
             val update: StringBuilder = StringBuilder()
             creator.entries.forEach {
-                update.append("`${it.name}` = '${newValue.getString(it.documentName).get().toString()}', ")
+                update.append("`${it.name}` = '${newValue.getString(it.documentName).toString()}', ")
             }
             val query = "UPDATE `${name}` SET ${
                 update.toString().let { it.substring(0, it.length - 2) }

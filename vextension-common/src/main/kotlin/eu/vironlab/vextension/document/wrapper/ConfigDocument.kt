@@ -51,7 +51,6 @@ import java.io.File
 import java.lang.reflect.Type
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.*
 import java.util.function.Consumer
 
 class ConfigDocument(val file: File, private var wrapped: Document) : Document {
@@ -121,15 +120,16 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.append(key, value)
     }
 
-    override fun getDocument(key: String): Optional<Document> {
+    override fun getDocument(key: String): Document? {
         return wrapped.getDocument(key)
     }
+
 
     override fun getDocument(key: String, def: Document): Document {
         return wrapped.getDocument(key, def)
     }
 
-    override fun getDocuments(key: String): Optional<Collection<Document>> {
+    override fun getDocuments(key: String): Collection<Document>? {
         return wrapped.getDocuments(key)
     }
 
@@ -137,15 +137,16 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getDocuments(key, def)
     }
 
-    override fun getInt(key: String): Optional<Int> {
+    override fun getInt(key: String): Int? {
         return wrapped.getInt(key)
     }
+
 
     override fun getInt(key: String, def: Int): Int {
         return wrapped.getInt(key, def)
     }
 
-    override fun getDouble(key: String): Optional<Double> {
+    override fun getDouble(key: String): Double? {
         return wrapped.getDouble(key)
     }
 
@@ -153,27 +154,29 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getDouble(key, def)
     }
 
-    override fun getFloat(key: String): Optional<Float> {
+    override fun getFloat(key: String): Float? {
         return wrapped.getFloat(key)
     }
+
 
     override fun getFloat(key: String, def: Float): Float {
         return wrapped.getFloat(key, def)
     }
 
-    override fun getByte(key: String): Optional<Byte> {
+    override fun getByte(key: String): Byte? {
         return wrapped.getByte(key)
     }
 
-    override fun getShort(key: String): Optional<Short> {
+    override fun getShort(key: String): Short? {
         return wrapped.getShort(key)
     }
+
 
     override fun getShort(key: String, def: Short): Short {
         return wrapped.getShort(key, def)
     }
 
-    override fun getLong(key: String): Optional<Long> {
+    override fun getLong(key: String): Long? {
         return wrapped.getLong(key)
     }
 
@@ -181,7 +184,7 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getLong(key, def)
     }
 
-    override fun getBoolean(key: String): Optional<Boolean> {
+    override fun getBoolean(key: String): Boolean? {
         return wrapped.getBoolean(key)
     }
 
@@ -189,47 +192,52 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getBoolean(key, def)
     }
 
-    override fun getString(key: String): Optional<String> {
+    override fun getString(key: String): String? {
         return wrapped.getString(key)
     }
+
 
     override fun getString(key: String, def: String): String {
         return wrapped.getString(key, def)
     }
 
-    override fun getChar(key: String): Optional<Char> {
+    override fun getChar(key: String): Char? {
         return wrapped.getChar(key)
     }
+
 
     override fun getChar(key: String, def: Char): Char {
         return wrapped.getChar(key, def)
     }
 
-    override fun getBigDecimal(key: String): Optional<BigDecimal> {
+    override fun getBigDecimal(key: String): BigDecimal? {
         return wrapped.getBigDecimal(key)
     }
+
 
     override fun getBigDecimal(key: String, def: BigDecimal): BigDecimal {
         return wrapped.getBigDecimal(key, def)
     }
 
-    override fun getBigInteger(key: String): Optional<BigInteger> {
+    override fun getBigInteger(key: String): BigInteger? {
         return wrapped.getBigInteger(key)
     }
+
 
     override fun getBigInteger(key: String, def: BigInteger): BigInteger {
         return wrapped.getBigInteger(key, def)
     }
 
-    override fun getJsonArray(key: String): Optional<JsonArray> {
+    override fun getJsonArray(key: String): JsonArray? {
         return wrapped.getJsonArray(key)
     }
+
 
     override fun getJsonArray(key: String, def: JsonArray): JsonArray {
         return wrapped.getJsonArray(key, def)
     }
 
-    override fun getJsonObject(key: String): Optional<JsonObject> {
+    override fun getJsonObject(key: String): JsonObject? {
         return wrapped.getJsonObject(key)
     }
 
@@ -237,7 +245,7 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getJsonObject(key, def)
     }
 
-    override fun getBinary(key: String): Optional<ByteArray> {
+    override fun getBinary(key: String): ByteArray? {
         return wrapped.getBinary(key)
     }
 
@@ -245,25 +253,26 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getBinary(key, def)
     }
 
-    override fun get(key: String): Optional<JsonElement> {
+    override fun get(key: String): JsonElement? {
         return wrapped.get(key)
     }
 
-    override fun <T> get(key: String, clazz: Class<T>): Optional<T> {
+    override fun <T> get(key: String, clazz: Class<T>): T? {
         return wrapped.get(key, clazz)
     }
 
-    override fun <T> get(key: String, type: Type): Optional<T> {
+    override fun <T> get(key: String, type: Type): T? {
         return wrapped.get(key, type)
     }
 
-    override fun <T> get(key: String, type: Type, def: T): T {
+    override fun <T> get(key: String, type: Type, def: T): T? {
         return wrapped.get(key, type, def)
     }
 
-    override fun <T> get(key: String, gson: Gson, clazz: Class<T>): Optional<T> {
+    override fun <T> get(key: String, gson: Gson, clazz: Class<T>): T? {
         return wrapped.get(key, gson, clazz)
     }
+
 
     override fun <T> get(key: String, clazz: Class<T>, def: T): T {
         return wrapped.get(key, clazz, def)

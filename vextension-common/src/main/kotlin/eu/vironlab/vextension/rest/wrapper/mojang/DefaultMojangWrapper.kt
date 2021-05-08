@@ -57,12 +57,12 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
         )
         var result: MojangUser? = null
         profileRequest.ifPresent {
-            val name = it.getString("name").get()
+            val name = it.getString("name") ?: throw IllegalStateException("There is no Name")
             val properties = it.get<MutableList<PropertyToken>>(
                 "properties",
                 object : TypeToken<MutableList<PropertyToken>>() {}.type
             )
-            val skin = Skin(properties.get().get(0).value, properties.get().get(0).signature)
+            val skin = Skin(properties?.get(0)?.value ?: throw IllegalStateException("Cannot Load Skin"), properties.get(0).signature)
             val namehistory = getNameHistory(uuid).get()
             result = MojangUser(uuid, name, namehistory, skin)
         }
@@ -73,7 +73,7 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
         val request = MojangConstants.CLIENT.getJsonDocument(MojangConstants.UUID_REQUEST_URL + name)
         var result: UUID? = null
         request.ifPresent {
-            result = it.getString("id").get().toUUID()
+            result = it.getString("id")!!.toUUID()
         }
         return Optional.ofNullable(result)
     }
