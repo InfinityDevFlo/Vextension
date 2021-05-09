@@ -66,6 +66,15 @@ fun String.isInt(): Boolean {
     }
 }
 
+fun String.isLong(): Boolean {
+    return try {
+        this.toLong()
+        true
+    }catch (e: Exception) {
+        false
+    }
+}
+
 /**
  * Check if the String is a Boolean
  */
