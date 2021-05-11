@@ -35,38 +35,35 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql.h2
+package eu.vironlab.vextension.database.sql.mariadb
 
 import com.google.inject.Inject
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
-import eu.vironlab.vextension.database.connectiondata.FileConnectionData
-import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabaseClient
+import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
+import eu.vironlab.vextension.database.sql.AbstractSqlDatabaseClient
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.SQLException
-import org.h2.Driver
+import org.mariadb.jdbc.Driver
 
 
-class H2DatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
+class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
 
-    companion object {
-        init {
-            Driver.load()
-        }
-    }
-
-    val connectionData: FileConnectionData
+    val connectionData: RemoteConnectionData
+    lateinit var dataSource: HikariDataSource
     lateinit var connection: Connection
 
     init {
-        if (data !is FileConnectionData) {
-            throw IllegalStateException("Cannot create h2 Database without FileConnectionData")
+        if (data !is RemoteConnectionData) {
+            throw IllegalStateException("Cannot Init MariaDB Client without RemoteConnectionData")
         }
-        this.connectionData = data as FileConnectionData
+        this.connectionData = data
     }
 
     override fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T {
@@ -98,20 +95,44 @@ class H2DatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDa
     }
 
     override fun init(): Boolean {
-        this.connection = DriverManager.getConnection("jdbc:h2:${this.connectionData.file.absolutePath}")
+        val hikariConfig: HikariConfig = HikariConfig().let {
+            for (arg in arrayOf(
+                "cachePrepStmts",
+                "useServerPrepStmts",
+                "useLocalSessionState",
+                "rewriteBatchedStatements",
+                "cacheResultSetMetadata",
+                "cacheServerConfiguration",
+                "elideSetAutoCommits"
+            )) {
+                it.addDataSourceProperty(arg, "true")
+            }
+            it.addDataSourceProperty("prepStmtCacheSize", "250");
+            it.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            it.addDataSourceProperty("maintainTimeStats", "false");
+            it.jdbcUrl =
+                "jdbc:mysql://${connectionData.host}:${connectionData.port}/${connectionData.database}?serverTimezone=UTC"
+            it.driverClassName = Driver::class.java.canonicalName;
+            it.username = connectionData.user
+            it.password = connectionData.password
+            it
+        }
+        this.dataSource = HikariDataSource(hikariConfig)
+        this.connection = dataSource.connection
         return true
     }
 
+    override fun close() {
+        return dataSource.close()
+    }
 
     override fun getDatabase(name: String): QueuedTask<Database> {
         return queueTask {
-            return@queueTask H2Database(name, this)
+            return@queueTask MariaDatabase(name, this)
         }
     }
 
-    override val name: String = "h2"
+    override val name: String = "mariadb"
 
-    override fun close() {
-        connection.close()
-    }
+
 }

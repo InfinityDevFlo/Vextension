@@ -35,15 +35,15 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql
+package eu.vironlab.vextension.database.sql
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
+import eu.vironlab.vextension.database.sql.util.SqlRegistry
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.document
 import java.sql.ResultSet
-import java.util.*
 
 abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDatabaseClient) : Database {
 
@@ -52,10 +52,10 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
     val insertValueNames: String
 
     init {
-        if (!SqlRegistry.creators.containsKey(dbname)) {
+        if (!SqlRegistry.creators().containsKey(dbname)) {
             throw IllegalStateException("Cannot Create SqlTable without registered Creator")
         }
-        this.creator = SqlRegistry.creators.get(dbname)!!
+        this.creator = SqlRegistry.creators().get(dbname)!!
         this.TABLE_KEY = creator.key.name
         client.executeUpdate(creator.createQuery())
         val valueNames: StringBuilder = StringBuilder(" ")

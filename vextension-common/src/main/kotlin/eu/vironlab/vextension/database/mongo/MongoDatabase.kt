@@ -35,7 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.mongo
+package eu.vironlab.vextension.database.mongo
 
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection

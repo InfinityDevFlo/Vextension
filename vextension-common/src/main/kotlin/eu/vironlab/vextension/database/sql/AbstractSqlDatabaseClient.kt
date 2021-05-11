@@ -35,7 +35,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql
+package eu.vironlab.vextension.database.sql
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask

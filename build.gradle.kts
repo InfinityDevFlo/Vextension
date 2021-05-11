@@ -26,7 +26,6 @@ plugins {
 tasks.dokkaHtmlMultiModule.configure {
     outputDirectory.set(File(rootProject.buildDir.path, "vextension-v2.0.0"))
 }
-
 //Define Variables for all Projects
 allprojects {
 
@@ -69,7 +68,6 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-serialization")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     }
-
 
 
     tasks {
@@ -186,6 +184,10 @@ subprojects {
                     include("**")
                 }
             }
+        }
+
+        compileKotlin {
+            kotlinOptions.jvmTarget = "11"
         }
 
         withType<JavaCompile> {

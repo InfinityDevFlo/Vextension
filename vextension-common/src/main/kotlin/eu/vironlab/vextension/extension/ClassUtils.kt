@@ -37,12 +37,40 @@
 
 package eu.vironlab.vextension.extension
 
-import java.util.*
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import java.util.jar.JarFile
 
-fun <B, R : B> Optional<B>.cast(): Optional<R> {
-    return if (!this.isPresent) {
-        Optional.empty()
-    }else {
-        Optional.ofNullable(get() as R)
+fun <T> Class<T>.extractFile(path: String, target: File) {
+    Files.createFile(target.toPath())
+    Files.copy(
+        this.getResourceAsStream(name) ?: throw IllegalStateException("The Entry is not in the Jar"), target.toPath()
+    )
+}
+
+fun <T> Class<T>.extractFolder(path: String, targetDir: File, overwrite: Boolean = true) {
+    val target = targetDir.toPath()
+    Files.createDirectories(targetDir.toPath())
+    val jarPath = this.getResource(path).path ?: run {throw IllegalStateException("The Entry is not in the Jar") }
+    JarFile("/${jarPath.let { 
+        it.substring(0, it.lastIndexOf("!"))
+        it.substring("file:/".length)
+    }}").use {
+        it.entries().toList().forEach { entry ->
+            if (entry.isDirectory) {
+                val dir: Path = target.resolve(entry.name)
+                if (!Files.exists(dir)) {
+                    Files.createDirectories(dir)
+                }
+            } else {
+                val file = target.resolve(entry.name)
+                if (!Files.exists(file) || overwrite) {
+                    it.getInputStream(entry).use { `in` -> Files.copy(`in`, file, StandardCopyOption.REPLACE_EXISTING) }
+                }
+            }
+        }
     }
 }
+

@@ -35,32 +35,8 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql
+package eu.vironlab.vextension.database.sql.mariadb
 
-class TableCreator(val name: String, val key: TableEntry) {
+import eu.vironlab.vextension.database.sql.AbstractSqlDatabase
 
-
-    val entries: MutableCollection<TableEntry> = mutableListOf(key)
-
-    fun addEntry(tableEntry: TableEntry): TableCreator {
-        this.entries.add(tableEntry)
-        return this
-    }
-
-    internal fun createQuery(): String {
-        val query: StringBuilder = StringBuilder("CREATE TABLE IF NOT EXISTS `${name}` (")
-        for (entry in entries) {
-            query.append(" `${entry.name}` ${entry.type.toString()}${if (entry.length != 0) {"(" + entry.length + ")"} else ""} ${if (entry.notNull) {" NOT NULL"} else ""} , ")
-        }
-        return query.toString().let {
-            it.substring(0, it.length - 2)
-        }.plus(");")
-    }
-
-}
-
-data class TableEntry(val name: String, val type: ColumnType, val documentName: String = name, val length: Int = 0, val notNull: Boolean = true)
-
-enum class ColumnType {
-    TEXT, LONGTEXT, INT, VARCHAR, BIGINT
-}
+class MariaDatabase(override val name: String, mariaClient: MariaDatabaseClient) : AbstractSqlDatabase(name, mariaClient)

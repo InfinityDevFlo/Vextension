@@ -35,8 +35,27 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.impl.sql.mariadb
+package eu.vironlab.vextension.database.sql.util
 
-import eu.vironlab.vextension.database.impl.sql.AbstractSqlDatabase
+import eu.vironlab.vextension.database.sql.ColumnType
 
-class MariaDatabase(override val name: String, mariaClient: MariaDatabaseClient) : AbstractSqlDatabase(name, mariaClient)
+/**
+ * Required for class Parser
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class SqlName(val name: String)
+
+/**
+ * Required for class Parser
+ */
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class SqlKey(val documentName: String = "field", val length: Int = 0)
+
+/**
+ * Required for class Parser
+ */
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class SqlEntry(val type: ColumnType = ColumnType.LONGTEXT, val documentName: String = "field", val length: Int = 0, val notNull: Boolean = true)

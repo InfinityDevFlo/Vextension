@@ -54,6 +54,15 @@ object StringExtension {
     val RANDOM: Random = Random()
 }
 
+fun String.isClass(): Boolean {
+    return try {
+        Class.forName(this)
+        true
+    }catch (e: Exception) {
+        false
+    }
+}
+
 /**
  * Check if the String is an Integer
  */
