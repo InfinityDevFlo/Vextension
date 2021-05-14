@@ -42,7 +42,7 @@ import java.util.function.BiConsumer
 
 data class ItemStack(
     var material: Material,
-    var name: String,
+    var name: String?,
     var amount: Int,
     var damage: Int,
     var lore: MutableList<String>,
@@ -51,8 +51,8 @@ data class ItemStack(
     var blockInteract: Boolean,
     var blockClick: Boolean,
     val identifier: String,
-    var dropHandler: BiConsumer<ItemStack, UUID>?,
-    var interactHandler:  TriConsumer<ItemStack, UUID, InteractType>?,
-    var clickHandler: BiConsumer<ItemStack, UUID>?
+    var dropHandler: ((ItemStack, UUID) -> Unit)?,
+    var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)?,
+    var clickHandler: ((ItemStack, UUID) -> Unit)?
 
 )

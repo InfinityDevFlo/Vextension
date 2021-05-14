@@ -13,7 +13,7 @@ object ServerUtil {
         return try {
             Class.forName("org.bukkit.Bukkit", false, this::class.java.classLoader)
             ServerType.BUKKIT
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             try {
                 Class.forName("org.spongepowered.api.Sponge", false, this::class.java.classLoader)
                 ServerType.SPONGE
@@ -22,19 +22,20 @@ object ServerUtil {
             }
         }
     }
-
+    /**
+    * Returns the MinecraftVersion of the Server using NMS
+    * @return The Server Version or if invalid UNKNOWN
+     */
     @JvmStatic
     fun getMinecraftVersion(): MinecraftVersion {
-        var version: MinecraftVersion? = null
         MinecraftVersion.values().forEach {
-            if (version != null) return@forEach
+            if (it == MinecraftVersion.UNKNOWN) return@forEach
             try {
-                if (Package.getPackage("net.minecraft.server.$it") != null) return@forEach
-                version = it
+                if (Package.getPackage("net.minecraft.server.$it") != null) return@getMinecraftVersion it
             } catch (_: Exception) {
             }
         }
-        return version ?: MinecraftVersion.UNKNOWN
+        return MinecraftVersion.UNKNOWN
     }
 }
 

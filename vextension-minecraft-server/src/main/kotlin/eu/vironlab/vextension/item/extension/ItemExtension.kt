@@ -41,31 +41,44 @@ import com.google.common.primitives.Booleans
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.builder.ItemBuilder
+import eu.vironlab.vextension.sponge.VextensionSponge
+import eu.vironlab.vextension.sponge.VextensionSponge.Companion.vextensionSpongeKey
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.apache.commons.lang.RandomStringUtils
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Vex
 import org.bukkit.inventory.meta.Damageable
-import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.inventory.ItemStack as BukkitItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.data.key.Key
+import org.spongepowered.api.data.key.Keys
+import org.spongepowered.api.data.manipulator.DataManipulator
+import org.spongepowered.api.data.value.mutable.ListValue
+import org.spongepowered.api.data.value.mutable.Value
+import org.spongepowered.api.item.ItemType
+import org.spongepowered.api.item.inventory.ItemStackSnapshot
+import org.spongepowered.api.text.Text
+import org.spongepowered.api.item.inventory.ItemStack as SpongeItemStack
+import org.spongepowered.api.util.generator.dummy.DummyObjectProvider
+import org.spongepowered.api.item.inventory.ItemStack.Builder
 import java.lang.UnsupportedOperationException
 
 
-fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
+fun ItemStack.toBukkit(): BukkitItemStack {
     if (ServerUtil.getServerType() != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
-    val item: org.bukkit.inventory.ItemStack =
-        org.bukkit.inventory.ItemStack(Material.valueOf(this.material.toString()), this.amount)
+    val item: BukkitItemStack =
+        BukkitItemStack(Material.valueOf(this.material.toString()), this.amount)
     val meta = item.itemMeta
     if (meta is Damageable) meta.damage = this.damage
-    if (material.name.toLowerCase() != name)
+    if (name != null)
         meta.setDisplayName(this.name)
-    else
-        meta.setDisplayName(null)
     meta.lore = this.lore
     meta.isUnbreakable = this.unbreakable
     meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, this.identifier)
@@ -76,13 +89,39 @@ fun ItemStack.toBukkit(): org.bukkit.inventory.ItemStack {
     return item
 }
 
-fun ItemStack.toSponge(): ItemStack? {
-    TODO()
+
+fun ItemStack.toSponge(): SpongeItemStack {
+    return Sponge.getRegistry().createBuilder(Builder::class.java)
+        .itemType(DummyObjectProvider.createFor(ItemType::class.java, this.material.name.toUpperCase()))
+        .build().also {
+            it.get(Keys.ITEM_DURABILITY).ifPresent { itt ->
+                it.offer(Keys.ITEM_DURABILITY, itt - damage)
+            }
+            it.quantity = amount
+            if (name != null)
+                it.offer(Keys.DISPLAY_NAME, Text.of(name!!))
+            it.offer(Keys.UNBREAKABLE, unbreakable)
+            it.offer(Keys.ITEM_LORE, lore.map { itt -> Text.of(itt) })
+            it.offer(vextensionSpongeKey, this.identifier)
+            if (!VextensionSponge.instance.items.containsKey(identifier))
+                VextensionSponge.instance.items[identifier] = this
+        }
 }
 
-fun org.bukkit.inventory.ItemStack.toItemStack(): ItemStack {
+fun BukkitItemStack.toItemStack(): ItemStack {
     return VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer.get(
         VextensionBukkit.key,
         PersistentDataType.STRING
-    )]  ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
+    )] ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
+}
+
+fun SpongeItemStack.toItemStack(): ItemStack {
+    return VextensionSponge.instance.items[this.get(vextensionSpongeKey)
+        .orElseThrow { UnsupportedOperationException("Invalid Vextension ItemStack") }]
+        ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
+}
+fun ItemStackSnapshot.toItemStack(): ItemStack {
+    return VextensionSponge.instance.items[this.get(vextensionSpongeKey)
+        .orElseThrow { UnsupportedOperationException("Invalid Vextension ItemStack") }]
+        ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
 }

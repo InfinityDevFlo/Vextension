@@ -44,6 +44,6 @@ interface DataGUI : GUI {
     var comparator: Comparator<ItemStack>?
     fun open(player: UUID, list: MutableCollection<ItemStack>)
     var defaultList: MutableCollection<ItemStack>
-    var clickHandler: BiConsumer<ItemStack, UUID>?
+    var clickHandler: ((ItemStack, UUID) -> Unit)?
     var border: ItemStack?
 }

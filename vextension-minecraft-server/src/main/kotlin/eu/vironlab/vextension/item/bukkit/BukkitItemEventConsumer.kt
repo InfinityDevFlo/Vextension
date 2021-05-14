@@ -46,6 +46,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.*
 import org.bukkit.persistence.PersistentDataType
+import java.util.*
 
 class BukkitItemEventConsumer : Listener {
     @EventHandler
@@ -57,7 +58,7 @@ class BukkitItemEventConsumer : Listener {
                         VextensionBukkit.instance.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                             ?: return
                     if (item.blockInteract) e.isCancelled = true
-                    if (item.interactHandler != null) item.interactHandler!!.accept(item, e.player.uniqueId, InteractType.valueOf(e.action.toString()))
+                    if (item.interactHandler != null) item.interactHandler!!.invoke(item, e.player.uniqueId, Optional.ofNullable(InteractType.valueOf(e.action.toString())))
                     e.action
                 }
             }
@@ -72,7 +73,7 @@ class BukkitItemEventConsumer : Listener {
                     VextensionBukkit.instance.items[e.itemDrop.itemStack.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                         ?: return
                 if (item.blockDrop) e.isCancelled = true
-                if (item.dropHandler != null) item.dropHandler!!.accept(item, e.player.uniqueId)
+                if (item.dropHandler != null) item.dropHandler!!.invoke(item, e.player.uniqueId)
             }
         }
     }
@@ -81,26 +82,6 @@ class BukkitItemEventConsumer : Listener {
     fun click(e: InventoryClickEvent) {
         if (e.action == InventoryAction.NOTHING)
             return
-        /*var item =
-            if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null
-                ?: if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null
-                    ?: if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null
-                        ?: return*/
-        /*if (VextensionBukkit.instance.items[item?.itemMeta?.persistentDataContainer?.get(
-                VextensionBukkit.key,
-                PersistentDataType.STRING
-            )]?.clickHandler == null
-        ) {
-            item = when (item) {
-                e.currentItem -> if (e.currentItem?.type != org.bukkit.Material.AIR) e.cursor else e.whoClicked.inventory.getItem(
-                    e.hotbarButton
-                ) ?: return
-                e.cursor -> if (e.cursor?.type != org.bukkit.Material.AIR) e.currentItem else e.whoClicked.inventory.getItem(
-                    e.hotbarButton
-                ) ?: return
-                else -> return
-            }
-        }*/
         mutableListOf(if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null, if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null, if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null).forEach { item ->
             if (item != null) {
                 if (item.hasItemMeta()) {
@@ -109,7 +90,7 @@ class BukkitItemEventConsumer : Listener {
                             VextensionBukkit.instance.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                                 ?: return
                         if (itemm.blockClick) e.isCancelled = true
-                        if (itemm.clickHandler != null) itemm.clickHandler!!.accept(itemm, e.whoClicked.uniqueId)
+                        if (itemm.clickHandler != null) itemm.clickHandler!!.invoke(itemm, e.whoClicked.uniqueId)
                     }
                 }
             }

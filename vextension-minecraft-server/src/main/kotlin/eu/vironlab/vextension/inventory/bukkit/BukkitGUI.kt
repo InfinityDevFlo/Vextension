@@ -56,7 +56,6 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         scheduleAsync {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
-            Thread.sleep(50)
             for ((index: Int, item: ItemStack) in contents) {
                 inventory.setItem(index, item)
             }
@@ -118,7 +117,6 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
             }
         }
         slot ?: return this
-        println("$slot ${contents.containsKey(slot)}")
         contents.putIfAbsent(slot, item)
         return this
     }

@@ -41,17 +41,23 @@ import com.google.inject.Inject
 import eu.vironlab.vextension.Vextension
 import eu.vironlab.vextension.VextensionAPI
 import eu.vironlab.vextension.database.DatabaseClient
+import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.sponge.SpongeItemEventConsumer
 import org.slf4j.Logger
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.data.key.Key
+import org.spongepowered.api.data.value.mutable.Value
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.game.state.GameStartedServerEvent
 import org.spongepowered.api.plugin.Plugin
+import org.spongepowered.api.util.generator.dummy.DummyObjectProvider
 
 @Plugin(
     id = "vextension_sponge",
     name = "Vextension-Sponge",
     version = "1.0.0-SNAPSHOT",
     description = "Vextension for Sponge Plugins",
-    authors = arrayOf("VironLab")
+    authors = ["VironLab"]
 )
 class VextensionSponge : Vextension  {
 
@@ -63,12 +69,16 @@ class VextensionSponge : Vextension  {
     companion object {
         @JvmStatic
         lateinit var instance: VextensionSponge
+        @JvmStatic
+        internal val vextensionSpongeKey: Key<Value<String>> =
+            DummyObjectProvider.createExtendedFor(Key::class.java, "VEXTENSION_SPONGE_KEY")
     }
-
+    val items: MutableMap<String, ItemStack> = mutableMapOf()
     @Listener
     fun init(event: GameStartedServerEvent) {
         instance = this
         VextensionAPI.initialize(this)
+        Sponge.getEventManager().registerListeners(this, SpongeItemEventConsumer())
         logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
 }

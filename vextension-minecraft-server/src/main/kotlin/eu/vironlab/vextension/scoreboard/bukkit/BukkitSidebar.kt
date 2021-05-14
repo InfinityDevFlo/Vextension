@@ -45,6 +45,7 @@ import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
+import eu.vironlab.vextension.scoreboard.builder.sidebar
 import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
 import org.bukkit.Bukkit
@@ -212,5 +213,4 @@ class BukkitSidebar(
             remove(event.player.uniqueId)
         }
     }
-
 }
