@@ -1,0 +1,11 @@
+[
+  {
+    "modid": "vextension_sponge",
+    "name": "Vextension-Sponge",
+    "version": "1.0.0-SNAPSHOT",
+    "description": "Vextension for Sponge Plugins",
+    "authorList": [
+      "VironLab"
+    ]
+  }
+]

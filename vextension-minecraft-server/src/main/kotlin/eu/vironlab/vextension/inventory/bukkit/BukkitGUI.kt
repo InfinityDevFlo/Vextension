@@ -37,6 +37,8 @@
 package eu.vironlab.vextension.inventory.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
+import eu.vironlab.vextension.concurrent.task.queueTask
+import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.extension.setItem
@@ -44,40 +46,22 @@ import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Bukkit
+import java.lang.IllegalArgumentException
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
-class BukkitGUI(override val lines: Int, override val name: String) : GUI{
-    override var border: Boolean = false
-    override var borderItem: ItemStack? = null
+class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
-        CompletableFuture.supplyAsync {
+        queueTask {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
-            if (border && borderItem != null) {
-                //<editor-fold desc="Border creation" defaultstate="collapsed">
-                for (i: Int in 0..8) {
-                    inventory.setItem(i, borderItem!!)
-                }
-                for (i: Int in lines * 9 - 9 until inventory.size) {
-                    inventory.setItem(i, borderItem!!)
-                }
-                var i = 9
-                while (i < 9 * lines) {
-                    inventory.setItem(i, borderItem!!)
-                    if (i % 9 == 0) i += 8
-                    else i++
-                }
-
-                //</editor-fold>
-            }
             for ((index: Int, item: ItemStack) in contents) {
                 inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                Bukkit.getPlayer(player)?.openInventory(inventory) ?: TODO("Throw PlayerDoesntExist Exception")
+                player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
+                    .openInventory(inventory)
             }
         }
     }
@@ -93,13 +77,28 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI{
         return this
     }
 
-    fun setBorder(border: Boolean): BukkitGUI {
-        this.border = border
-        return this
-    }
 
-    fun setBorderItem(borderItem: ItemStack?): BukkitGUI {
-        this.borderItem = borderItem
+    override fun setBorder(border: ItemStack?): BukkitGUI {
+        //<editor-fold desc="Border creation" defaultstate="collapsed">
+        for (i: Int in 0..8) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+        }
+        for (i: Int in lines * 9 - 9 until lines * 9) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+        }
+        var i = 9
+        while (i < 9 * lines) {
+            if (border != null)
+                contents[i] = border
+            else contents.remove(i)
+            if (i % 9 == 0) i += 8
+            else i++
+        }
+        //</editor-fold>
         return this
     }
 
@@ -109,7 +108,16 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI{
     }
 
     fun addItem(item: ItemStack): BukkitGUI {
-        this.contents[contents.count()] = item
+        var current = 0
+        var slot: Int? = null
+        for (i in contents.keys.toSortedSet().iterator()) {
+            if (i != current++) {
+                slot = current.minus(1)
+                break
+            }
+        }
+        slot ?: return this
+        contents.putIfAbsent(slot, item)
         return this
     }
 }

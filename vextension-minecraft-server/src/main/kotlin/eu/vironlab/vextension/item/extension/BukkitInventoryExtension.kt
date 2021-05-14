@@ -38,11 +38,11 @@
 package eu.vironlab.vextension.item.extension
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import java.util.concurrent.CompletableFuture
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.meta.Damageable
@@ -54,7 +54,7 @@ import org.bukkit.persistence.PersistentDataType
 fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
     if (ServerUtil.getServerType() != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
-    CompletableFuture.supplyAsync {
+    queueTask {
         val bukkitItem: org.bukkit.inventory.ItemStack =
             org.bukkit.inventory.ItemStack(Material.valueOf(item.material.toString()), item.amount)
         val meta = bukkitItem.itemMeta

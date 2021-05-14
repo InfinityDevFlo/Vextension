@@ -34,10 +34,50 @@
  *     Mail:            contact@vironlab.eu<p>
  *<p>
  */
-package eu.vironlab.vextension.inventory.entry
 
-import eu.vironlab.vextension.item.ItemStack
+package eu.vironlab.vextension.scoreboard.builder
 
-interface Entry {
-    var item: ItemStack
+import eu.vironlab.vextension.factory.Factory
+import eu.vironlab.vextension.scoreboard.SidebarLine
+import java.util.*
+import org.bukkit.Bukkit
+
+
+class LineFactory : Factory<SidebarLine> {
+
+    var name: String = ""
+    var content: String = ""
+    var score: Int = 1
+    var proceed: ((SidebarLine, UUID) -> Unit?)? = null
+
+    fun proceed(proceed: (SidebarLine, UUID) -> Unit) {
+        this.proceed = proceed
+    }
+
+
+    override fun create(): SidebarLine {
+        return SidebarLineImpl(name, content, score, proceed)
+    }
+}
+
+fun buildLine(init: LineFactory.() -> Unit): SidebarLine {
+    val builder: LineFactory = LineFactory()
+    builder.init()
+    return builder.create()
+}
+
+@FunctionalInterface
+interface LineConsumer<K, V> {
+
+    fun accept(line: K, player: V): String
+
+}
+
+class SidebarLineImpl(
+    override val name: String, override var content: String, override var score: Int,
+    override var proceed: ((SidebarLine, UUID) -> Unit?)?
+) : SidebarLine {
+    fun clone(): SidebarLineImpl {
+        return SidebarLineImpl(name, content, score, proceed)
+    }
 }
