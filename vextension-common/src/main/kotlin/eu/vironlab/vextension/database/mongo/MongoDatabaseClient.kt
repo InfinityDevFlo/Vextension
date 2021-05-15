@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.database.mongo
 
-import com.google.inject.Inject
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import eu.vironlab.vextension.concurrent.task.QueuedTask
@@ -48,7 +47,7 @@ import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
 import com.mongodb.client.MongoDatabase as MongoDB
 
-open class MongoDatabaseClient @Inject constructor(connectionData: ConnectionData) : DatabaseClient() {
+open class MongoDatabaseClient constructor(connectionData: ConnectionData) : DatabaseClient() {
 
     val remoteConnectionData: RemoteConnectionData
     lateinit var mongoClient: MongoClient

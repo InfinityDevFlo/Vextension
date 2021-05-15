@@ -37,10 +37,8 @@
 
 package eu.vironlab.vextension.database.sql.mariadb
 
-import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
@@ -53,7 +51,7 @@ import java.sql.SQLException
 import org.mariadb.jdbc.Driver
 
 
-class MariaDatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
+class MariaDatabaseClient constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
 
     val connectionData: RemoteConnectionData
     lateinit var dataSource: HikariDataSource

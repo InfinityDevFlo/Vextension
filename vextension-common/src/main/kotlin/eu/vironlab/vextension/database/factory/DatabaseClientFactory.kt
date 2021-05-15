@@ -37,10 +37,8 @@
 
 package eu.vironlab.vextension.database.factory
 
-import com.google.inject.Guice
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
-import eu.vironlab.vextension.database.inject.DatabaseClientInjectorModule
 import eu.vironlab.vextension.factory.Factory
 
 
@@ -52,8 +50,10 @@ class DatabaseClientFactory<T : DatabaseClient>(val implClass: Class<T>) : Facto
         this.connectionData = connectionData
         return this
     }
+
     override fun create(): T {
-        return Guice.createInjector(DatabaseClientInjectorModule(this.connectionData)).getInstance(implClass)
+        return implClass.getConstructor(ConnectionData::class.java)?.newInstance(this.connectionData)
+            ?: implClass.getConstructor().newInstance()
     }
 
 }

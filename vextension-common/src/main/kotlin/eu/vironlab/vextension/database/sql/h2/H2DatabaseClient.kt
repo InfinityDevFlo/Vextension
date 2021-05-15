@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.database.sql.h2
 
-import com.google.inject.Inject
 import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
@@ -51,7 +50,7 @@ import java.sql.SQLException
 import org.h2.Driver
 
 
-class H2DatabaseClient @Inject constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
+class H2DatabaseClient constructor(data: ConnectionData) : AbstractSqlDatabaseClient() {
 
     companion object {
         init {
