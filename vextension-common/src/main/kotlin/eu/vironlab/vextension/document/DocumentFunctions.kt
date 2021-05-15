@@ -47,16 +47,6 @@ import eu.vironlab.vextension.document.impl.storage.YamlDocumentStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 
 object DocumentFactory {
-    @JvmStatic
-    fun downloadDocumentDependencies(dependencyLoader: DependencyLoader) {
-        dependencyLoader.download("com.google.code.gson:gson:2.8.6")
-        dependencyLoader.download("org.yaml:snakeyaml:1.27")
-        dependencyLoader.download("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.0.1")
-        dependencyLoader.download("com.fasterxml.jackson.core:jackson-databind:2.0.1")
-        dependencyLoader.download("com.fasterxml.jackson.core:jackson-core:2.12.3")
-        dependencyLoader.download("com.fasterxml.jackson.core:jackson-annotations:2.12.3")
-        dependencyLoader.download("org.codehaus.woodstox:stax2-api:4.2.1")
-    }
 
     @JvmStatic
     var documentXmlStorage: DocumentStorage = XMLDocumentStorage()
