@@ -64,7 +64,7 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
     init {
         if (!file.exists()) {
             file.createNewFile()
-            this.wrapped.storage(storage).write(file)
+            saveConfig()
         }
     }
 
