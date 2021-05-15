@@ -187,7 +187,7 @@ subprojects {
         }
 
         compileKotlin {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "1.8"
         }
 
         withType<JavaCompile> {

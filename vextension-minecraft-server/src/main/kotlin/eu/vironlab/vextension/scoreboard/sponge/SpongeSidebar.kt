@@ -38,12 +38,11 @@
 package eu.vironlab.vextension.scoreboard.sponge
 
 import eu.vironlab.vextension.collection.DataPair
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.sponge.VextensionSponge
-import java.util.*
-import java.util.concurrent.CompletableFuture
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
@@ -53,6 +52,7 @@ import org.spongepowered.api.scoreboard.critieria.Criteria
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots
 import org.spongepowered.api.scoreboard.objective.Objective
 import org.spongepowered.api.text.Text
+import java.util.*
 
 
 class SpongeSidebar(
@@ -75,7 +75,7 @@ class SpongeSidebar(
             val color = ScoreboardUtil.getAvailableColor(usedColors)
             this.lines.put(line.name, DataPair(color, line))
             this.usedColors.add(color)
-            CompletableFuture.supplyAsync {
+            queueTask {
                 this.players.forEach {
                     val scoreboard = it.scoreboard
                     val team: Team = teamBuilder.name(line.name).build()
@@ -94,7 +94,7 @@ class SpongeSidebar(
     }
 
     override fun updateLine(name: String, line: SidebarLine) {
-        CompletableFuture.supplyAsync {
+        queueTask {
             players.forEach {
                 val scoreboard = it.scoreboard
                 val optionalTeam: Optional<Team> = scoreboard.getTeam(name)
@@ -114,7 +114,7 @@ class SpongeSidebar(
     }
 
     override fun set(player: UUID) {
-        CompletableFuture.supplyAsync {
+        queueTask {
             val optionalPlayer: Optional<Player> = Sponge.getServer().getPlayer(player)
             if (optionalPlayer.isPresent) {
                 val p = optionalPlayer.get()
@@ -168,7 +168,7 @@ class SpongeSidebar(
     }
 
     override fun removeAll() {
-        CompletableFuture.supplyAsync {
+        queueTask {
             players.forEach {
                 remove(it.uniqueId)
             }
@@ -187,7 +187,7 @@ class SpongeSidebar(
 
     override fun updateTitle(title: String) {
         this.title = title
-        CompletableFuture.supplyAsync {
+        queueTask {
             players.forEach {
                 it.scoreboard.getObjective(DisplaySlots.SIDEBAR).get().displayName = Text.of(title)
             }

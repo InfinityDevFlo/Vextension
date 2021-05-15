@@ -37,46 +37,56 @@
 
 package eu.vironlab.vextension.scoreboard.builder
 
+import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.factory.Factory
+import eu.vironlab.vextension.scoreboard.ScoreboardUtil
+import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
-import java.util.*
+import eu.vironlab.vextension.scoreboard.bukkit.BukkitSidebar
+import eu.vironlab.vextension.scoreboard.sponge.SpongeSidebar
+import eu.vironlab.vextension.util.ServerType
+import eu.vironlab.vextension.util.ServerUtil
 
 
-class LineFactory : Factory<SidebarLine> {
+class SidebarFactory : Factory<Sidebar> {
 
-    var name: String = ""
-    var content: String = ""
-    var score: Int = 1
-    var proceed: ((SidebarLine, UUID) -> Unit?)? = null
+    val lines: MutableMap<String, SidebarLine> = mutableMapOf()
+    var title: String = ""
 
-    fun proceed(proceed: (SidebarLine, UUID) -> Unit) {
-        this.proceed = proceed
+    fun addLine(init: LineFactory.() -> Unit) {
+        val builder: LineFactory = LineFactory()
+        builder.init()
+        val line = builder.create()
+        this.lines[line.name] = line
     }
 
-
-    override fun create(): SidebarLine {
-        return SidebarLineImpl(name, content, score, proceed)
+    fun addEmptyLine(name: String, score: Int) {
+        addLine {
+            this.score = score
+            this.content = " "
+            this.name = name
+        }
     }
+
+    override fun create(): Sidebar {
+        val finalLines: MutableMap<String, DataPair<String, SidebarLine>> = mutableMapOf()
+        val usedColors: MutableList<String> = mutableListOf()
+        lines.forEach {
+            val color = ScoreboardUtil.getAvailableColor(usedColors)
+            usedColors.add(color)
+            finalLines.put(it.key, DataPair(color, it.value))
+        }
+        return if(ServerUtil.getServerType().equals(ServerType.BUKKIT))  {
+            BukkitSidebar(finalLines, usedColors, title)
+        }else {
+            SpongeSidebar(finalLines, usedColors, title)
+        }
+    }
+
 }
 
-fun buildLine(init: LineFactory.() -> Unit): SidebarLine {
-    val builder: LineFactory = LineFactory()
+fun sidebar(init: SidebarFactory.() -> Unit): Sidebar {
+    val builder: SidebarFactory = SidebarFactory()
     builder.init()
     return builder.create()
-}
-
-@FunctionalInterface
-interface LineConsumer<K, V> {
-
-    fun accept(line: K, player: V): String
-
-}
-
-class SidebarLineImpl(
-    override val name: String, override var content: String, override var score: Int,
-    override var proceed: ((SidebarLine, UUID) -> Unit?)?
-) : SidebarLine {
-    fun clone(): SidebarLineImpl {
-        return SidebarLineImpl(name, content, score, proceed)
-    }
 }

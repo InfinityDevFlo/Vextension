@@ -36,7 +36,6 @@
  */
 
 package eu.vironlab.vextension.bukkit
-
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.bukkit.BukkitItemEventConsumer
 import org.bukkit.Bukkit
@@ -66,6 +65,7 @@ class VextensionBukkit : JavaPlugin(), CommandExecutor {
     override fun onEnable() {
         Bukkit.getPluginManager().registerEvents(BukkitItemEventConsumer(), this)
     }
+
 
 
 }

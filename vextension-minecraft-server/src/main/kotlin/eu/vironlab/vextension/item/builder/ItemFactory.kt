@@ -38,22 +38,21 @@ package eu.vironlab.vextension.item.builder
 
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
-import eu.vironlab.vextension.concurrent.TriConsumer
 import eu.vironlab.vextension.extension.random
 import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
+import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
-import java.util.function.BiConsumer
 
 class ItemFactory(
     private var material: Material
 ) : Factory<ItemStack> {
 
-    private var name: String = material.toString().toLowerCase()
+    private var name: String? = null
     private var amount: Int = 1
     private var damage: Int = 0
     private var lore: MutableList<String> = mutableListOf()
@@ -61,20 +60,20 @@ class ItemFactory(
     private var blockInteract: Boolean = false
     private var blockClick: Boolean = false
     private var blockDrop: Boolean = false
-    private var dropHandler: BiConsumer<ItemStack, UUID>? = null
-    private var interactHandler: TriConsumer<ItemStack, UUID, InteractType>? = null
-    private var clickHandler: BiConsumer<ItemStack, UUID>? = null
+    private var dropHandler: ((ItemStack, UUID) -> Unit)? = null
+    private var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)? = null
+    private var clickHandler: ((ItemStack, UUID) -> Unit)? = null
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
         when (ServerUtil.getServerType()) {
             ServerType.SPONGE -> {
-                TODO("MAKEN")
+                while (VextensionSponge.instance.items.containsKey(key))
+                    key = String.random(64)
             }
             ServerType.BUKKIT -> {
-                while (VextensionBukkit.instance.items.containsKey(key)) {
+                while (VextensionBukkit.instance.items.containsKey(key))
                     key = String.random(64)
-                }
             }
         }
         return ItemStack(
@@ -93,8 +92,18 @@ class ItemFactory(
             clickHandler
         )
     }
-
-    fun create(key: String): ItemStack {
+    private class AlreadyExistsException(msg: String): Throwable(msg)
+    fun build(key: String): ItemStack {
+        when (ServerUtil.getServerType()) {
+            ServerType.BUKKIT -> {
+                if (VextensionBukkit.instance.items.containsKey(key))
+                    throw AlreadyExistsException("Item with the same key already exists!")
+            }
+            ServerType.SPONGE -> {
+                if (VextensionSponge.instance.items.containsKey(key))
+                    throw AlreadyExistsException("Item with the same key already exists!")
+            }
+        }
         return ItemStack(
             material,
             name,
@@ -152,21 +161,20 @@ class ItemFactory(
         return this
     }
 
-    fun setInteractHandler(interactHandler: TriConsumer<ItemStack, UUID, InteractType>?): ItemFactory {
+    fun setInteractHandler(interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)?): ItemFactory {
         this.interactHandler = interactHandler
         return this
     }
 
-    fun setClickHandler(clickHandler: BiConsumer<ItemStack, UUID>?): ItemFactory {
+    fun setClickHandler(clickHandler: ((ItemStack, UUID) -> Unit)?): ItemFactory {
         this.clickHandler = clickHandler
         return this
     }
 
-    fun setDropHandler(dropHandler: BiConsumer<ItemStack, UUID>?): ItemFactory {
+    fun setDropHandler(dropHandler: ((ItemStack, UUID) -> Unit)?): ItemFactory {
         this.dropHandler = dropHandler
         return this
     }
-
     fun setBlockAll(blockAll: Boolean): ItemFactory {
         this.blockDrop = blockAll
         this.blockInteract = blockAll
@@ -175,8 +183,8 @@ class ItemFactory(
     }
 }
 
-fun item(material: Material, init: ItemFactory.() -> Unit): ItemStack {
-    val itemBuilder = ItemFactory(material)
-    itemBuilder.init()
-    return itemBuilder.create()
+fun createItem(material: Material, init: ItemFactory.() -> Unit): ItemStack {
+    val itemFactory = ItemFactory(material)
+    itemFactory.init()
+    return itemFactory.create()
 }
