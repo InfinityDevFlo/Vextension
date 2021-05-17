@@ -55,7 +55,7 @@ class BukkitItemEventConsumer : Listener {
             if (e.item!!.hasItemMeta()) {
                 if (!e.item!!.itemMeta.persistentDataContainer.isEmpty) {
                     val item =
-                        VextensionBukkit.instance.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                        VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                             ?: return
                     if (item.blockInteract) e.isCancelled = true
                     if (item.interactHandler != null) item.interactHandler!!.invoke(item, e.player.uniqueId, Optional.ofNullable(InteractType.valueOf(e.action.toString())))
@@ -70,7 +70,7 @@ class BukkitItemEventConsumer : Listener {
         if (e.itemDrop.itemStack.hasItemMeta()) {
             if (!e.itemDrop.itemStack.itemMeta.persistentDataContainer.isEmpty) {
                 val item =
-                    VextensionBukkit.instance.items[e.itemDrop.itemStack.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                    VextensionBukkit.items[e.itemDrop.itemStack.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                         ?: return
                 if (item.blockDrop) e.isCancelled = true
                 if (item.dropHandler != null) item.dropHandler!!.invoke(item, e.player.uniqueId)
@@ -87,7 +87,7 @@ class BukkitItemEventConsumer : Listener {
                 if (item.hasItemMeta()) {
                     if (!item.itemMeta.persistentDataContainer.isEmpty) {
                         val itemm: ItemStack =
-                            VextensionBukkit.instance.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                            VextensionBukkit.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                                 ?: return
                         if (itemm.blockClick) e.isCancelled = true
                         if (itemm.clickHandler != null) itemm.clickHandler!!.invoke(itemm, e.whoClicked.uniqueId)

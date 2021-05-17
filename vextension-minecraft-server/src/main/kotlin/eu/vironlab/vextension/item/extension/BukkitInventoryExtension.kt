@@ -65,8 +65,8 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
         meta.isUnbreakable = item.unbreakable
         meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, item.identifier)
         bukkitItem.itemMeta = meta
-        if (!VextensionBukkit.instance.items.containsKey(item.identifier)) {
-            VextensionBukkit.instance.items[item.identifier] = item
+        if (!VextensionBukkit.items.containsKey(item.identifier)) {
+            VextensionBukkit.items[item.identifier] = item
         }
         this.setItem(slot, bukkitItem)
     }

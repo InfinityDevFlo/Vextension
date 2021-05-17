@@ -70,8 +70,8 @@ fun ItemStack.toBukkit(): BukkitItemStack {
     meta.lore = this.lore
     meta.isUnbreakable = this.unbreakable
     meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, this.identifier)
-    if (!VextensionBukkit.instance.items.containsKey(this.identifier)) {
-        VextensionBukkit.instance.items[this.identifier] = this
+    if (!VextensionBukkit.items.containsKey(this.identifier)) {
+        VextensionBukkit.items[this.identifier] = this
     }
     item.itemMeta = meta
     return item
@@ -97,7 +97,7 @@ fun ItemStack.toSponge(): SpongeItemStack {
 }
 
 fun BukkitItemStack.toItemStack(): ItemStack {
-    return VextensionBukkit.instance.items[this.itemMeta.persistentDataContainer.get(
+    return VextensionBukkit.items[this.itemMeta.persistentDataContainer.get(
         VextensionBukkit.key,
         PersistentDataType.STRING
     )] ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
