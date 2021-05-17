@@ -51,10 +51,14 @@ inline fun <reified T> Array<out T>.toClean(): Array<T> {
     return rs.toTypedArray()
 }
 
-fun Array<String>.toCleanString(): String {
+fun Array<String>.toCleanString(space: Boolean): String {
     val rs = StringBuilder()
     for (entry in this) {
-        rs.append(entry)
+        rs.append(
+            entry + (if (space) {
+                " "
+            } else "")
+        )
     }
     return rs.toString()
 }
