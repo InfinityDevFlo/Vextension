@@ -36,18 +36,17 @@
  */
 package eu.vironlab.vextension.inventory.bukkit
 
-import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.extension.setItem
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import org.bukkit.Bukkit
-import java.lang.IllegalArgumentException
 import java.util.*
+import org.bukkit.Bukkit
 
 class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
@@ -58,13 +57,18 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
             val bukkitPlayer = player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
             for ((index: Int, item: ItemStack) in contents) {
-                if (item.permission != null)
-                    if (bukkitPlayer.hasPermission(item.permission!!))
-                        inventory.setItem(index, item)
+                if (item.permission != null) {
+                    if (!bukkitPlayer.hasPermission(item.permission!!)) {
+                        return@queueTask
+                    }
+                }
+                if (item.material == Material.CURRENT_PLAYER_HEAD) {
+                    item.material = Material.PLAYER_HEAD
+                    item.skullOwner = Bukkit.getPlayer(player)!!.name
+                }
+                inventory.setItem(index, item)
             }
-            Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                bukkitPlayer.openInventory(inventory)
-            }
+            bukkitPlayer.openInventory(inventory)
         }.queue()
     }
 

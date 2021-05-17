@@ -38,6 +38,7 @@ package eu.vironlab.vextension.item
 
 enum class Material {
     //<editor-fold desc="Material list" defaultstate="collapsed">
+    CURRENT_PLAYER_HEAD,
     AIR,
     STONE,
     GRANITE,

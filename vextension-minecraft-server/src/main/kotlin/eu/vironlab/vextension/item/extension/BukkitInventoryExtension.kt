@@ -46,6 +46,7 @@ import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 
 /**
@@ -58,6 +59,9 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
         val bukkitItem: org.bukkit.inventory.ItemStack =
             org.bukkit.inventory.ItemStack(Material.valueOf(item.material.toString()), item.amount)
         val meta = bukkitItem.itemMeta
+        if (item.skullOwner != null) {
+            (meta as SkullMeta).owner = item.skullOwner
+        }
         if (meta is Damageable) meta.damage = item.damage
         if (item.material.name.toLowerCase() != item.name)
             meta.setDisplayName(item.name)

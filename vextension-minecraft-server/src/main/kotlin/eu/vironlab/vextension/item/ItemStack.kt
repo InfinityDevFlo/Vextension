@@ -36,9 +36,7 @@
  */
 package eu.vironlab.vextension.item
 
-import eu.vironlab.vextension.concurrent.TriConsumer
 import java.util.*
-import java.util.function.BiConsumer
 
 data class ItemStack(
     var material: Material,
@@ -54,6 +52,7 @@ data class ItemStack(
     var dropHandler: ((ItemStack, UUID) -> Unit)?,
     var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)?,
     var clickHandler: ((ItemStack, UUID) -> Unit)?,
-    var permission: String?
+    var permission: String?,
+    var skullOwner: String? = null
 
 )
