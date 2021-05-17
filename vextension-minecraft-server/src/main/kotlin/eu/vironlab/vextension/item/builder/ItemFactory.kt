@@ -64,6 +64,7 @@ class ItemFactory(
     private var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)? = null
     private var clickHandler: ((ItemStack, UUID) -> Unit)? = null
     private var permission: String? = null
+    private var skullOwner: String? = null
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
@@ -91,7 +92,8 @@ class ItemFactory(
             dropHandler,
             interactHandler,
             clickHandler,
-            permission
+            permission,
+            skullOwner
         )
     }
 
@@ -122,12 +124,18 @@ class ItemFactory(
             dropHandler,
             interactHandler,
             clickHandler,
-            permission
+            permission,
+            skullOwner
         )
     }
 
     fun setName(name: String): ItemFactory {
         this.name = name
+        return this
+    }
+
+    fun setSkullOwner(name: String): ItemFactory {
+        this.skullOwner = name
         return this
     }
 
