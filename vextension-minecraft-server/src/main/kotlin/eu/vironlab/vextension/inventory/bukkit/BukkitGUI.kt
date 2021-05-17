@@ -65,7 +65,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
                 bukkitPlayer.openInventory(inventory)
             }
-        }
+        }.queue()
     }
 
 

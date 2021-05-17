@@ -90,7 +90,7 @@ class BukkitSidebar(
                     team.addEntry(color)
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(color).score = line.score
                 }
-            }
+            }.queue()
         }
     }
 
@@ -110,7 +110,7 @@ class BukkitSidebar(
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(lines.get(name)!!.first).score = line.score
                 }
             }
-        }
+        }.queue()
     }
 
     override fun set(player: UUID) {

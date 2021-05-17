@@ -39,7 +39,7 @@ class SpongeGUI(override val lines: Int, override val name: String) : GUI {
                         itt.openInventory(it)
                     }
                 }
-        }
+        }.queue()
     }
 
     override fun setBorder(border: ItemStack?): SpongeGUI {

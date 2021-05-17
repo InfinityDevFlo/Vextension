@@ -125,7 +125,7 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                 }
             }
             pages[0].open(player)
-        }
+        }.queue()
     }
 
     fun setComparator(comparator: Comparator<ItemStack>): BukkitDataGUI {

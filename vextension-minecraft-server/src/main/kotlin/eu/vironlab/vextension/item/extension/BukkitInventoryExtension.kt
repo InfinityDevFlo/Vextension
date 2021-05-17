@@ -69,7 +69,7 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
             VextensionBukkit.items[item.identifier] = item
         }
         this.setItem(slot, bukkitItem)
-    }
+    }.queue()
     return this
 }
 

@@ -89,7 +89,7 @@ class SpongeSidebar(
                     scoreboard.getObjective(DisplaySlots.SIDEBAR).get().getOrCreateScore(Text.of(color)).score =
                         line.score
                 }
-            }
+            }.queue()
         }
     }
 
@@ -110,7 +110,7 @@ class SpongeSidebar(
                         .get().score = line.score
                 }
             }
-        }
+        }.queue()
     }
 
     override fun set(player: UUID) {
@@ -145,7 +145,7 @@ class SpongeSidebar(
                 scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR)
                 this.players.add(p)
             }
-        }
+        }.queue()
     }
 
     override fun setAll() {
@@ -172,7 +172,7 @@ class SpongeSidebar(
             players.forEach {
                 remove(it.uniqueId)
             }
-        }
+        }.queue()
     }
 
     override fun remove(player: UUID) {
@@ -191,7 +191,7 @@ class SpongeSidebar(
             players.forEach {
                 it.scoreboard.getObjective(DisplaySlots.SIDEBAR).get().displayName = Text.of(title)
             }
-        }
+        }.queue()
     }
 
     @Listener
