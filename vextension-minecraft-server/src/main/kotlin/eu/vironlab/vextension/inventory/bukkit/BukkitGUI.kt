@@ -36,6 +36,7 @@
  */
 package eu.vironlab.vextension.inventory.bukkit
 
+import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
@@ -68,7 +69,9 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                 }
                 inventory.setItem(index, item)
             }
-            bukkitPlayer.openInventory(inventory)
+            Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
+                bukkitPlayer.openInventory(inventory)
+            }
         }.queue()
     }
 
