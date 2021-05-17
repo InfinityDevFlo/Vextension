@@ -63,6 +63,7 @@ class ItemFactory(
     private var dropHandler: ((ItemStack, UUID) -> Unit)? = null
     private var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)? = null
     private var clickHandler: ((ItemStack, UUID) -> Unit)? = null
+    private var permission: String? = null
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
@@ -89,10 +90,13 @@ class ItemFactory(
             key,
             dropHandler,
             interactHandler,
-            clickHandler
+            clickHandler,
+            permission
         )
     }
-    private class AlreadyExistsException(msg: String): Throwable(msg)
+
+    private class AlreadyExistsException(msg: String) : Throwable(msg)
+
     fun build(key: String): ItemStack {
         when (ServerUtil.getServerType()) {
             ServerType.BUKKIT -> {
@@ -117,7 +121,8 @@ class ItemFactory(
             key,
             dropHandler,
             interactHandler,
-            clickHandler
+            clickHandler,
+            permission
         )
     }
 
@@ -175,10 +180,16 @@ class ItemFactory(
         this.dropHandler = dropHandler
         return this
     }
+
     fun setBlockAll(blockAll: Boolean): ItemFactory {
         this.blockDrop = blockAll
         this.blockInteract = blockAll
         this.blockClick = blockAll
+        return this
+    }
+
+    fun setPermission(permission: String?): ItemFactory {
+        this.permission = permission
         return this
     }
 }
