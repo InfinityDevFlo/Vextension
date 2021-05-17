@@ -71,10 +71,6 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                         return@queueTask
                     }
                 }
-                if (item.material == Material.CURRENT_PLAYER_HEAD) {
-                    item.material = Material.PLAYER_HEAD
-                    item.skullOwner = Bukkit.getPlayer(player)!!.name
-                }
                 inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
