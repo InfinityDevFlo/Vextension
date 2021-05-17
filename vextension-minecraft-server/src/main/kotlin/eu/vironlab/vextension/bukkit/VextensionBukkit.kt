@@ -46,11 +46,13 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class VextensionBukkit : JavaPlugin(), CommandExecutor {
 
-    val items: MutableMap<String, ItemStack> = mutableMapOf()
 
     companion object {
         @JvmStatic
-        lateinit var instance: VextensionBukkit
+        lateinit var instance: JavaPlugin
+
+        @JvmStatic
+        val items: MutableMap<String, ItemStack> = mutableMapOf()
 
         @JvmStatic
         lateinit var key: NamespacedKey
