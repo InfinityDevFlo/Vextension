@@ -46,18 +46,26 @@ import eu.vironlab.vextension.item.extension.setItem
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import java.util.*
 import org.bukkit.Bukkit
+import java.util.*
+import org.bukkit.entity.Player
 
 class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
+        open(player, null)
+    }
+    private var currentBorder: ItemStack? = null
+    fun open(player: UUID, openConsumer: (BukkitGUI.(UUID) -> BukkitGUI)?) {
         if (ServerUtil.getServerType() != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         queueTask {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
+            val guiCopy = if (openConsumer == null) this else
+                            BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
+                                .openConsumer(player)
             val bukkitPlayer = player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
-            for ((index: Int, item: ItemStack) in contents) {
+            for ((index: Int, item: ItemStack) in guiCopy.contents) {
                 if (item.permission != null) {
                     if (!bukkitPlayer.hasPermission(item.permission!!)) {
                         return@queueTask
@@ -75,7 +83,6 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         }.queue()
     }
 
-
     fun setItem(slot: Int, item: ItemStack): BukkitGUI {
         contents[slot] = item
         return this
@@ -88,6 +95,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
 
 
     override fun setBorder(border: ItemStack?): BukkitGUI {
+        currentBorder = border
         //<editor-fold desc="Border creation" defaultstate="collapsed">
         for (i: Int in 0..8) {
             if (border != null)
