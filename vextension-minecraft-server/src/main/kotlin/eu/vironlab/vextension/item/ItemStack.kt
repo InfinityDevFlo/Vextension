@@ -53,6 +53,7 @@ data class ItemStack(
     val identifier: String,
     var dropHandler: ((ItemStack, UUID) -> Unit)?,
     var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)?,
-    var clickHandler: ((ItemStack, UUID) -> Unit)?
+    var clickHandler: ((ItemStack, UUID) -> Unit)?,
+    var permission: String?
 
 )

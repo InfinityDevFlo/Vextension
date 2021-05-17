@@ -28,7 +28,10 @@ class SpongeGUI(override val lines: Int, override val name: String) : GUI {
                 .property("inventorydimensions", InventoryDimension(9, 9 * lines))
                 .build(VextensionSponge.instance)
                 .also {
+                    val spongePlayer = Sponge.getServer().getPlayer(player).orElseThrow { NullPointerException("Invalid Player") }
                     for (item in contents) {
+                        if (item.value.permission != null)
+                            if (spongePlayer.hasPermission(item.value.permission!!))
                         it.query<Inventory>(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(item.key))).first<Inventory>()
                             .set(item.value.toSponge())
                     }

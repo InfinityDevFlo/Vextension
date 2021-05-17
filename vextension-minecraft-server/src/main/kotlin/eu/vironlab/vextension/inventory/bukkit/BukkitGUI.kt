@@ -56,12 +56,14 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         queueTask {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
+            val bukkitPlayer = player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
             for ((index: Int, item: ItemStack) in contents) {
-                inventory.setItem(index, item)
+                if (item.permission != null)
+                    if (bukkitPlayer.hasPermission(item.permission!!))
+                        inventory.setItem(index, item)
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
-                player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
-                    .openInventory(inventory)
+                bukkitPlayer.openInventory(inventory)
             }
         }
     }
