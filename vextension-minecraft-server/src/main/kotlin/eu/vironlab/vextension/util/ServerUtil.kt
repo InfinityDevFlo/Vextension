@@ -1,6 +1,8 @@
- package eu.vironlab.vextension.util
+package eu.vironlab.vextension.util
 
 import eu.vironlab.vextension.multiversion.MinecraftVersion
+import org.bukkit.Bukkit
+import org.spongepowered.api.Sponge
 
 
 object ServerUtil {
@@ -9,8 +11,8 @@ object ServerUtil {
      * Get the Type of a Server
      */
     @JvmStatic
-    fun getServerType(): ServerType {
-        return try {
+    val SERVER_TYPE: ServerType = run {
+        return@run try {
             Class.forName("org.bukkit.Bukkit", false, this::class.java.classLoader)
             ServerType.BUKKIT
         } catch (e: Exception) {
@@ -22,9 +24,19 @@ object ServerUtil {
             }
         }
     }
+
+
+    @JvmStatic
+    val NMS_PACKAGE_NAME: String = if (SERVER_TYPE == ServerType.BUKKIT) {
+        Bukkit.getServer().javaClass.getPackage().name.let { it.substring(it.lastIndexOf(".") + 1, it.length) }
+    } else {
+        Sponge.getServer().javaClass.getPackage().name.let { it.substring(it.lastIndexOf(".") + 1, it.length) }
+    }
+
+
     /**
-    * Returns the MinecraftVersion of the Server using NMS
-    * @return The Server Version or if invalid UNKNOWN
+     * Returns the MinecraftVersion of the Server using NMS
+     * @return The Server Version or if invalid UNKNOWN
      */
     @JvmStatic
     fun getMinecraftVersion(): MinecraftVersion {
@@ -39,7 +51,7 @@ object ServerUtil {
     }
 }
 
-class UnsupportedServerTypeException(msg: String): Exception(msg)
+class UnsupportedServerTypeException(msg: String) : Exception(msg)
 
 enum class ServerType {
     BUKKIT, SPONGE
