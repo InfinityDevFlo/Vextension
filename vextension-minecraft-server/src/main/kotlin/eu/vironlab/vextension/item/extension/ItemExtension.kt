@@ -59,7 +59,7 @@ import org.spongepowered.api.item.inventory.ItemStack as SpongeItemStack
 
 
 fun ItemStack.toBukkit(): BukkitItemStack {
-    if (ServerUtil.getServerType() != ServerType.BUKKIT)
+    if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
     val item: BukkitItemStack =
         BukkitItemStack(Material.valueOf(this.material.toString()), this.amount)

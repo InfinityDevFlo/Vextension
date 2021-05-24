@@ -20,7 +20,7 @@ import java.util.*
 class SpongeGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
-        if (ServerUtil.getServerType() != ServerType.SPONGE)
+        if (ServerUtil.SERVER_TYPE != ServerType.SPONGE)
             throw UnsupportedServerTypeException("SpongeGUI only supports Sponge!")
         queueTask {
             Sponge.getRegistry().createBuilder(Inventory.Builder::class.java)

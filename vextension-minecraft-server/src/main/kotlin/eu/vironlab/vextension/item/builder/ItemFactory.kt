@@ -68,7 +68,7 @@ class ItemFactory(
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
-        when (ServerUtil.getServerType()) {
+        when (ServerUtil.SERVER_TYPE) {
             ServerType.SPONGE -> {
                 while (VextensionSponge.instance.items.containsKey(key))
                     key = String.random(64)
@@ -100,7 +100,7 @@ class ItemFactory(
     private class AlreadyExistsException(msg: String) : Throwable(msg)
 
     fun build(key: String): ItemStack {
-        when (ServerUtil.getServerType()) {
+        when (ServerUtil.SERVER_TYPE) {
             ServerType.BUKKIT -> {
                 if (VextensionBukkit.items.containsKey(key))
                     throw AlreadyExistsException("Item with the same key already exists!")

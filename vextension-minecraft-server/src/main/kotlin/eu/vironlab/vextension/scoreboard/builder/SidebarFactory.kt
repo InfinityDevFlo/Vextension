@@ -76,7 +76,7 @@ class SidebarFactory : Factory<Sidebar> {
             usedColors.add(color)
             finalLines.put(it.key, DataPair(color, it.value))
         }
-        return if(ServerUtil.getServerType().equals(ServerType.BUKKIT))  {
+        return if(ServerUtil.SERVER_TYPE.equals(ServerType.BUKKIT))  {
             BukkitSidebar(finalLines, usedColors, title)
         }else {
             SpongeSidebar(finalLines, usedColors, title)

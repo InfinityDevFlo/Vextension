@@ -57,7 +57,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     }
     private var currentBorder: ItemStack? = null
     fun open(player: UUID, openConsumer: (BukkitGUI.(UUID) -> BukkitGUI)?) {
-        if (ServerUtil.getServerType() != ServerType.BUKKIT)
+        if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         queueTask {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)

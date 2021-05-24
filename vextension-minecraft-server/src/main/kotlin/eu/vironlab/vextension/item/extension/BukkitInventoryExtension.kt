@@ -53,7 +53,7 @@ import org.bukkit.persistence.PersistentDataType
  * Set the [item] on [slot] into the Inventory
  */
 fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
-    if (ServerUtil.getServerType() != ServerType.BUKKIT)
+    if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
     queueTask {
         val bukkitItem: org.bukkit.inventory.ItemStack =
