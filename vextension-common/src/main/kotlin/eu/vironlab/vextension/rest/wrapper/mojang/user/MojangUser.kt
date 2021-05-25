@@ -44,11 +44,12 @@ import java.lang.reflect.Type
 import java.util.*
 
 data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin) :
-    Nameable {
+    Nameable, java.io.Serializable {
     companion object {
         @JvmStatic
         val TYPE: Type = object : TypeToken<MojangUser>() {}.type
     }
 }
 
-data class Skin(val name: String, @SerializedName("value") val texture: String, val signature: String)
+data class Skin(val name: String, @SerializedName("value") val texture: String, val signature: String) :
+    java.io.Serializable
