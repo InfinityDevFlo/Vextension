@@ -37,8 +37,8 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang
 
+import com.google.gson.Gson
 import com.google.gson.JsonElement
-import com.google.gson.reflect.TypeToken
 import eu.vironlab.vextension.extension.toUUID
 import eu.vironlab.vextension.rest.wrapper.mojang.user.MojangUser
 import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistory
@@ -58,11 +58,8 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
         var result: MojangUser? = null
         profileRequest.ifPresent {
             val name = it.getString("name") ?: throw IllegalStateException("There is no Name")
-            val properties = it.get<MutableList<PropertyToken>>(
-                "properties",
-                object : TypeToken<MutableList<PropertyToken>>() {}.type
-            )
-            val skin = Skin(properties?.get(0)?.value ?: throw IllegalStateException("Cannot Load Skin"), properties.get(0).signature)
+            val properties = it.getJsonArray("properties") ?: throw IllegalStateException("No Properties Given")
+            val skin = Gson().fromJson(properties.first().asJsonObject, Skin::class.java)
             val namehistory = getNameHistory(uuid).get()
             result = MojangUser(uuid, name, namehistory, skin)
         }
