@@ -58,7 +58,7 @@ fun String.isClass(): Boolean {
     return try {
         Class.forName(this)
         true
-    }catch (e: Exception) {
+    } catch (e: Exception) {
         false
     }
 }
@@ -79,7 +79,7 @@ fun String.isLong(): Boolean {
     return try {
         this.toLong()
         true
-    }catch (e: Exception) {
+    } catch (e: Exception) {
         false
     }
 }
@@ -96,6 +96,7 @@ fun String.isBoolean(): Boolean {
     }
 }
 
+
 fun String.Companion.random(length: Int, numbers: Boolean = true): String {
     val stringBuilder = StringBuilder()
     synchronized(StringExtension::class.java) {
@@ -104,7 +105,7 @@ fun String.Companion.random(length: Int, numbers: Boolean = true): String {
             for (i in 0 until length) {
                 stringBuilder.append(StringExtension.CHARS[StringExtension.RANDOM.nextInt(size)])
             }
-        }else {
+        } else {
             val size = StringExtension.UPPER_LOWER_CHARS.size
             for (i in 0 until length) {
                 stringBuilder.append(StringExtension.UPPER_LOWER_CHARS[StringExtension.RANDOM.nextInt(size)])
@@ -134,7 +135,7 @@ fun String.isUUID(): Boolean {
     return try {
         this.toUUID()
         true
-    }catch (e: Exception) {
+    } catch (e: Exception) {
         false
     }
 }

@@ -65,11 +65,14 @@ class VextensionSponge {
     companion object {
         @JvmStatic
         lateinit var instance: VextensionSponge
+
         @JvmStatic
         internal val vextensionSpongeKey: Key<Value<String>> =
             DummyObjectProvider.createExtendedFor(Key::class.java, "VEXTENSION_SPONGE_KEY")
     }
+
     val items: MutableMap<String, ItemStack> = mutableMapOf()
+
     @Listener
     fun init(event: GameStartedServerEvent) {
         instance = this

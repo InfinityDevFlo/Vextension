@@ -41,20 +41,19 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
-import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.extension.setItem
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import org.bukkit.Bukkit
 import java.util.*
-import org.bukkit.entity.Player
+import org.bukkit.Bukkit
 
 class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         open(player, null)
     }
+
     private var currentBorder: ItemStack? = null
     fun open(player: UUID, openConsumer: (BukkitGUI.(UUID) -> BukkitGUI)?) {
         if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
@@ -62,8 +61,8 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         queueTask {
             val inventory = Bukkit.createInventory(null, 9 * lines, name)
             val guiCopy = if (openConsumer == null) this else
-                            BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
-                                .openConsumer(player)
+                BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
+                    .openConsumer(player)
             val bukkitPlayer = player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
             for ((index: Int, item: ItemStack) in guiCopy.contents) {
                 if (item.permission != null) {

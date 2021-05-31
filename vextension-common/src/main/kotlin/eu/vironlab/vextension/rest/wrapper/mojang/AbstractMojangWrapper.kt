@@ -38,7 +38,6 @@
 package eu.vironlab.vextension.rest.wrapper.mojang
 
 import com.google.gson.Gson
-import java.util.*
 
 
 abstract class AbstractMojangWrapper : MojangWrapper {

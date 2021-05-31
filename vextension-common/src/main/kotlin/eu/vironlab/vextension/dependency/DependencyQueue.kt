@@ -35,37 +35,15 @@
  *<p>
  */
 
-package eu.vironlab.vextension.database.sql
+package eu.vironlab.vextension.dependency
 
 import eu.vironlab.vextension.concurrent.task.QueuedTask
-import eu.vironlab.vextension.concurrent.task.queueTask
-import eu.vironlab.vextension.database.DatabaseClient
-import java.sql.ResultSet
+import java.util.*
 
+interface DependencyQueue {
 
-abstract class AbstractSqlDatabaseClient : DatabaseClient() {
+    val queue: Queue<DownloadableJar>
 
-    abstract fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T
-
-    abstract fun executeUpdate(query: String): Int
-
-    override fun dropDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask { executeUpdate("DROP TABLE IF EXISTS `${name}`") != -1 }
-    }
-
-    override fun containsDatabase(name: String): QueuedTask<Boolean> {
-        return queueTask {
-            executeQuery(
-                "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",
-                Throwable::printStackTrace
-            ) {
-                val rs = mutableListOf<String>()
-                while (it.next()) {
-                    rs.add(it.getString("table_name"))
-                }
-                rs.contains(name)
-            }
-        }
-    }
+    fun download(): QueuedTask<Collection<Throwable>>
 
 }

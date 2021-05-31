@@ -36,8 +36,6 @@
  */
 package eu.vironlab.vextension.inventory.entry
 
-import eu.vironlab.vextension.inventory.bukkit.BukkitDataGUI
-import eu.vironlab.vextension.inventory.bukkit.BukkitGUI
 import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack

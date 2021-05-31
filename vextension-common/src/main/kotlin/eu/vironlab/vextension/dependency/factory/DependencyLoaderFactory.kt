@@ -37,7 +37,6 @@
 
 package eu.vironlab.vextension.dependency.factory
 
-import eu.vironlab.vextension.dependency.DependencyClassLoader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.dependency.Repository
 import eu.vironlab.vextension.factory.Factory
@@ -46,7 +45,6 @@ import java.io.File
 class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
 
     private val repositories: MutableList<Repository> = mutableListOf()
-    private var classLoader: DependencyClassLoader? = null
 
     fun addRepository(name: String, url: String): DependencyLoaderFactory {
         if (!url.endsWith("/")) {
@@ -56,12 +54,8 @@ class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
         return this
     }
 
-    fun setClassLoader(classLoader: DependencyClassLoader) {
-        this.classLoader = classLoader
-    }
-
     fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl( "https://repo1.maven.org/maven2/", "maven-central"))
+        this.repositories.add(RepositoryImpl("https://repo1.maven.org/maven2/", "maven-central"))
         return this
     }
 
@@ -71,12 +65,17 @@ class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
     }
 
     fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl( "https://repo.vironlab.eu/repository/maven-snapshot/", "vironlab-snapshot"))
+        this.repositories.add(
+            RepositoryImpl(
+                "https://repo.vironlab.eu/repository/maven-snapshot/",
+                "vironlab-snapshot"
+            )
+        )
         return this
     }
 
     override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories, classLoader)
+        return DependencyLoaderImpl(this.libDir, repositories)
     }
 
 }

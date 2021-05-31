@@ -37,19 +37,18 @@
 
 package eu.vironlab.vextension.dependency.factory
 
-import eu.vironlab.vextension.dependency.Dependency
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.concurrent.task.queueTask
+import eu.vironlab.vextension.dependency.*
 import eu.vironlab.vextension.dependency.exception.NoRepositoryFoundException
 import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
-import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.net.MalformedURLException
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 
 internal class RepositoryImpl(override val url: String, override val name: String) : Repository
 
@@ -59,42 +58,61 @@ internal class DependencyImpl(
     override val version: String,
 ) : Dependency
 
+internal class DefaultDependencyQueue(override val queue: Queue<DownloadableJar>, val libDir: File) : DependencyQueue {
+
+    override fun download(): QueuedTask<Collection<Throwable>> = queueTask {
+        val errors = mutableListOf<Throwable>()
+        val iterator = queue.iterator()
+        val urls: MutableList<URL> = mutableListOf()
+        while (iterator.hasNext()) {
+            val jar = iterator.next()
+            val dest = File("$libDir", "${jar.name}.jar")
+            if (!dest.exists() || jar.name.toLowerCase().contains("snapshot")) {
+                Files.copy(jar.url.openStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            }
+            urls.add(dest.toURI().toURL())
+        }
+        DependencyClassloaderImpl(urls.toTypedArray()).start()
+        errors
+    }
+
+    internal inner class DependencyClassloaderImpl(private val urls: Array<URL>) :
+        URLClassLoader(urls) {
+
+        fun start() {
+            for (url in this.urls) {
+                super.addURL(url)
+            }
+        }
+
+    }
+
+}
+
 internal class DependencyLoaderImpl(
     override val libDir: File,
-    override val repositories: Collection<Repository>,
-    var dependencyClassLoader: DependencyClassLoader?
+    override val repositories: MutableCollection<Repository>
 ) :
     DependencyLoader {
 
 
+    val queue: Queue<DownloadableJar> = ConcurrentLinkedQueue<DownloadableJar>()
 
     init {
         libDir.mkdirs()
     }
 
-    override val classLoader: DependencyClassLoader = if (dependencyClassLoader == null) {
-        DependencyClassloaderImpl()
-    } else {
-        dependencyClassLoader!!
-    }
-
-    @Throws(NoRepositoryFoundException::class)
-    override fun download(coords: String) {
-        val split = coords.split(":".toRegex()).toTypedArray()
-        if (split.size != 3) {
-            throw java.lang.IllegalStateException("Wrong Library input... StringExample: 'groupid:artifactid:version' Given: '$coords'")
+    override fun addRepository(name: String, url: URL) {
+        if (this.repositories.contains(name)) {
+            return
         }
-        download(DependencyImpl(split[0], split[1], split[2]))
+        this.repositories.add(object : Repository {
+            override val url: String = url.toString()
+            override val name: String = name
+        })
     }
 
-    override fun download(name: String, url: URL) {
-        val dest = File("$libDir", "${name}.jar")
-        Files.copy(url.openStream(), dest.toPath())
-        classLoader.addJarToClasspath(dest)
-    }
-
-    @Throws(NoRepositoryFoundException::class)
-    override fun download(dependency: Dependency) {
+    override fun addToQueue(dependency: Dependency): DependencyLoader {
         val filePath: String =
             dependency.groupId.replace('.', '/') + '/' + dependency.artifactId + '/' + dependency.version
         val fileName: String = dependency.artifactId + '-' + dependency.version + ".jar"
@@ -110,69 +128,27 @@ internal class DependencyLoaderImpl(
         if (server == null) {
             throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
         }
-        if (!dest.exists()) {
-            dest.parentFile.mkdirs()
-            val requestURL = URL("$server$filePath/$fileName")
-            Files.copy(requestURL.openStream(), dest.toPath())
-        }
-        classLoader.addJarToClasspath(dest)
+        this.queue.offer(DownloadableJarImpl(URL("$server$filePath/$fileName"), fileName))
+        return this
     }
 
-    internal inner class ParsedMavenDependency()
-
-    /**
-     * ClassLoader Implementation
-     */
-    internal inner class DependencyClassloaderImpl : DependencyClassLoader {
-
-        private var addUrl: Method
-
-        private var classLoader: URLClassLoader? = null
-
-        init {
-            try {
-                openUrlClassLoaderModule()
-            } catch (throwable: Throwable) {
-            }
-            try {
-                addUrl = URLClassLoader::class.java.getDeclaredMethod("addURL", *arrayOf(URL::class.java))
-                addUrl.setAccessible(true)
-            } catch (e: NoSuchMethodException) {
-                throw RuntimeException(e)
-            }
-            if (javaClass.classLoader is URLClassLoader) {
-                classLoader = javaClass.classLoader as URLClassLoader
-            } else {
-                throw IllegalStateException("ClassLoader is not instance of URLClassLoader")
-            }
+    override fun addToQueue(gradle: String): DependencyLoader {
+        val split = gradle.split(":").toTypedArray()
+        if (split.size != 3) {
+            throw java.lang.IllegalStateException("Wrong Library input... StringExample: 'groupid:artifactid:version' Given: '$gradle'")
         }
-
-        override fun addJarToClasspath(paramPath: File) {
-            try {
-                addUrl.invoke(classLoader, paramPath.toURI().toURL())
-            } catch (e: IllegalAccessException) {
-                throw RuntimeException(e)
-            } catch (e: InvocationTargetException) {
-                throw RuntimeException(e)
-            } catch (e: MalformedURLException) {
-                throw RuntimeException(e)
-            }
-        }
-
-        @Throws(Exception::class)
-        private fun openUrlClassLoaderModule() {
-            val moduleClass = Class.forName("java.lang.Module")
-            val getModuleMethod: Method = Class::class.java.getMethod("getModule", *arrayOfNulls(0))
-            val addOpensMethod: Method = moduleClass.getMethod("addOpens", *arrayOf(String::class.java, moduleClass))
-            val urlClassLoaderModule: Any = getModuleMethod.invoke(URLClassLoader::class.java, arrayOfNulls<Any>(0))
-            val thisModule: Any = getModuleMethod.invoke(this::class.java, arrayOfNulls<Any>(0))
-            addOpensMethod.invoke(
-                urlClassLoaderModule,
-                arrayOf(URLClassLoader::class.java.getPackage().name, thisModule)
-            )
-        }
-
-
+        addToQueue(DependencyImpl(split[0], split[1], split[2]))
+        return this
     }
+
+    override fun addToQueue(name: String, server: URL): DependencyLoader =
+        this.queue.offer(DownloadableJarImpl(server, name)).let { this }
+
+    override fun createQueue(): DependencyQueue {
+        return DefaultDependencyQueue(this.queue, libDir)
+    }
+
+    internal inner class DownloadableJarImpl(override val url: URL, override val name: String) : DownloadableJar
+
 
 }

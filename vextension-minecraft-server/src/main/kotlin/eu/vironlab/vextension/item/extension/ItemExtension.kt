@@ -108,6 +108,7 @@ fun SpongeItemStack.toItemStack(): ItemStack {
         .orElseThrow { UnsupportedOperationException("Invalid Vextension ItemStack") }]
         ?: throw UnsupportedOperationException("Invalid Vextension ItemStack")
 }
+
 fun ItemStackSnapshot.toItemStack(): ItemStack {
     return VextensionSponge.instance.items[this.get(vextensionSpongeKey)
         .orElseThrow { UnsupportedOperationException("Invalid Vextension ItemStack") }]

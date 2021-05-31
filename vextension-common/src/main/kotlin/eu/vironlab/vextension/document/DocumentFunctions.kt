@@ -39,7 +39,6 @@ package eu.vironlab.vextension.document
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
 import eu.vironlab.vextension.document.impl.storage.JsonDocumentStorage
 import eu.vironlab.vextension.document.impl.storage.XMLDocumentStorage

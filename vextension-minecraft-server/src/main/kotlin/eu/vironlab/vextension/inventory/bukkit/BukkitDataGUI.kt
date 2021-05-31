@@ -42,7 +42,6 @@ import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
 import java.util.*
-import java.util.function.BiConsumer
 
 class BukkitDataGUI(override val lines: Int, override val name: String) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null

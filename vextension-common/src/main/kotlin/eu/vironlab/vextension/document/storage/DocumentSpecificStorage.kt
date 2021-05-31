@@ -42,7 +42,6 @@ import java.io.File
 import java.io.OutputStream
 import java.io.Writer
 import java.nio.file.Path
-import java.util.*
 
 interface DocumentSpecificStorage {
     val document: Document

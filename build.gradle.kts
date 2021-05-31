@@ -33,7 +33,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
-        maven( "https://m2.dv8tion.net/releases/")
+        maven("https://m2.dv8tion.net/releases/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://papermc.io/repo/repository/maven-public/")
@@ -187,7 +187,7 @@ subprojects {
         }
 
         compileKotlin {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "11"
         }
 
         withType<JavaCompile> {

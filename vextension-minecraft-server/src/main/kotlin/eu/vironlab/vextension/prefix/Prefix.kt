@@ -37,9 +37,7 @@
 
 package eu.vironlab.vextension.prefix
 
-import eu.vironlab.vextension.document.Document
 import java.util.*
-import org.bukkit.entity.Player
 
 interface Prefix {
 

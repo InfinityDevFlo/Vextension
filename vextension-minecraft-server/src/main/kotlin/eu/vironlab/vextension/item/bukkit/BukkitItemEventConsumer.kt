@@ -40,13 +40,14 @@ package eu.vironlab.vextension.item.bukkit
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
-import org.bukkit.entity.Player
+import java.util.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.*
-import org.bukkit.event.player.*
+import org.bukkit.event.inventory.InventoryAction
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
-import java.util.*
 
 class BukkitItemEventConsumer : Listener {
     @EventHandler
@@ -58,7 +59,11 @@ class BukkitItemEventConsumer : Listener {
                         VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
                             ?: return
                     if (item.blockInteract) e.isCancelled = true
-                    if (item.interactHandler != null) item.interactHandler!!.invoke(item, e.player.uniqueId, Optional.ofNullable(InteractType.valueOf(e.action.toString())))
+                    if (item.interactHandler != null) item.interactHandler!!.invoke(
+                        item,
+                        e.player.uniqueId,
+                        Optional.ofNullable(InteractType.valueOf(e.action.toString()))
+                    )
                     e.action
                 }
             }
@@ -82,7 +87,11 @@ class BukkitItemEventConsumer : Listener {
     fun click(e: InventoryClickEvent) {
         if (e.action == InventoryAction.NOTHING)
             return
-        mutableListOf(if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null, if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null, if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null).forEach { item ->
+        mutableListOf(
+            if (e.hotbarButton != -1) e.whoClicked.inventory.getItem(e.hotbarButton) else null,
+            if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null,
+            if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null
+        ).forEach { item ->
             if (item != null) {
                 if (item.hasItemMeta()) {
                     if (!item.itemMeta.persistentDataContainer.isEmpty) {

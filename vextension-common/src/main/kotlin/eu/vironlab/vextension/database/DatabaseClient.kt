@@ -37,12 +37,8 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.collection.DataPair
 import eu.vironlab.vextension.concurrent.task.QueuedTask
-import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.lang.Nameable
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 /**
  * Client for Multiple Database Types

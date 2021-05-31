@@ -37,10 +37,11 @@
 
 package eu.vironlab.vextension.dependency
 
-import java.io.File
+import eu.vironlab.vextension.lang.Nameable
+import java.net.URL
 
-interface DependencyClassLoader {
+interface DownloadableJar : Nameable {
 
-    fun addJarToClasspath(paramPath: File)
+    val url: URL
 
 }

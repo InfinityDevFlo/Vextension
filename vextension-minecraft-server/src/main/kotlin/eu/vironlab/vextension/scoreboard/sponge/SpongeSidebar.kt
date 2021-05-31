@@ -43,6 +43,7 @@ import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.sponge.VextensionSponge
+import java.util.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
@@ -52,7 +53,6 @@ import org.spongepowered.api.scoreboard.critieria.Criteria
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots
 import org.spongepowered.api.scoreboard.objective.Objective
 import org.spongepowered.api.text.Text
-import java.util.*
 
 
 class SpongeSidebar(

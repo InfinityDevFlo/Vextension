@@ -40,7 +40,6 @@ package eu.vironlab.vextension.scoreboard.builder
 import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import java.util.*
-import org.bukkit.Bukkit
 
 
 class LineFactory : Factory<SidebarLine> {

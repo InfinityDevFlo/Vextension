@@ -19,6 +19,7 @@ class SpongeDataGUI(override val lines: Int, override val name: String) : DataGU
             throw IllegalArgumentException("Lines have to be higher than 1")
         }
     }
+
     override fun open(player: UUID, list: MutableCollection<ItemStack>) {
         queueTask {
             val contents =

@@ -42,7 +42,7 @@ import java.util.*
 fun <B, R : B> Optional<B>.cast(): Optional<R> {
     return if (!this.isPresent) {
         Optional.empty()
-    }else {
+    } else {
         Optional.ofNullable(get() as R)
     }
 }

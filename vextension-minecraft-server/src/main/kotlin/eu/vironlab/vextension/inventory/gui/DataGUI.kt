@@ -38,7 +38,6 @@ package eu.vironlab.vextension.inventory.gui
 
 import eu.vironlab.vextension.item.ItemStack
 import java.util.*
-import java.util.function.BiConsumer
 
 interface DataGUI : GUI {
     var comparator: Comparator<ItemStack>?

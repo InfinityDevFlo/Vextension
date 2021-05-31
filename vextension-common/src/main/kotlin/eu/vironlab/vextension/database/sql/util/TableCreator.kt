@@ -50,7 +50,17 @@ class TableCreator(val name: String, val key: TableEntry) {
     internal fun createQuery(): String {
         val query: StringBuilder = StringBuilder("CREATE TABLE IF NOT EXISTS `${name}` (")
         for (entry in entries) {
-            query.append(" `${entry.name}` ${entry.type.toString()}${if (entry.length != 0) {"(" + entry.length + ")"} else ""} ${if (entry.notNull) {" NOT NULL"} else ""} , ")
+            query.append(
+                " `${entry.name}` ${entry.type.toString()}${
+                    if (entry.length != 0) {
+                        "(" + entry.length + ")"
+                    } else ""
+                } ${
+                    if (entry.notNull) {
+                        " NOT NULL"
+                    } else ""
+                } , "
+            )
         }
         return query.toString().let {
             it.substring(0, it.length - 2)
@@ -59,7 +69,13 @@ class TableCreator(val name: String, val key: TableEntry) {
 
 }
 
-data class TableEntry(val name: String, val type: ColumnType, val documentName: String = name, val length: Int = 0, val notNull: Boolean = true)
+data class TableEntry(
+    val name: String,
+    val type: ColumnType,
+    val documentName: String = name,
+    val length: Int = 0,
+    val notNull: Boolean = true
+)
 
 enum class ColumnType {
     TEXT, LONGTEXT, INT, VARCHAR, BIGINT

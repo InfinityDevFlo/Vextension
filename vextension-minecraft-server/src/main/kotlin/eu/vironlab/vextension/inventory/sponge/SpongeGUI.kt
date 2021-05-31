@@ -8,6 +8,7 @@ import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import java.util.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.property.InventoryDimension
@@ -15,7 +16,6 @@ import org.spongepowered.api.item.inventory.property.InventoryTitle
 import org.spongepowered.api.item.inventory.property.SlotIndex
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes
 import org.spongepowered.api.text.Text
-import java.util.*
 
 class SpongeGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
@@ -28,12 +28,14 @@ class SpongeGUI(override val lines: Int, override val name: String) : GUI {
                 .property("inventorydimensions", InventoryDimension(9, 9 * lines))
                 .build(VextensionSponge.instance)
                 .also {
-                    val spongePlayer = Sponge.getServer().getPlayer(player).orElseThrow { NullPointerException("Invalid Player") }
+                    val spongePlayer =
+                        Sponge.getServer().getPlayer(player).orElseThrow { NullPointerException("Invalid Player") }
                     for (item in contents) {
                         if (item.value.permission != null)
                             if (spongePlayer.hasPermission(item.value.permission!!))
-                        it.query<Inventory>(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(item.key))).first<Inventory>()
-                            .set(item.value.toSponge())
+                                it.query<Inventory>(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(item.key)))
+                                    .first<Inventory>()
+                                    .set(item.value.toSponge())
                     }
                     Sponge.getServer().getPlayer(player).ifPresent { itt ->
                         itt.openInventory(it)
@@ -65,6 +67,7 @@ class SpongeGUI(override val lines: Int, override val name: String) : GUI {
         //</editor-fold>
         return this
     }
+
     fun setItem(slot: Int, item: ItemStack): SpongeGUI {
         contents[slot] = item
         return this

@@ -58,4 +58,9 @@ annotation class SqlKey(val documentName: String = "field", val length: Int = 0)
  */
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class SqlEntry(val type: ColumnType = ColumnType.LONGTEXT, val documentName: String = "field", val length: Int = 0, val notNull: Boolean = true)
+annotation class SqlEntry(
+    val type: ColumnType = ColumnType.LONGTEXT,
+    val documentName: String = "field",
+    val length: Int = 0,
+    val notNull: Boolean = true
+)

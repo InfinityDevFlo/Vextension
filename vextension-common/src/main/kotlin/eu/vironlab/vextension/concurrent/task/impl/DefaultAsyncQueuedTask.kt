@@ -58,7 +58,7 @@ class DefaultAsyncQueuedTask<R>(val callback: (Unit) -> R, val executorService: 
         executorService.execute {
             try {
                 resultAction.invoke(callback.invoke(Unit))
-            }catch (e: Throwable) {
+            } catch (e: Throwable) {
                 errorAction.invoke(e)
             }
         }

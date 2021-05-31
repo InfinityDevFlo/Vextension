@@ -73,8 +73,10 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
     override fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
         return queueTask {
             client.executeQuery(
-                "SELECT `$TABLE_KEY` FROM `${name}` WHERE `${fieldName}`='${fieldValue}'"
-            , Throwable::printStackTrace, ResultSet::next)
+                "SELECT `$TABLE_KEY` FROM `${name}` WHERE `${fieldName}`='${fieldValue}'",
+                Throwable::printStackTrace,
+                ResultSet::next
+            )
 
         }
     }
@@ -143,7 +145,10 @@ abstract class AbstractSqlDatabase(dbname: String, val client: AbstractSqlDataba
             if (!contains(key).complete()) {
                 return@queueTask null
             }
-            return@queueTask client.executeQuery("SELECT * FROM `${name}` WHERE `$TABLE_KEY`='${key}'", Throwable::printStackTrace) {
+            return@queueTask client.executeQuery(
+                "SELECT * FROM `${name}` WHERE `$TABLE_KEY`='${key}'",
+                Throwable::printStackTrace
+            ) {
                 if (it.next()) {
                     val rs: Document = document()
                     for (entry in creator.entries) {

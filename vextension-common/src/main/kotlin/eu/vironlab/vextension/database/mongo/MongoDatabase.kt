@@ -45,7 +45,6 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.documentFromJson
-import java.util.*
 import org.bson.Document as BsonDocument
 
 class MongoDatabase(override val name: String, client: MongoDatabaseClient) :
@@ -55,7 +54,7 @@ class MongoDatabase(override val name: String, client: MongoDatabaseClient) :
     val COLLECTION_KEY: String = "__key__"
 
     init {
-        if(!client.mongoDatabase.listCollectionNames().contains(name)) {
+        if (!client.mongoDatabase.listCollectionNames().contains(name)) {
             client.mongoDatabase.createCollection(name)
         }
         this.mongoCollection = client.mongoDatabase.getCollection(name)

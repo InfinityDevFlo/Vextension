@@ -45,16 +45,18 @@ interface DependencyLoader {
 
     val libDir: File
 
-    val classLoader: DependencyClassLoader
-
     val repositories: Collection<Repository>
 
-    @Throws(NoRepositoryFoundException::class)
-    fun download(coords: String)
-
-    fun download(name: String, url: URL)
+    fun addRepository(name: String, url: URL)
 
     @Throws(NoRepositoryFoundException::class)
-    fun download(dependency: Dependency)
+    fun addToQueue(dependency: Dependency): DependencyLoader
+
+    @Throws(NoRepositoryFoundException::class)
+    fun addToQueue(gradle: String): DependencyLoader
+
+    fun addToQueue(name: String, server: URL): DependencyLoader
+
+    fun createQueue(): DependencyQueue
 
 }

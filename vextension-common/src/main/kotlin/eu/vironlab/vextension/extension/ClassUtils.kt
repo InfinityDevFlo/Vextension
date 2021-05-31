@@ -53,11 +53,15 @@ fun <T> Class<T>.extractFile(path: String, target: File) {
 fun <T> Class<T>.extractFolder(path: String, targetDir: File, overwrite: Boolean = true) {
     val target = targetDir.toPath()
     Files.createDirectories(targetDir.toPath())
-    val jarPath = this.getResource(path).path ?: run {throw IllegalStateException("The Entry is not in the Jar") }
-    JarFile("/${jarPath.let { 
-        it.substring(0, it.lastIndexOf("!"))
-        it.substring("file:/".length)
-    }}").use {
+    val jarPath = this.getResource(path).path ?: run { throw IllegalStateException("The Entry is not in the Jar") }
+    JarFile(
+        "/${
+            jarPath.let {
+                it.substring(0, it.lastIndexOf("!"))
+                it.substring("file:/".length)
+            }
+        }"
+    ).use {
         it.entries().toList().forEach { entry ->
             if (entry.isDirectory) {
                 val dir: Path = target.resolve(entry.name)
