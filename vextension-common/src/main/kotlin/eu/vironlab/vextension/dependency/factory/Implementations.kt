@@ -66,11 +66,15 @@ internal class DefaultDependencyQueue(override val queue: Queue<DownloadableJar>
         val urls: MutableList<URL> = mutableListOf()
         while (iterator.hasNext()) {
             val jar = iterator.next()
-            val dest = File("$libDir", "${jar.name}.jar")
-            if (!dest.exists() || jar.name.toLowerCase().contains("snapshot")) {
-                Files.copy(jar.url.openStream(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            if (!jar.targetFile.exists() || jar.targetFile.name.toLowerCase().contains("snapshot")) {
+                if (jar.dir != null) {
+                    if (!jar.dir!!.exists()) {
+                        Files.createDirectories(jar.dir!!.toPath())
+                    }
+                }
+                Files.copy(jar.url.openStream(), jar.targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
             }
-            urls.add(dest.toURI().toURL())
+            urls.add(jar.targetFile.toURI().toURL())
         }
         DependencyClassloaderImpl(urls.toTypedArray()).start()
         errors
@@ -128,7 +132,7 @@ internal class DependencyLoaderImpl(
         if (server == null) {
             throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
         }
-        this.queue.offer(DownloadableJarImpl(URL("$server$filePath/$fileName"), fileName))
+        this.queue.offer(DownloadableJarImpl(URL("$server$filePath/$fileName"), dest, folder))
         return this
     }
 
@@ -142,13 +146,17 @@ internal class DependencyLoaderImpl(
     }
 
     override fun addToQueue(name: String, server: URL): DependencyLoader =
-        this.queue.offer(DownloadableJarImpl(server, name)).let { this }
+        this.queue.offer(DownloadableJarImpl(server, File(libDir, name), null)).let { this }
 
     override fun createQueue(): DependencyQueue {
         return DefaultDependencyQueue(this.queue, libDir)
     }
 
-    internal inner class DownloadableJarImpl(override val url: URL, override val name: String) : DownloadableJar
+    internal inner class DownloadableJarImpl(
+        override val url: URL,
+        override val targetFile: File,
+        override val dir: File?
+    ) : DownloadableJar
 
 
 }

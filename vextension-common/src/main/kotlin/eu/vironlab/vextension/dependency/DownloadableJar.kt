@@ -38,9 +38,15 @@
 package eu.vironlab.vextension.dependency
 
 import eu.vironlab.vextension.lang.Nameable
+import java.io.File
 import java.net.URL
+import java.nio.file.Path
 
-interface DownloadableJar : Nameable {
+interface DownloadableJar  {
+
+    val dir: File?
+
+    val targetFile: File
 
     val url: URL
 
