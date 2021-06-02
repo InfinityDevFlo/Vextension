@@ -1,10 +1,14 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk-14'
+    }
+    
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "localhost:8081"
+        NEXUS_URL = "repo.vironlab.eu"
         NEXUS_REPOSITORY = "maven-snapshot"
         NEXUS_CREDENTIAL_ID = "nexus"
         PROJECT_VERSION = "2.0.0-SNAPSHOT"
