@@ -49,6 +49,7 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.jar.JarFile
 
 internal class RepositoryImpl(override val url: String, override val name: String) : Repository
 
@@ -63,7 +64,7 @@ internal class DefaultDependencyQueue(override val queue: Queue<DownloadableJar>
     override fun download(): QueuedTask<Collection<Throwable>> = queueTask {
         val errors = mutableListOf<Throwable>()
         val iterator = queue.iterator()
-        val urls: MutableList<URL> = mutableListOf()
+        val files: MutableList<File> = mutableListOf()
         while (iterator.hasNext()) {
             val jar = iterator.next()
             if (!jar.targetFile.exists() || jar.targetFile.name.toLowerCase().contains("snapshot")) {
@@ -74,21 +75,24 @@ internal class DefaultDependencyQueue(override val queue: Queue<DownloadableJar>
                 }
                 Files.copy(jar.url.openStream(), jar.targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
             }
-            urls.add(jar.targetFile.toURI().toURL())
+            files.add(jar.targetFile)
         }
-        DependencyClassloaderImpl(urls.toTypedArray()).start()
+        addToClassPath(files.toTypedArray())
         errors
     }
 
-    internal inner class DependencyClassloaderImpl(private val urls: Array<URL>) :
-        URLClassLoader(urls) {
 
-        fun start() {
-            for (url in this.urls) {
-                super.addURL(url)
-            }
+    fun addToClassPath(files: Array<File>) {
+        val classes: MutableList<String> = mutableListOf()
+        for (file in files) {
+            classes.addAll(JarFile(file).entries().toList().filter { it.name.endsWith(".class") }
+                .map { it.name.replace("/", ".").replace(".class", "") })
         }
-
+        val loader = URLClassLoader(files.map { it.toURI().toURL() }.toTypedArray())
+        for (clazz in classes) {
+            loader.loadClass(clazz)
+            classes -= clazz
+        }
     }
 
 }
