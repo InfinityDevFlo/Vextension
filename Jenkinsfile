@@ -7,7 +7,7 @@ pipeline {
     
     environment {
         NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "https"
+        NEXUS_PROTOCOL = "http"
         NEXUS_URL = "repo.vironlab.eu"
         NEXUS_REPOSITORY = "maven-snapshot"
         NEXUS_CREDENTIAL_ID = "nexus"
