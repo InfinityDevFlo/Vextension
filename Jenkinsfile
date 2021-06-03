@@ -61,7 +61,7 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-sources.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
                 }
             }
         }
