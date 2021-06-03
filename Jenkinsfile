@@ -45,14 +45,14 @@ pipeline {
                 }
             }
         }
-        stage("Docs") {
+        /*stage("Docs") {
             steps {
                 sh "./gradlew dokkaHtmlMultiModule";
                 sh "rm -r /var/www/docs/vextension-v2.0.0"
                 sh "mkdir /var/www/docs/vextension-v2.0.0"
                 sh "cp -r build/vextension-v2.0.0 /var/www/docs/"
             }
-        }
+        }*/
         stage("Sources") {
             steps {
                 sh "./gradlew kotlinSourcesJar";
