@@ -37,10 +37,28 @@
 
 package eu.vironlab.vextension.dependency
 
-import eu.vironlab.vextension.lang.Nameable
+import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
 
-interface Repository : Nameable {
+open class DependencyClassLoader(val urls: Array<URL>) :
+    URLClassLoader(urls) {
 
-    val url: String
+    constructor(): this(arrayOf())
+
+    companion object {
+        init {
+            ClassLoader.registerAsParallelCapable()
+        }
+    }
+
+    public fun addFile(file: File) = addURL(file.toURI().toURL())
+
+    public override fun addURL(url: URL) =
+        super.addURL(url)
+
+
+    fun loadClassByName(name: String): Class<*> =
+        super.loadClass(name)
 
 }

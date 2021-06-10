@@ -37,17 +37,16 @@
 
 package eu.vironlab.vextension.dependency
 
-import eu.vironlab.vextension.lang.Nameable
-import java.io.File
-import java.net.URL
-import java.nio.file.Path
+class NoRepositoryFoundException(message: String) : Exception(message)
 
-interface DownloadableJar  {
+data class Dependency(
+    val groupId: String,
+    val artifactId: String,
+    val version: String
+) {
 
-    val dir: File?
-
-    val targetFile: File
-
-    val url: URL
+    fun toCoords(): String {
+        return "${groupId}:${artifactId}:${version}"
+    }
 
 }

@@ -43,9 +43,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import eu.vironlab.vextension.document.DocumentFactory.documentJsonStorage
-import eu.vironlab.vextension.document.DocumentFactory.documentXmlStorage
-import eu.vironlab.vextension.document.DocumentFactory.documentYamlStorage
 import eu.vironlab.vextension.document.storage.DocumentSpecificStorage
 import eu.vironlab.vextension.document.storage.DocumentStorage
 import java.lang.reflect.Type
@@ -511,21 +508,21 @@ interface Document {
      * @return the current Document as JsonStorage
      */
     fun jsonStorage(): DocumentSpecificStorage {
-        return storage(documentJsonStorage)
+        return storage(DocumentFactory.instance.documentJsonStorage)
     }
 
     /**
      * @return the current Document as YamlStorage
      */
     fun yamlStorage(): DocumentSpecificStorage {
-        return storage(documentYamlStorage)
+        return storage(DocumentFactory.instance.documentYamlStorage)
     }
 
     /**
      * @return the current Document as XMLStorage
      */
     fun xmlStorage(): DocumentSpecificStorage {
-        return storage(documentXmlStorage)
+        return storage(DocumentFactory.instance.documentXmlStorage)
     }
 
     /**

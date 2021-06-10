@@ -58,7 +58,7 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
 
     companion object {
         @JvmStatic
-        var storage: DocumentStorage = DocumentFactory.documentJsonStorage
+        var storage: DocumentStorage = DocumentFactory.instance.documentJsonStorage
     }
 
     init {

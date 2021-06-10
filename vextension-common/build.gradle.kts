@@ -1,5 +1,6 @@
 dependencies {
     implementation(findProperty("coords_mongo").toString())
+    implementation(findProperty("coords_guice").toString())
     implementation(findProperty("coords_hikari").toString())
     implementation(findProperty("coords_mariadb").toString())
     implementation(findProperty("coords_h2").toString())

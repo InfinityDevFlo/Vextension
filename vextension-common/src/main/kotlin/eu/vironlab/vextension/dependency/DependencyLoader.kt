@@ -37,17 +37,18 @@
 
 package eu.vironlab.vextension.dependency
 
-import eu.vironlab.vextension.dependency.exception.NoRepositoryFoundException
+import com.google.inject.Injector
 import java.io.File
 import java.net.URL
+import java.util.jar.JarFile
 
 interface DependencyLoader {
 
-    val libDir: File
-
-    val repositories: Collection<Repository>
-
     fun addRepository(name: String, url: URL)
+
+    fun isRepositoryExists(name: String): Boolean
+
+    fun getRepositoryName(url: URL): String?
 
     @Throws(NoRepositoryFoundException::class)
     fun addToQueue(dependency: Dependency): DependencyLoader
@@ -57,6 +58,31 @@ interface DependencyLoader {
 
     fun addToQueue(name: String, server: URL): DependencyLoader
 
-    fun createQueue(): DependencyQueue
+    fun loadInNewThread(file: File, args: Array<String>) {
+        val jarFile = JarFile(file)
+        val mainClass = jarFile.manifest.mainAttributes.getValue("Main-Class")
+        loadInNewThread(file, mainClass, args)
+    }
+
+    fun loadInNewThread(file: File) = load(file, arrayOf())
+
+    fun loadInNewThread(file: File, mainClass: String) = load(file, mainClass, arrayOf())
+
+    fun loadInNewThread(file: File, mainClass: String, args: Array<String>)
+
+    fun load(file: File, args: Array<String>) {
+        val jarFile = JarFile(file)
+        val mainClass = jarFile.manifest.mainAttributes.getValue("Main-Class")
+        load(file, mainClass, args)
+    }
+
+    fun load(file: File) = load(file, arrayOf())
+
+    fun load(file: File, mainClass: String) = load(file, mainClass, arrayOf())
+
+    fun load(file: File, mainClass: String, args: Array<String>)
+
+    fun loadByConstructor(file: File, mainClass: String, injector: Injector): Any
+
 
 }

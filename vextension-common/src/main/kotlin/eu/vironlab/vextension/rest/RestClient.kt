@@ -135,7 +135,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-            val document = DocumentFactory.documentXmlStorage.read(input)
+            val document = DocumentFactory.instance.documentXmlStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {
@@ -160,7 +160,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.inputStream))
-            val document = DocumentFactory.documentJsonStorage.read(input)
+            val document = DocumentFactory.instance.documentJsonStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {

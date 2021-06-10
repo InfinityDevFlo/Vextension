@@ -37,18 +37,18 @@
 
 package eu.vironlab.vextension.document
 
-import eu.vironlab.vextension.dependency.DependencyLoader
-
 object DocumentInit {
+
+
     @JvmStatic
-    fun addDocumentDependenciesToQueue(dependencyLoader: DependencyLoader) {
-        dependencyLoader.addToQueue("com.google.code.gson:gson:2.8.6")
-            .addToQueue("org.yaml:snakeyaml:1.27")
-            .addToQueue("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.0.1")
-            .addToQueue("com.fasterxml.jackson.core:jackson-databind:2.0.1")
-            .addToQueue("com.fasterxml.jackson.core:jackson-core:2.12.3")
-            .addToQueue("com.fasterxml.jackson.core:jackson-annotations:2.12.3")
-            .addToQueue("org.codehaus.woodstox:stax2-api:4.2.1")
-    }
+    fun getDocumentDependCoords(): List<String> = listOf(
+        "com.google.code.gson:gson:2.8.6",
+        "org.yaml:snakeyaml:1.27",
+        "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.3",
+        "com.fasterxml.jackson.core:jackson-databind:2.12.3",
+        "com.fasterxml.jackson.core:jackson-core:2.12.3",
+        "com.fasterxml.jackson.core:jackson-annotations:2.12.3",
+        "org.codehaus.woodstox:stax2-api:4.2.1"
+    )
 
 }

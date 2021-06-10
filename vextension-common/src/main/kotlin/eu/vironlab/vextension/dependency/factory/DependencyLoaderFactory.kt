@@ -38,50 +38,43 @@
 package eu.vironlab.vextension.dependency.factory
 
 import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.Repository
+import eu.vironlab.vextension.dependency.impl.DefaultDependencyLoader
 import eu.vironlab.vextension.factory.Factory
 import java.io.File
 
-class DependencyLoaderFactory(val libDir: File) : Factory<DependencyLoader> {
+class DependencyLoaderFactory : Factory<DependencyLoader> {
 
-    private val repositories: MutableList<Repository> = mutableListOf()
+    private val repositories: MutableMap<String, String> = mutableMapOf()
+
+    private var libDir: File = File(".libs")
 
     fun addRepository(name: String, url: String): DependencyLoaderFactory {
         if (!url.endsWith("/")) {
             url.plus("/")
         }
-        this.repositories.add(RepositoryImpl(name, url))
+        this.repositories[name] = url
         return this
     }
 
     fun addMavenCentral(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("https://repo1.maven.org/maven2/", "maven-central"))
+        this.repositories["maven-central"] = "https://repo1.maven.org/maven2/"
         return this
     }
 
     fun addJCenter(): DependencyLoaderFactory {
-        this.repositories.add(RepositoryImpl("https://jcenter.bintray.com/", "jcenter"))
+        this.repositories["jcenter"] = "https://jcenter.bintray.com/"
         return this
     }
 
     fun addVironLabSnapshot(): DependencyLoaderFactory {
-        this.repositories.add(
-            RepositoryImpl(
-                "https://repo.vironlab.eu/repository/maven-snapshot/",
-                "vironlab-snapshot"
-            )
-        )
+        this.repositories["vironlab-snapshot"] = "https://repo.vironlab.eu/repository/maven-snapshot/"
         return this
     }
 
-    override fun create(): DependencyLoader {
-        return DependencyLoaderImpl(this.libDir, repositories)
+    fun setLibDir(file: File): DependencyLoaderFactory {
+        this.libDir = file
+        return this
     }
 
-}
-
-fun createDependencyLoader(libDir: File, init: DependencyLoaderFactory.() -> Unit): DependencyLoader {
-    val factory: DependencyLoaderFactory = DependencyLoaderFactory(libDir)
-    factory.init()
-    return factory.create()
+    override fun create(): DependencyLoader = DefaultDependencyLoader(libDir, repositories)
 }
