@@ -123,10 +123,11 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         var current = 0
         var slot: Int? = null
         for (i in contents.keys.toSortedSet().iterator()) {
-            if (i != current++) {
-                slot = current.minus(1)
+            if (i != current) {
+                slot = current
                 break
             }
+            current++
         }
         slot ?: return this
         contents.putIfAbsent(slot, item)

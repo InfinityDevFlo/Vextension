@@ -1,10 +1,14 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk-14'
+    }
+    
     environment {
         NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "localhost:8081"
+        NEXUS_PROTOCOL = "https"
+        NEXUS_URL = "repo.vironlab.eu"
         NEXUS_REPOSITORY = "maven-snapshot"
         NEXUS_CREDENTIAL_ID = "nexus"
         PROJECT_VERSION = "2.0.0-SNAPSHOT"
@@ -41,14 +45,14 @@ pipeline {
                 }
             }
         }
-        stage("Docs") {
+        /*stage("Docs") {
             steps {
                 sh "./gradlew dokkaHtmlMultiModule";
                 sh "rm -r /var/www/docs/vextension-v2.0.0"
                 sh "mkdir /var/www/docs/vextension-v2.0.0"
                 sh "cp -r build/vextension-v2.0.0 /var/www/docs/"
             }
-        }
+        }*/
         stage("Sources") {
             steps {
                 sh "./gradlew kotlinSourcesJar";
@@ -57,7 +61,7 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-sources.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-discord/build/libs/vextension-discord-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
                 }
             }
         }
