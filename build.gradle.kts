@@ -18,7 +18,6 @@ plugins {
     id("maven-publish")
     id("com.github.johnrengelman.shadow") version "6.1.0"
     kotlin("jvm") version "1.5.10"
-    kotlin("kapt") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.20"
 }
 
@@ -58,7 +57,6 @@ subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.kapt")
     apply(plugin = "org.jetbrains.dokka")
 
     //Define Dependencies for all Modules

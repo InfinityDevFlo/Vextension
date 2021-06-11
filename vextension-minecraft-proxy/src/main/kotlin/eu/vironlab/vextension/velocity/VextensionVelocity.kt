@@ -42,13 +42,6 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
 import org.slf4j.Logger
 
-@Plugin(
-    name = "Vextension",
-    authors = arrayOf("VironLab"),
-    id = "vextension_velocity",
-    description = "Vextension for Velocity",
-    version = "1.0.0-SNAPSHOT"
-)
 class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) {
 
     init {
