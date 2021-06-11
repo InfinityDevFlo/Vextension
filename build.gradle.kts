@@ -69,11 +69,11 @@ subprojects {
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
         publishing {
             publications {
-                create<MavenPublication>("vironlab_nexus") {
-                    artifact("${project.name}-sources.jar") {
+                create<MavenPublication>(project.name) {
+                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
                         extension = "sources"
                     }
-                    artifact("${project.name}.jar") {
+                    artifact("${project.buildDir}/libs/${project.name}.jar") {
                         extension = "jar"
                     }
                     groupId = findProperty("group").toString()
