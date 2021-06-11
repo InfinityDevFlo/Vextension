@@ -30,7 +30,7 @@ object ServerUtil {
     val NMS_PACKAGE_NAME: String = "net.minecraft.server" + if (SERVER_TYPE == ServerType.BUKKIT) {
         Bukkit.getServer().javaClass.getPackage().name.let { it.substring(it.lastIndexOf(".") + 1, it.length) }
     } else {
-        Sponge.getServer().javaClass.getPackage().name.let { it.substring(it.lastIndexOf(".") + 1, it.length) }
+        //Sponge.getServer().javaClass.getPackage().name.let { it.substring(it.lastIndexOf(".") + 1, it.length) }
     }
 
 

@@ -4,11 +4,10 @@ import eu.vironlab.vextension.item.extension.toItemStack
 import java.util.*
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.cause.EventContextKeys
 import org.spongepowered.api.event.item.inventory.DropItemEvent
 
 class SpongeItemEventConsumer {
-    @Listener
+    /*@Listener
     fun interactListener(event: org.spongepowered.api.event.item.inventory.InteractItemEvent) {
         try {
             event.itemStack.toItemStack().let {
@@ -46,5 +45,5 @@ class SpongeItemEventConsumer {
                 }
             }
         }
-    }
+    }*/
 }

@@ -47,12 +47,9 @@ import java.util.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.scoreboard.Team
-import org.spongepowered.api.scoreboard.critieria.Criteria
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots
 import org.spongepowered.api.scoreboard.objective.Objective
-import org.spongepowered.api.text.Text
 
 
 class SpongeSidebar(
@@ -61,13 +58,13 @@ class SpongeSidebar(
     override var title: String
 ) : Sidebar {
 
-    val players: MutableList<Player> = mutableListOf()
+   val players: MutableList<Player> = mutableListOf()
     var listening: Boolean = false
-    val objectiveBuilder: Objective.Builder = Sponge.getRegistry().createBuilder(Objective.Builder::class.java)
-    val teamBuilder: Team.Builder = Sponge.getRegistry().createBuilder(Team.Builder::class.java)
+  //  val objectiveBuilder: Objective.Builder = Sponge.getRegistry().createBuilder(Objective.Builder::class.java)
+  //  val teamBuilder: Team.Builder = Sponge.getRegistry().createBuilder(Team.Builder::class.java)
 
     init {
-        Sponge.getEventManager().registerListeners(this, VextensionSponge.instance)
+        //Sponge.getEventManager().registerListeners(this, VextensionSponge.instance)
     }
 
     override fun addLine(line: SidebarLine) {
@@ -75,7 +72,7 @@ class SpongeSidebar(
             val color = ScoreboardUtil.getAvailableColor(usedColors)
             this.lines.put(line.name, DataPair(color, line))
             this.usedColors.add(color)
-            queueTask {
+            /*queueTask {
                 this.players.forEach {
                     val scoreboard = it.scoreboard
                     val team: Team = teamBuilder.name(line.name).build()
@@ -89,12 +86,12 @@ class SpongeSidebar(
                     scoreboard.getObjective(DisplaySlots.SIDEBAR).get().getOrCreateScore(Text.of(color)).score =
                         line.score
                 }
-            }.queue()
+            }.queue()*/
         }
     }
 
     override fun updateLine(name: String, line: SidebarLine) {
-        queueTask {
+        /*queueTask {
             players.forEach {
                 val scoreboard = it.scoreboard
                 val optionalTeam: Optional<Team> = scoreboard.getTeam(name)
@@ -110,11 +107,11 @@ class SpongeSidebar(
                         .get().score = line.score
                 }
             }
-        }.queue()
+        }.queue()*/
     }
 
     override fun set(player: UUID) {
-        queueTask {
+        /*queueTask {
             val optionalPlayer: Optional<Player> = Sponge.getServer().getPlayer(player)
             if (optionalPlayer.isPresent) {
                 val p = optionalPlayer.get()
@@ -145,20 +142,21 @@ class SpongeSidebar(
                 scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR)
                 this.players.add(p)
             }
-        }.queue()
+        }.queue()*/
     }
 
     override fun setAll() {
-        Sponge.getServer().onlinePlayers.forEach {
+        /*Sponge.getServer().onlinePlayers.forEach {
             set(it.uniqueId)
-        }
+        }*/
     }
 
     override fun setAllAndListen() {
-        Sponge.getServer().onlinePlayers.forEach {
+        /*Sponge.getServer().onlinePlayers.forEach {
             set(it.uniqueId)
         }
         this.listening = true
+         */
     }
 
     override fun cancelListening() {
@@ -170,31 +168,31 @@ class SpongeSidebar(
     override fun removeAll() {
         queueTask {
             players.forEach {
-                remove(it.uniqueId)
+                //remove(it.uniqueId)
             }
         }.queue()
     }
 
     override fun remove(player: UUID) {
-        Sponge.getServer().getPlayer(player).ifPresent {
+        /*Sponge.getServer().getPlayer(player).ifPresent {
             if (this.players.contains(player)) {
                 it.scoreboard.removeObjective(it.scoreboard.getObjective(DisplaySlots.SIDEBAR).get())
                 it.scoreboard.clearSlot(DisplaySlots.SIDEBAR)
                 this.players.remove(player)
             }
-        }
+        }*/
     }
 
     override fun updateTitle(title: String) {
         this.title = title
         queueTask {
             players.forEach {
-                it.scoreboard.getObjective(DisplaySlots.SIDEBAR).get().displayName = Text.of(title)
+                //it.scoreboard.getObjective(DisplaySlots.SIDEBAR).get().displayName = Text.of(title)
             }
         }.queue()
     }
 
-    @Listener
+    /*@Listener
     fun handleJoin(event: ClientConnectionEvent.Join) {
         if (listening) {
             set(event.targetEntity.uniqueId)
@@ -206,5 +204,5 @@ class SpongeSidebar(
         if (this.players.contains(event.targetEntity.uniqueId)) {
             remove(event.targetEntity.uniqueId)
         }
-    }
+    }*/
 }

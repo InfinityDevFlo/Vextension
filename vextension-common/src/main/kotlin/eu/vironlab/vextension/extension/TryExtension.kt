@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Donnerstag 10 Juni 2021 21:59:07<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -35,42 +37,26 @@
  *<p>
  */
 
-package eu.vironlab.vextension.sponge
+package eu.vironlab.vextension.extension
 
-import com.google.inject.Inject
-import eu.vironlab.vextension.item.ItemStack
-import eu.vironlab.vextension.item.sponge.SpongeItemEventConsumer
-import org.slf4j.Logger
-import org.spongepowered.api.ResourceKey
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.data.Key
-import org.spongepowered.api.data.value.Value
-import org.spongepowered.plugin.PluginContainer
-import org.spongepowered.plugin.jvm.Plugin
-
-
-@Plugin("sponge")
-class VextensionSponge @Inject constructor(val plugin: PluginContainer) {
-
-    @Inject
-    private lateinit var logger: Logger
-
-
-    companion object {
-        @JvmStatic
-        lateinit var instance: VextensionSponge
-
-        @JvmStatic
-        internal lateinit var vextensionSpongeKey: Key<Value<String>>
-    }
-
-    val items: MutableMap<String, ItemStack> = mutableMapOf()
-
-    init {
-        instance = this
-        vextensionSpongeKey =
-            Key.builder().key(ResourceKey.of(plugin, "VEXTENSION_SPONGE")).elementType(String::class.java).build()
-        Sponge.game().eventManager().registerListeners(plugin, SpongeItemEventConsumer())
-        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
+//From Kotlin JDK 8
+public inline fun <T : AutoCloseable?, R> T.use(block: (T) -> R): R {
+    var cause: Throwable? = null
+    try {
+        return block(this)
+    } catch (e: Throwable) {
+        cause = e
+        throw e
+    } finally {
+        when {
+            this == null -> {}
+            cause == null -> close()
+            else ->
+                try {
+                    close()
+                } catch (closeException: Throwable) {
+                    cause.addSuppressed(closeException)
+                }
+        }
     }
 }

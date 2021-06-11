@@ -43,6 +43,7 @@ import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.FileConnectionData
 import eu.vironlab.vextension.database.sql.AbstractSqlDatabaseClient
+import eu.vironlab.vextension.extension.use
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet

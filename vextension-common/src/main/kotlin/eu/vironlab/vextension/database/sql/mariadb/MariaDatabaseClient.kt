@@ -45,6 +45,7 @@ import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.connectiondata.ConnectionData
 import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
 import eu.vironlab.vextension.database.sql.AbstractSqlDatabaseClient
+import eu.vironlab.vextension.extension.use
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException

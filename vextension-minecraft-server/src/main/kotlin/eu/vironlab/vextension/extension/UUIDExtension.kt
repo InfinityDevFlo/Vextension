@@ -41,11 +41,12 @@ import java.util.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.living.player.server.ServerPlayer
 
 fun UUID.tryBukkitPlayer(): Optional<Player> {
     return Optional.ofNullable(Bukkit.getPlayer(this))
 }
 
-fun UUID.trySpongePlayer(): Optional<org.spongepowered.api.entity.living.player.Player> {
-    return Sponge.getServer().getPlayer(this)
+fun UUID.trySpongePlayer(): Optional<ServerPlayer>? {
+    return Sponge.server().player(this)
 }

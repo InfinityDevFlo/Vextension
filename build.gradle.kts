@@ -1,5 +1,3 @@
-import kotlin.collections.*
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -15,10 +13,10 @@ buildscript {
 //Define Plugins
 plugins {
     id("java")
-    id("maven")
+    id("maven-publish")
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version "1.4.32"
-    kotlin("kapt") version "1.4.32"
+    kotlin("jvm") version "1.5.10"
+    kotlin("kapt") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.20"
 }
 
@@ -32,7 +30,6 @@ allprojects {
     //Define Repositorys
     repositories {
         mavenCentral()
-        jcenter()
         maven("https://m2.dv8tion.net/releases/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -56,7 +53,7 @@ allprojects {
 //Default configuration for each module
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "maven")
+    apply(plugin = "maven-publish")
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.kapt")
@@ -64,12 +61,61 @@ subprojects {
 
     //Define Dependencies for all Modules
     dependencies {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        implementation("org.jetbrains.kotlin:kotlin-serialization")
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
+        compileOnly("org.jetbrains.kotlin:kotlin-serialization")
+        compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
     }
 
-
+    if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
+        publishing {
+            publications {
+                create<MavenPublication>("vironlab_nexus") {
+                    artifact("${project.name}-sources.jar") {
+                        extension = "sources"
+                    }
+                    artifact("${project.name}.jar") {
+                        extension = "jar"
+                    }
+                    groupId = findProperty("group").toString()
+                    artifactId = project.name
+                    version = findProperty("version").toString()
+                    pom {
+                        name.set(project.name)
+                        url.set("https://github.com/VironLab/Vextension")
+                        properties.put("inceptionYear", "2021")
+                        licenses {
+                            license {
+                                name.set("General Public License (GPL v3.0)")
+                                url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("Infinity_dev")
+                                name.set("Florin Dornig")
+                                email.set("infinitydev@vironlab.eu")
+                            }
+                            developer {
+                                id.set("SteinGaming")
+                                name.set("Danial Daryab")
+                                email.set("steingaming@vironlab.eu")
+                            }
+                        }
+                    }
+                }
+                    repositories {
+                        maven("https://repo.vironlab.eu/repository/maven-snapshot/") {
+                            this.name = "vironlab-snapshot"
+                            credentials {
+                                this.password = System.getProperty("publishPassword")
+                                this.username = System.getProperty("publishName")
+                            }
+                        }
+                    }
+            }
+        }
+    }
     tasks {
         //Set the Name of the Sources Jar
         kotlinSourcesJar {
@@ -137,39 +183,6 @@ subprojects {
                     attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
                 }
             }
-            doLast {
-                //Generate the Pom file for the Repository
-                maven.pom {
-                    withGroovyBuilder {
-                        "project" {
-                            groupId = "eu.vironlab.vextension"
-                            artifactId = project.name
-                            version = findProperty("version").toString()
-                            this.setProperty("inceptionYear", "2021")
-                            "licenses" {
-                                "license" {
-                                    setProperty("name", "General Public License (GPL v3.0)")
-                                    setProperty("url", "https://www.gnu.org/licenses/gpl-3.0.txt")
-                                    setProperty("distribution", "repo")
-                                }
-                            }
-                            "developers" {
-                                "developer" {
-                                    setProperty("id", "Infinity_dev")
-                                    setProperty("name", "Florin Dornig")
-                                    setProperty("email", "infinitydev@vironlab.eu")
-                                }
-                                "developer" {
-                                    setProperty("id", "SteinGaming")
-                                    setProperty("name", "Danial Daryab")
-                                    setProperty("email", "steingaming@vironlab.eu")
-                                }
-                            }
-                        }
-                    }
-
-                }.writeTo("build/pom/pom.xml")
-            }
             //Include Commons
             if (project.name != "vextension-common") {
                 dependsOn(":vextension-common:build")
@@ -187,14 +200,12 @@ subprojects {
         }
 
         compileKotlin {
-            kotlinOptions.jvmTarget = "14"
+            kotlinOptions.jvmTarget = "16"
         }
 
         withType<JavaCompile> {
             this.options.encoding = "UTF-8"
         }
     }
-
-
 }
 

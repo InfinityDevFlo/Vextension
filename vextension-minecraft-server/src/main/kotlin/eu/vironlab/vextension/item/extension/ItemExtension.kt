@@ -47,13 +47,7 @@ import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Material
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.data.key.Keys
-import org.spongepowered.api.item.ItemType
-import org.spongepowered.api.item.inventory.ItemStack.Builder
 import org.spongepowered.api.item.inventory.ItemStackSnapshot
-import org.spongepowered.api.text.Text
-import org.spongepowered.api.util.generator.dummy.DummyObjectProvider
 import org.bukkit.inventory.ItemStack as BukkitItemStack
 import org.spongepowered.api.item.inventory.ItemStack as SpongeItemStack
 
@@ -78,7 +72,7 @@ fun ItemStack.toBukkit(): BukkitItemStack {
 }
 
 
-fun ItemStack.toSponge(): SpongeItemStack {
+/*fun ItemStack.toSponge(): SpongeItemStack {
     return Sponge.getRegistry().createBuilder(Builder::class.java)
         .itemType(DummyObjectProvider.createFor(ItemType::class.java, this.material.name.toUpperCase()))
         .build().also {
@@ -95,7 +89,7 @@ fun ItemStack.toSponge(): SpongeItemStack {
                 VextensionSponge.instance.items[identifier] = this
         }
 }
-
+*/
 fun BukkitItemStack.toItemStack(): ItemStack {
     return VextensionBukkit.items[this.itemMeta.persistentDataContainer.get(
         VextensionBukkit.key,

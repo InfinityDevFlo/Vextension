@@ -2,16 +2,7 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk-14'
-    }
-    
-    environment {
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "https"
-        NEXUS_URL = "repo.vironlab.eu"
-        NEXUS_REPOSITORY = "maven-snapshot"
-        NEXUS_CREDENTIAL_ID = "nexus"
-        PROJECT_VERSION = "2.0.0-SNAPSHOT"
+        jdk 'jdk-16'
     }
 
     stages {
@@ -67,73 +58,8 @@ pipeline {
         }
         stage("Publish") {
             steps {
-                script {
-                    nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: "eu.vironlab.vextension",
-                            version: PROJECT_VERSION,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
-                            artifacts:
-                                    [
-                                            [
-                                                    artifactId: "vextension-common",
-                                                    classifier: '',
-                                                    file      : "vextension-common/build/libs/vextension-common.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-common",
-                                                    classifier: 'sources',
-                                                    file      : "vextension-common/build/libs/vextension-common-sources.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-common",
-                                                    classifier: '',
-                                                    file      : "vextension-common/build/pom/pom.xml",
-                                                    type      : "pom"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-server",
-                                                    classifier: '',
-                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-server",
-                                                    classifier: 'sources',
-                                                    file      : "vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-server",
-                                                    classifier: '',
-                                                    file      : "vextension-minecraft-server/build/pom/pom.xml",
-                                                    type      : "pom"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-proxy",
-                                                    classifier: '',
-                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-proxy",
-                                                    classifier: 'sources',
-                                                    file      : "vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-sources.jar",
-                                                    type      : "jar"
-                                            ],
-                                            [
-                                                    artifactId: "vextension-minecraft-proxy",
-                                                    classifier: '',
-                                                    file      : "vextension-minecraft-proxy/build/pom/pom.xml",
-                                                    type      : "pom"
-                                            ]
-                                    ]
-                    );
+                withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                  sh "./gradlew publish -DpublishPassword=$PASSWORD -DpublishName=$USERNAME"
                 }
             }
         }
