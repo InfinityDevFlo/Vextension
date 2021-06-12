@@ -43,14 +43,14 @@ pipeline {
                 }
             }
         }
-        stage("Docs") {
-            steps {
-                sh "./gradlew dokkaHtmlMultiModule";
-                sh "rm -r /var/www/docs/vextension-v1.0.0"
-                sh "mkdir /var/www/docs/vextension-v1.0.0"
-                sh "cp -r build/vextension-v1.0.0 /var/www/docs/"
-            }
-        }
+        //stage("Docs") {
+        //    steps {
+        //        sh "./gradlew dokkaHtmlMultiModule";
+        //        sh "rm -r /var/www/docs/vextension-v1.0.0"
+        //        sh "mkdir /var/www/docs/vextension-v1.0.0"
+        //        sh "cp -r build/vextension-v1.0.0 /var/www/docs/"
+        //    }
+        //}
         stage("Sources") {
             steps {
                 sh "./gradlew sourcesJar";
