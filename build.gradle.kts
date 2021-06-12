@@ -67,7 +67,54 @@ subprojects {
         shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     }
 
-
+	   if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
+        publishing {
+            publications {
+                create<MavenPublication>(project.name) {
+                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
+                        extension = "sources"
+                    }
+                    artifact("${project.buildDir}/libs/${project.name}.jar") {
+                        extension = "jar"
+                    }
+                    groupId = findProperty("group").toString()
+                    artifactId = project.name
+                    version = findProperty("version").toString()
+                    pom {
+                        name.set(project.name)
+                        url.set("https://github.com/VironLab/Vextension")
+                        properties.put("inceptionYear", "2021")
+                        licenses {
+                            license {
+                                name.set("General Public License (GPL v3.0)")
+                                url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("Infinity_dev")
+                                name.set("Florin Dornig")
+                                email.set("infinitydev@vironlab.eu")
+                            }
+                            developer {
+                                id.set("SteinGaming")
+                                name.set("Danial Daryab")
+                                email.set("steingaming@vironlab.eu")
+                            }
+                        }
+                    }
+                }
+                    repositories {
+                        maven("https://repo.vironlab.eu/repository/maven-snapshot/") {
+                            this.name = "vironlab-snapshot"
+                            credentials {
+                                this.password = System.getProperty("publishPassword")
+                                this.username = System.getProperty("publishName")
+                            }
+                        }
+                    }
+            }
 
     tasks {
         //Set the Name of the Sources Jar
