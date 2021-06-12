@@ -16,11 +16,11 @@ Vextension JVM Utility
 //Repository - Groovy
 maven {
     name = "vironlab"
-    url = "https://repo.vironlab.eu/repository/snapshot/"
+    url = "https://repo.vironlab.eu/repository/maven-snapshot/"
 }
 
 //Repository - Kotlin DSL
-maven("https://repo.vironlab.eu/repository/snapshot/")
+maven("https://repo.vironlab.eu/repository/maven-snapshot/")
 
 //Dependency - Common
 compile("eu.vironlab.vextension:vextension-common:1.0.0-SNAPSHOT")
