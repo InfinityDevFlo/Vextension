@@ -117,6 +117,8 @@ subprojects {
                         }
                     }
             }
+		}
+	}
 
     tasks {
         //Set the Name of the Sources Jar
