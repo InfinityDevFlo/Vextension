@@ -35,18 +35,31 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.task.impl
+package eu.vironlab.vextension.concurrent.task
 
-import eu.vironlab.vextension.concurrent.task.QueuedTask
-import eu.vironlab.vextension.concurrent.task.QueuedTaskProvider
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
+interface AsyncTask<T, R : AsyncTask<T, R>> {
 
-class DefaultAsyncTaskProvider : QueuedTaskProvider() {
-    val executorService: ExecutorService = Executors.newCachedThreadPool()
+    fun queue(): R
 
-    override fun <R> createTask(callback: (Unit) -> R): QueuedTask<R> {
-        return DefaultAsyncQueuedTask<R>(callback, executorService)
-    }
+    fun queue(resultAction: (T) -> Unit): R
+
+    fun queueAfter(time: Long, unit: TimeUnit) = queueAfter(unit.toMillis(time))
+
+    fun queueAfter(time: Long, unit: TimeUnit, resultAction: (T) -> Unit) =
+        queueAfter(unit.toMillis(time), resultAction)
+
+    fun queueAfter(time: Long): R
+
+    fun queueAfter(time: Long, resultAction: (T) -> Unit): R
+
+    fun complete(): T
+
+    fun complete(resultAction: (T) -> Unit): R
+
+    fun <C> complete(returnCallback: (T) -> C): C
+
+    fun onError(action: (Throwable) -> Unit): R
+
 }

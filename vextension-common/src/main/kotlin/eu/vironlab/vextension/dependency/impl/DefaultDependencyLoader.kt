@@ -42,6 +42,7 @@ import eu.vironlab.vextension.dependency.Dependency
 import eu.vironlab.vextension.dependency.DependencyClassLoader
 import eu.vironlab.vextension.dependency.DependencyLoader
 import eu.vironlab.vextension.dependency.NoRepositoryFoundException
+import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
 import java.lang.reflect.InvocationTargetException
@@ -94,6 +95,9 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
             if (RestUtil.getStatusCode(URL("${it.value}$filePath/$fileName")).equals(200)) {
                 server = it.value
                 break
+            } else if (RestUtil.getStatusCode(URL("${it.value}$filePath/maven-metadata.xml")).equals(200)) {
+                val meta: Document = RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
+                val newFileName = meta.getDocument("versioning")?.getDocument("snapshot")?.getDocument("snapshotVersions")
             }
         }
         if (server == null) {

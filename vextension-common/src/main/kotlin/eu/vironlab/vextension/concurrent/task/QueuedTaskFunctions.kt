@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Sonntag 13 Juni 2021 11:40:36<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -37,6 +39,4 @@
 
 package eu.vironlab.vextension.concurrent.task
 
-fun <R> queueTask(callback: (Unit) -> R): QueuedTask<R> {
-    return QueuedTaskProvider.instance.createTask(callback)
-}
+fun <R> queueTask(action: () -> R) = QueuedTaskProvider.instance.createTask(action)

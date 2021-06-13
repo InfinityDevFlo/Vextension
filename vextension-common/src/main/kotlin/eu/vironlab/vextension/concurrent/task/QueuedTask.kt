@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Sonntag 13 Juni 2021 12:26:44<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -37,20 +39,4 @@
 
 package eu.vironlab.vextension.concurrent.task
 
-interface QueuedTask<R> {
-
-    fun queue()
-
-    fun queue(resultAction: (R) -> Unit)
-
-    fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit)
-
-    fun complete(): R
-
-    fun complete(resultAction: (R) -> Unit)
-
-    fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit)
-
-    fun <C> complete(returnCallback: (R) -> C): C
-
-}
+interface QueuedTask<T> : AsyncTask<T, QueuedTask<T>>

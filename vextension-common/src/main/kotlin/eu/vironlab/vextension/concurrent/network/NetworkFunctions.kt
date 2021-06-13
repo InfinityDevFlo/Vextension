@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Sonntag 13 Juni 2021 12:38:58<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -35,53 +37,6 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.task.impl
+package eu.vironlab.vextension.concurrent.network
 
-import eu.vironlab.vextension.concurrent.task.QueuedTask
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
-
-class DefaultCorountineQueuedTask<R>(val callback: (Unit) -> R) : QueuedTask<R> {
-    override fun queue() {
-        GlobalScope.launch {
-            callback.invoke(Unit)
-        }
-    }
-
-    override fun queue(resultAction: (R) -> Unit) {
-        GlobalScope.launch {
-            resultAction.invoke(callback.invoke(Unit))
-        }
-    }
-
-    override fun queue(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
-        GlobalScope.launch {
-            try {
-                resultAction.invoke(callback.invoke(Unit))
-            } catch (e: Throwable) {
-                errorAction.invoke(e)
-            }
-        }
-    }
-
-    override fun complete(): R {
-        return callback.invoke(Unit)
-    }
-
-    override fun complete(resultAction: (R) -> Unit) {
-        return resultAction.invoke(callback.invoke(Unit))
-    }
-
-    override fun <C> complete(returnCallback: (R) -> C): C {
-        return returnCallback.invoke(callback.invoke(Unit))
-    }
-
-    override fun complete(resultAction: (R) -> Unit, errorAction: (Throwable) -> Unit) {
-        try {
-            resultAction.invoke(callback.invoke(Unit))
-        } catch (e: Throwable) {
-            errorAction.invoke(e)
-        }
-    }
-}
+fun <T> createNetworkAction(action: () -> T): NetworkAction<T> = NetworkActionProvider.instance.createTask(action)

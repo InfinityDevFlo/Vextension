@@ -37,7 +37,7 @@
  *<p>
  */
 
-package eu.vironlab.vextension.concurrent.task
+package eu.vironlab.vextension.concurrent.network
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import java.util.concurrent.Executors
@@ -46,34 +46,37 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-abstract class QueuedTaskProvider {
+abstract class NetworkActionProvider {
 
     companion object {
         @JvmStatic
-        var instance: QueuedTaskProvider = DefaultCorountineTaskProvider()
+        var instance: NetworkActionProvider = DefaultCorountineTaskProvider()
     }
 
-    abstract fun <T> createTask(action: () -> T): QueuedTask<T>
+    abstract fun <T> createTask(action: () -> T): NetworkAction<T>
 
 }
 
-class DefaultCorountineTaskProvider : QueuedTaskProvider() {
+class DefaultCorountineTaskProvider : NetworkActionProvider() {
 
     val scope = CoroutineScope(
-        Executors.newCachedThreadPool(ThreadFactoryBuilder().setNameFormat("QueuedTask-%d").build())
+        Executors.newCachedThreadPool(ThreadFactoryBuilder().setNameFormat("NetworkAction-%d").build())
             .asCoroutineDispatcher()
     )
 
-    override fun <T> createTask(action: () -> T): QueuedTask<T> = DefaultQueuedTask<T>(action, scope)
+    override fun <T> createTask(action: () -> T): NetworkAction<T> = DefaultNetworkAction<T>(action, scope)
 }
 
-class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : QueuedTask<T> {
+class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : NetworkAction<T> {
 
     var errorAction: ((Throwable) -> Unit)? = null
+    var timeoutAction: (() -> Unit)? = null
+    var timeout: Long = 60000
 
-    override fun queue(): DefaultQueuedTask<T> {
+    override fun queue(): DefaultNetworkAction<T> {
         scope.launch {
             try {
+                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -82,9 +85,10 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
         return this
     }
 
-    override fun queue(resultAction: (T) -> Unit): DefaultQueuedTask<T> {
+    override fun queue(resultAction: (T) -> Unit): DefaultNetworkAction<T> {
         scope.launch {
             try {
+                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
                 resultAction.invoke(action.invoke())
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -93,10 +97,11 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
         return this
     }
 
-    override fun queueAfter(time: Long): DefaultQueuedTask<T> {
+    override fun queueAfter(time: Long): DefaultNetworkAction<T> {
         scope.launch {
             delay(time)
             try {
+                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -105,10 +110,11 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
         return this
     }
 
-    override fun queueAfter(time: Long, resultAction: (T) -> Unit): DefaultQueuedTask<T> {
+    override fun queueAfter(time: Long, resultAction: (T) -> Unit): DefaultNetworkAction<T> {
         scope.launch {
             delay(time)
             try {
+                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -119,6 +125,7 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
 
     override fun complete(): T {
         try {
+            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
             return action.invoke()
         } catch (e: Throwable) {
             errorAction?.invoke(e)
@@ -126,8 +133,9 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
         }
     }
 
-    override fun complete(resultAction: (T) -> Unit): DefaultQueuedTask<T> {
+    override fun complete(resultAction: (T) -> Unit): DefaultNetworkAction<T> {
         try {
+            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
             resultAction.invoke(action.invoke())
         } catch (e: Throwable) {
             errorAction?.invoke(e)
@@ -137,6 +145,7 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
 
     override fun <C> complete(returnCallback: (T) -> C): C {
         try {
+            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
             return returnCallback(action.invoke())
         } catch (e: Throwable) {
             errorAction?.invoke(e)
@@ -144,8 +153,18 @@ class DefaultQueuedTask<T>(val action: () -> T, val scope: CoroutineScope) : Que
         }
     }
 
-    override fun onError(action: (Throwable) -> Unit): DefaultQueuedTask<T> {
+    override fun onError(action: (Throwable) -> Unit): DefaultNetworkAction<T> {
         this.errorAction = action
+        return this
+    }
+
+    override fun onTimeout(action: () -> Unit): NetworkAction<T> {
+        this.timeoutAction = action
+        return this
+    }
+
+    override fun setTimeout(timeout: Long): NetworkAction<T> {
+        this.timeout = timeout
         return this
     }
 }
