@@ -3,15 +3,23 @@ package eu.vironlab.vextension.concurrent.network
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.thread
 
-object NetworkActionTimeoutHandler {
-    @JvmStatic
+abstract class  NetworkActionTimeoutHandler {
+
+    companion object {
+        @JvmStatic
+        val instance: NetworkActionTimeoutHandler = DefaultNetworkActionTimeoutHandler()
+    }
+
+    abstract fun handle(action: DefaultNetworkAction<*>, timeout: Long)
+}
+
+class DefaultNetworkActionTimeoutHandler : NetworkActionTimeoutHandler() {
     private val check: MutableMap<DefaultNetworkAction<*>, Long> = ConcurrentHashMap()
 
     init {
         startHandling()
     }
 
-    @JvmStatic
     fun startHandling() {
         thread(true, true) {
             check.entries.filter { it.value < System.currentTimeMillis() }.map { it.key }.forEach {
@@ -22,8 +30,7 @@ object NetworkActionTimeoutHandler {
         }
     }
 
-    @JvmStatic
-    fun handle(action: DefaultNetworkAction<*>, timeout: Long) {
+    override fun handle(action: DefaultNetworkAction<*>, timeout: Long) {
         this.check[action] = timeout
     }
 

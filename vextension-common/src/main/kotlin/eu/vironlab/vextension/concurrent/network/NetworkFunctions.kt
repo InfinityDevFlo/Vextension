@@ -39,4 +39,4 @@
 
 package eu.vironlab.vextension.concurrent.network
 
-fun <T> createNetworkAction(action: () -> T): NetworkAction<T> = NetworkActionProvider.instance.createTask(action)
+fun <T> networkAction(action: () -> T): NetworkAction<T> = NetworkActionProvider.instance.createTask(action)

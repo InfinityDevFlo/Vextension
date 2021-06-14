@@ -76,7 +76,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
     override fun queue(): DefaultNetworkAction<T> {
         scope.launch {
             try {
-                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+                NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -88,7 +88,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
     override fun queue(resultAction: (T) -> Unit): DefaultNetworkAction<T> {
         scope.launch {
             try {
-                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+                NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
                 resultAction.invoke(action.invoke())
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -101,7 +101,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
         scope.launch {
             delay(time)
             try {
-                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+                NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -114,7 +114,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
         scope.launch {
             delay(time)
             try {
-                NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+                NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
                 action.invoke()
             } catch (e: Throwable) {
                 errorAction?.invoke(e)
@@ -125,7 +125,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
 
     override fun complete(): T {
         try {
-            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+            NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
             return action.invoke()
         } catch (e: Throwable) {
             errorAction?.invoke(e)
@@ -135,7 +135,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
 
     override fun complete(resultAction: (T) -> Unit): DefaultNetworkAction<T> {
         try {
-            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+            NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
             resultAction.invoke(action.invoke())
         } catch (e: Throwable) {
             errorAction?.invoke(e)
@@ -145,7 +145,7 @@ class DefaultNetworkAction<T>(val action: () -> T, val scope: CoroutineScope) : 
 
     override fun <C> complete(returnCallback: (T) -> C): C {
         try {
-            NetworkActionTimeoutHandler.handle(this@DefaultNetworkAction, timeout)
+            NetworkActionTimeoutHandler.instance.handle(this@DefaultNetworkAction, timeout)
             return returnCallback(action.invoke())
         } catch (e: Throwable) {
             errorAction?.invoke(e)
