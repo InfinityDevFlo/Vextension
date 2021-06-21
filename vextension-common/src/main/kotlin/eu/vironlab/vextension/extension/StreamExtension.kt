@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Samstag 19 Juni 2021 08:28:00<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -37,15 +39,8 @@
 
 package eu.vironlab.vextension.extension
 
-import java.io.File
-import java.net.URLClassLoader
-import java.util.jar.JarFile
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
 
-fun File.addToClassPath() {
-    val classes = JarFile(this).entries().toList().filter { it.name.endsWith(".class") }
-        .map { it.name.replace("/", ".").replace(".class", "") }
-    val classLoader = URLClassLoader(arrayOf(this.toURI().toURL()))
-    for (clazzName in classes) {
-        classLoader.loadClass(clazzName)
-    }
-}
+fun InputStream.getContent(): String = InputStreamReader(this).readText()

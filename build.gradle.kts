@@ -64,6 +64,10 @@ subprojects {
         compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
         compileOnly("org.jetbrains.kotlin:kotlin-serialization")
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        testImplementation("org.jetbrains.kotlin:kotlin-stdlib")
+        testImplementation("org.jetbrains.kotlin:kotlin-serialization")
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
@@ -75,6 +79,9 @@ subprojects {
                     }
                     artifact("${project.buildDir}/libs/${project.name}.jar") {
                         extension = "jar"
+                    }
+                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
+                        extension = "sources"
                     }
                     groupId = findProperty("group").toString()
                     artifactId = project.name
@@ -117,6 +124,10 @@ subprojects {
         }
     }
     tasks {
+
+        test {
+            useJUnitPlatform()
+        }
         //Set the Name of the Sources Jar
         kotlinSourcesJar {
             archiveFileName.set("${project.name}-sources.jar")

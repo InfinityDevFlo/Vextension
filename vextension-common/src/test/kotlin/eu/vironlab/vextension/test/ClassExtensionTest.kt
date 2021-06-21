@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Samstag 19 Juni 2021 21:51:52<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -35,46 +37,30 @@
  *<p>
  */
 
-package eu.vironlab.vextension.extension
+package eu.vironlab.vextension.test
 
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
-import java.util.jar.JarFile
+import org.junit.jupiter.api.Test
 
-fun <T> Class<T>.extractFile(path: String, target: File) {
-    Files.createFile(target.toPath())
-    Files.copy(
-        this.getResourceAsStream(name) ?: throw IllegalStateException("The Entry is not in the Jar"), target.toPath()
-    )
-}
+class ClassExtensionTest {
 
-fun <T> Class<T>.extractFolder(path: String, targetDir: File, overwrite: Boolean = true) {
-    val target = targetDir.toPath()
-    Files.createDirectories(targetDir.toPath())
-    val jarPath = this.getResource(path).path ?: run { throw IllegalStateException("The Entry is not in the Jar") }
-    JarFile(
-        "/${
-            jarPath.let {
-                it.substring(0, it.lastIndexOf("!"))
-                it.substring("file:/".length)
-            }
-        }"
-    ).use {
-        it.entries().toList().forEach { entry ->
-            if (entry.isDirectory) {
-                val dir: Path = target.resolve(entry.name)
-                if (!Files.exists(dir)) {
-                    Files.createDirectories(dir)
-                }
-            } else {
-                val file = target.resolve(entry.name)
-                if (!Files.exists(file) || overwrite) {
-                    it.getInputStream(entry).use { `in` -> Files.copy(`in`, file, StandardCopyOption.REPLACE_EXISTING) }
-                }
-            }
-        }
+    @Test
+    fun test() {
     }
+
 }
 
+class TestClass{
+
+    companion object {
+        @JvmStatic
+    }
+
+    @TestAnnotation(1)
+    fun test1() {
+
+    }
+
+}
+
+@Target(AnnotationTarget.FUNCTION)
+annotation class TestAnnotation(val value: Int = 32)

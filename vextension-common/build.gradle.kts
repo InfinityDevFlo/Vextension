@@ -8,5 +8,14 @@ dependencies {
     compileOnly(findProperty("coords_jackson_xml").toString())
     compileOnly(findProperty("coords_jackson").toString())
     compileOnly(findProperty("coords_snakeyml").toString())
+    testImplementation(findProperty("coords_mongo").toString())
+    testImplementation(findProperty("coords_guice").toString())
+    testImplementation(findProperty("coords_hikari").toString())
+    testImplementation(findProperty("coords_mariadb").toString())
+    testImplementation(findProperty("coords_h2").toString())
+    testImplementation(findProperty("coords_gson").toString())
+    testImplementation(findProperty("coords_jackson_xml").toString())
+    testImplementation(findProperty("coords_jackson").toString())
+    testImplementation(findProperty("coords_snakeyml").toString())
 }
 
