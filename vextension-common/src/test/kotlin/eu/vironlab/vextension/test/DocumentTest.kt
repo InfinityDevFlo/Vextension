@@ -47,8 +47,12 @@ import java.math.BigInteger
 import java.util.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import eu.vironlab.vextension.document.DocumentFactory
 
 class DocumentTest {
+    init {
+        DocumentFactory.instance = DocumentFactory()
+    }
     @Test
     fun testDocumentAppendAndGet() {
         val values = mutableMapOf<String, Any>(
