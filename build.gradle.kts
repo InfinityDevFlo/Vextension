@@ -1,5 +1,3 @@
-import java.io.File
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -111,15 +109,15 @@ subprojects {
                         }
                     }
                 }
-                    repositories {
-                        maven("https://repo.vironlab.eu/repository/maven-snapshot/") {
-                            this.name = "vironlab-snapshot"
-                            credentials {
-                                this.password = System.getProperty("publishPassword")
-                                this.username = System.getProperty("publishName")
-                            }
+                repositories {
+                    maven("https://repo.vironlab.eu/repository/maven-snapshot/") {
+                        this.name = "vironlab-snapshot"
+                        credentials {
+                            this.password = System.getProperty("publishPassword")
+                            this.username = System.getProperty("publishName")
                         }
                     }
+                }
             }
         }
     }

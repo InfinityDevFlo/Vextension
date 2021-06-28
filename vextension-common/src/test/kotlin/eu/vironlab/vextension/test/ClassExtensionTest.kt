@@ -49,7 +49,7 @@ class ClassExtensionTest {
 
 }
 
-class TestClass{
+class TestClass {
 
     companion object {
     }

@@ -49,7 +49,8 @@ public inline fun <T : AutoCloseable?, R> T.use(block: (T) -> R): R {
         throw e
     } finally {
         when {
-            this == null -> {}
+            this == null -> {
+            }
             cause == null -> close()
             else ->
                 try {

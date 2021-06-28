@@ -1,11 +1,5 @@
 package eu.vironlab.vextension.item.sponge
 
-import eu.vironlab.vextension.item.extension.toItemStack
-import java.util.*
-import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.item.inventory.DropItemEvent
-
 class SpongeItemEventConsumer {
     /*@Listener
     fun interactListener(event: org.spongepowered.api.event.item.inventory.InteractItemEvent) {

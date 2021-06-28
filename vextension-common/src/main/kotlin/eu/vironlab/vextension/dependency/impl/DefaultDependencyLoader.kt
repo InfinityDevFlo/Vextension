@@ -37,22 +37,17 @@
 
 package eu.vironlab.vextension.dependency.impl
 
-import com.google.inject.Injector
-import eu.vironlab.vextension.dependency.Dependency
-import eu.vironlab.vextension.dependency.DependencyClassLoader
-import eu.vironlab.vextension.dependency.DependencyLoader
-import eu.vironlab.vextension.dependency.NoRepositoryFoundException
+import eu.vironlab.vextension.dependency.*
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
-import java.lang.reflect.InvocationTargetException
 import java.net.URL
+import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.jar.JarFile
-import kotlin.concurrent.thread
 
 internal class DefaultDependencyLoader(val libDir: File, val repositories: MutableMap<String, String>) :
     DependencyLoader {
@@ -96,8 +91,10 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
                 server = it.value
                 break
             } else if (RestUtil.getStatusCode(URL("${it.value}$filePath/maven-metadata.xml")).equals(200)) {
-                val meta: Document = RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
-                val newFileName = meta.getDocument("versioning")?.getDocument("snapshot")?.getDocument("snapshotVersions")
+                val meta: Document =
+                    RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
+                val newFileName =
+                    meta.getDocument("versioning")?.getDocument("snapshot")?.getDocument("snapshotVersions")
             }
         }
         if (server == null) {
@@ -119,60 +116,30 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
     override fun addToQueue(name: String, server: URL): DependencyLoader =
         this.queue.offer(DownloadableJar(server, File(libDir, name), null)).let { this }
 
-    override fun loadInNewThread(file: File, mainClass: String, args: Array<String>) {
-        val classLoader = DependencyClassLoader(downloadQueue())
-        classLoader.addURL(file.toURI().toURL())
-        val clazz = classLoader.loadClass(mainClass)
-        val thread = thread {
-            return@thread invokeMain(clazz, args)
-        }
-        thread.contextClassLoader = classLoader
-        thread.start()
-    }
-
-    override fun load(file: File, mainClass: String, args: Array<String>) {
-        val classLoader = DependencyClassLoader(downloadQueue())
-        classLoader.addURL(file.toURI().toURL())
-        val clazz = classLoader.loadClass(mainClass)
-        return invokeMain(clazz, args)
-    }
-
-    override fun loadByConstructor(file: File, mainClass: String, injector: Injector): Any {
-        val classLoader = DependencyClassLoader(downloadQueue())
-        classLoader.addURL(file.toURI().toURL())
-        val clazz = classLoader.loadClass(mainClass)
-        return injector.getInstance(clazz)
-    }
-
-
-    private fun invokeMain(clazz: Class<*>, args: Array<String>) {
-        try {
-            val method = clazz.getMethod("main", Array<String>::class.java)
-            method.invoke(null, args as Any)
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: InvocationTargetException) {
-            e.printStackTrace()
-        } catch (e: NoSuchMethodError) {
-            e.printStackTrace()
+    override fun addQueueWithAgent() = downloadQueue().let { downloaded ->
+        downloaded.forEach { file ->
+            DependencyAgent.appendJarFile(JarFile(file))
         }
     }
 
-    private fun downloadQueue(): Array<URL> {
-        val urls = arrayListOf<URL>()
+    override fun createClassLoader(): URLClassLoader =
+        DependencyClassLoader(downloadQueue().map { it.toURI().toURL() }.toTypedArray())
+
+    private fun downloadQueue(): ArrayList<File> {
+        val urls = arrayListOf<File>()
         for (entry in queue) {
             if (!entry.targetFile.exists() || entry.targetFile.name.toLowerCase().contains("snapshot")) {
                 if (entry.dir != null) {
                     if (!entry.dir!!.exists()) {
-                        Files.createDirectories(entry.dir!!.toPath())
+                        Files.createDirectories(entry.dir.toPath())
                     }
                 }
                 val stream = entry.url.openStream()
                 Files.copy(stream, entry.targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
                 stream.close()
             }
-            urls.add(entry.targetFile.toURI().toURL())
+            urls.add(entry.targetFile)
         }
-        return urls.toTypedArray()
+        return urls
     }
 }

@@ -24,6 +24,11 @@ pipeline {
                 }
             }
         }
+        stage("Test") {
+            steps {
+                sh "./gradlew test";
+            }
+        }
         stage("Build ShadowJar") {
             steps {
                 sh "./gradlew shadowJar";

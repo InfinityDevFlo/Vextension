@@ -44,7 +44,7 @@ import java.net.URLClassLoader
 open class DependencyClassLoader(val urls: Array<URL>) :
     URLClassLoader(urls) {
 
-    constructor(): this(arrayOf())
+    constructor() : this(arrayOf())
 
     companion object {
         init {

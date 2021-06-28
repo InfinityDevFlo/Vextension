@@ -39,7 +39,6 @@
 
 package eu.vironlab.vextension.extension
 
-import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 

@@ -2,7 +2,6 @@ package eu.vironlab.vextension.util
 
 import eu.vironlab.vextension.multiversion.MinecraftVersion
 import org.bukkit.Bukkit
-import org.spongepowered.api.Sponge
 
 
 object ServerUtil {

@@ -42,14 +42,8 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
-import eu.vironlab.vextension.sponge.VextensionSponge
 import java.util.*
-import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.event.Listener
-import org.spongepowered.api.scoreboard.Team
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlots
-import org.spongepowered.api.scoreboard.objective.Objective
 
 
 class SpongeSidebar(
@@ -58,10 +52,10 @@ class SpongeSidebar(
     override var title: String
 ) : Sidebar {
 
-   val players: MutableList<Player> = mutableListOf()
+    val players: MutableList<Player> = mutableListOf()
     var listening: Boolean = false
-  //  val objectiveBuilder: Objective.Builder = Sponge.getRegistry().createBuilder(Objective.Builder::class.java)
-  //  val teamBuilder: Team.Builder = Sponge.getRegistry().createBuilder(Team.Builder::class.java)
+    //  val objectiveBuilder: Objective.Builder = Sponge.getRegistry().createBuilder(Objective.Builder::class.java)
+    //  val teamBuilder: Team.Builder = Sponge.getRegistry().createBuilder(Team.Builder::class.java)
 
     init {
         //Sponge.getEventManager().registerListeners(this, VextensionSponge.instance)

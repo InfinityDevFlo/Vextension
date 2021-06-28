@@ -53,58 +53,58 @@ class DocumentFactory {
     }
 
     var documentXmlStorage: DocumentStorage = XMLDocumentStorage()
-    
+
     var documentJsonStorage: DocumentStorage = JsonDocumentStorage()
-    
+
     var documentYamlStorage: DocumentStorage = YamlDocumentStorage()
-    
+
     var documentManagement: DocumentManagement = DefaultDocumentManagement()
 
-    
+
     fun createDocument(): Document {
         return documentManagement.createDocument()
     }
-    
+
     fun createDocument(jsonElement: JsonElement): Document {
         return documentManagement.createDocument(jsonElement)
     }
 
-    
+
     fun createDocumentFromJson(json: String): Document {
         return documentJsonStorage.read(json)
     }
 
-    
+
     fun createDocument(jsonObject: JsonObject): Document {
         return documentManagement.createDocument(jsonObject)
     }
 
-    
+
     fun createDocument(key: String, value: String): Document {
         return documentManagement.createDocument(key, value)
     }
 
-    
+
     fun createDocument(key: String, value: Number): Document {
         return documentManagement.createDocument(key, value)
     }
 
-    
+
     fun createDocument(key: String, value: Char): Document {
         return documentManagement.createDocument(key, value)
     }
 
-    
+
     fun createDocument(key: String, value: Boolean): Document {
         return documentManagement.createDocument(key, value)
     }
 
-    
+
     fun createDocument(key: String, value: Any): Document {
         return documentManagement.createDocument(key, value)
     }
 
-    
+
     fun <T> createDocument(obj: T): Document {
         return documentManagement.createDocument(obj)
     }

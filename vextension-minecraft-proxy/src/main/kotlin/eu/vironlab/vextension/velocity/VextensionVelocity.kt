@@ -38,7 +38,6 @@
 package eu.vironlab.vextension.velocity
 
 import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
 import org.slf4j.Logger
 

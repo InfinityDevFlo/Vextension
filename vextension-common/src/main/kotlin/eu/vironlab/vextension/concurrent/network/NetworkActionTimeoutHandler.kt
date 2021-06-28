@@ -3,7 +3,7 @@ package eu.vironlab.vextension.concurrent.network
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.thread
 
-abstract class  NetworkActionTimeoutHandler {
+abstract class NetworkActionTimeoutHandler {
 
     companion object {
         @JvmStatic
