@@ -39,7 +39,6 @@
 
 package eu.vironlab.vextension.test
 
-import eu.vironlab.vextension.document.DocumentFactory
 import eu.vironlab.vextension.document.document
 import eu.vironlab.vextension.extension.getResourceContent
 import eu.vironlab.vextension.extension.random
