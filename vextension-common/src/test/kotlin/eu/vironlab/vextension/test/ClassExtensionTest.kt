@@ -52,7 +52,6 @@ class ClassExtensionTest {
 class TestClass{
 
     companion object {
-        @JvmStatic
     }
 
     @TestAnnotation(1)
