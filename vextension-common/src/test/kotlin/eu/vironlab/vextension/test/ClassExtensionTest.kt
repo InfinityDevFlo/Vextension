@@ -39,27 +39,48 @@
 
 package eu.vironlab.vextension.test
 
+import eu.vironlab.vextension.extension.callMethodsAnnotatedWithSorted
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class ClassExtensionTest {
 
-    @Test
-    fun test() {
-    }
+    /*@Test
+    fun testSortedAnnotatedMethodCall() {
+        TestClass::class.java.callMethodsAnnotatedWithSorted(
+            TestAnnotation::class.java,
+            TestClass(),
+            { o1, o2 -> o1.getAnnotation(TestAnnotation::class.java).value - o1.getAnnotation(TestAnnotation::class.java).value },
+            *arrayOf()
+        )
+        assertEquals(mutableListOf(1, 2, 3), TestClass.list)
+    }*/
 
 }
 
 class TestClass {
 
     companion object {
+        var list = mutableListOf<Int>()
     }
 
     @TestAnnotation(1)
     fun test1() {
+        list.add(1)
+    }
 
+    @TestAnnotation(2)
+    fun test2() {
+        list.add(2)
+    }
+
+    @TestAnnotation(3)
+    fun test3() {
+        list.add(3)
     }
 
 }
 
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class TestAnnotation(val value: Int = 32)

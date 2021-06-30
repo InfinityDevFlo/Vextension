@@ -3,6 +3,7 @@ package eu.vironlab.vextension.document.impl.storage
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
 import com.google.gson.JsonParser
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.document
@@ -18,6 +19,10 @@ class XMLDocumentStorage : DocumentStorage {
 
     private val xmlMapper: XmlMapper = XmlMapper()
     private val jsonMapper: ObjectMapper = ObjectMapper()
+
+    init {
+        this.xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true)
+    }
 
     override fun <T> read(instance: T): Document {
         return documentFromJson(DefaultDocumentManagement.GSON.toJson(instance))

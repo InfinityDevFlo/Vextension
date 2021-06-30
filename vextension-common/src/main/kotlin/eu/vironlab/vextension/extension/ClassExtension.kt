@@ -38,10 +38,10 @@
 package eu.vironlab.vextension.extension
 
 import java.io.File
+import java.lang.reflect.Method
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
-import java.util.*
 import java.util.jar.JarFile
 
 fun <T> Class<T>.callStaticMethod(name: String, vararg params: Any) {
@@ -58,16 +58,27 @@ fun <T> Class<T>.callMethod(instance: T, name: String, vararg params: Any) {
     method.invoke(instance, params)
 }
 
-fun <T> Class<T>.callMethodsAnnotatedWith(annotation: Class<out Annotation>, instance: T, vararg params: Any) {
-    val methods = this.methods.filter { it.isAnnotationPresent(annotation) }
+
+fun <T> Class<T>.callMethodsAnnotatedWithSorted(
+    annotation: Class<out Annotation>,
+    instance: T,
+    comparator: Comparator<Method>,
+    vararg params: Any
+) {
+    val methods = this.methods.filter { it.isAnnotationPresent(annotation) }.sortedWith(comparator)
     for (method in methods) {
         method.isAccessible = true
         method.invoke(instance, params)
     }
 }
 
-fun t() {
-    UUID::class.java.callMethodsDynamicAnnotatedWith(JvmStatic::class.java, UUID.randomUUID(), "string", 1, 1L)
+
+fun <T> Class<T>.callMethodsAnnotatedWith(annotation: Class<out Annotation>, instance: T, vararg params: Any) {
+    val methods = this.methods.filter { it.isAnnotationPresent(annotation) }
+    for (method in methods) {
+        method.isAccessible = true
+        method.invoke(instance, params)
+    }
 }
 
 

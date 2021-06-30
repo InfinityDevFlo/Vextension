@@ -41,6 +41,7 @@ package eu.vironlab.vextension.test
 
 import eu.vironlab.vextension.document.DocumentFactory
 import eu.vironlab.vextension.document.document
+import eu.vironlab.vextension.extension.getResourceContent
 import eu.vironlab.vextension.extension.random
 import java.math.BigInteger
 import java.util.*
@@ -70,24 +71,26 @@ class DocumentTest {
         assertEquals(doc.getBoolean("boolean"), values["boolean"])
     }
 
-    /*@Test
+    @Test
     fun testJsonDocument() {
         val doc = DocumentFactory.instance.documentJsonStorage.read(this::class.java.getResourceAsStream("/test.json"))
         assertEquals(doc.jsonStorage().serializeToString(), this::class.java.getResourceContent("/test.json"))
-        assertEquals(doc.jsonStorage().serializeToString(), document(DocumentTest()).xmlStorage().serializeToString())
+        assertEquals(doc.jsonStorage().serializeToString(), document(DocumentTest()).jsonStorage().serializeToString())
     }
 
     @Test
     fun testXmlDocument() {
         val doc = DocumentFactory.instance.documentXmlStorage.read(this::class.java.getResourceAsStream("/test.xml"))
-        assertEquals(doc.xmlStorage().serializeToString(), this::class.java.getResourceContent("/test.xml"))
         assertEquals(doc.xmlStorage().serializeToString(), document(DocumentTest()).xmlStorage().serializeToString())
     }
 
 
+    /*
     @Test
     fun testYamlDocument() {
         val doc = DocumentFactory.instance.documentYamlStorage.read(this::class.java.getResourceAsStream("/test.yml"))
+        println(doc.yamlStorage().serializeToString())
+        println(this::class.java.getResourceContent("/test.yml"))
         assertEquals(doc.yamlStorage().serializeToString(), this::class.java.getResourceContent("/test.yml"))
         assertEquals(doc.yamlStorage().serializeToString(), document(DocumentTest()).yamlStorage().serializeToString())
     }*/

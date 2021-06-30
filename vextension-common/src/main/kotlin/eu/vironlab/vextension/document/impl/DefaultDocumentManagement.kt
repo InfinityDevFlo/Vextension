@@ -37,6 +37,10 @@
 
 package eu.vironlab.vextension.document.impl
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonRootName
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
 import com.google.gson.reflect.TypeToken
@@ -57,6 +61,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
 
 
@@ -115,6 +120,10 @@ internal class DefaultDocumentManagement : DocumentManagement {
             return asObject(jsonObject)!!
         }
 
+        @JacksonXmlRootElement
+        @JsonRootName("root")
+        inner class SerializedMap<K, V>(map: MutableMap<K, V> = ConcurrentHashMap<K, V>()) : MutableMap<K, V> by map
+
         private fun asObject(element: JsonElement): Any? {
             return if (element.isJsonArray()) {
                 val array: MutableCollection<Any?> = ArrayList<Any?>(element.getAsJsonArray().size())
@@ -123,7 +132,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 }
                 array
             } else if (element.isJsonObject()) {
-                val map: MutableMap<String, Any> = HashMap<String, Any>(element.getAsJsonObject().size())
+                val map= SerializedMap<String, Any>()
                 for ((key, value1) in element.getAsJsonObject().entrySet()) {
                     val value = asObject(value1)
                     if (value != null) {
