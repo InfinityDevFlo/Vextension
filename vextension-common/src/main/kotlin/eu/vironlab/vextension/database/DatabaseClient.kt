@@ -37,59 +37,35 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.concurrent.AsyncTask
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.document.DefaultDocument
-import eu.vironlab.vextension.document.Document
-import kotlin.reflect.KClass
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.lang.Nameable
 
 /**
- * Client to Connect to the Database <p>
- *
- * You can manage the Used Client instance with the Vextension Class <p>
- *
- * An instance of this class is to connect your Projekt to a Database. For Sql and Mongo Databases
- * you can use the Following Clients: <p>
- *
+ * Client for Multiple Database Types
  */
-interface DatabaseClient {
+abstract class DatabaseClient : Nameable, AutoCloseable {
 
     /**
-     * This method is called when the Client will be initialized
+     * Init the Client and open the Connection
      */
-    fun init()
+    abstract fun init(): Boolean
 
     /**
-     * Use this Method to get a Database instance from the Client <p>
+     * Delete a Database with [name]
      *
-     * @param name is the Name of the Database
-     *
-     * @return The Database instance, wich will be created if the Database does not exists
+     * @return true if the Database is Deleted, false if there is an error or the Database does not exist
      */
-    fun getDatabase(name: String): Database
-
+    abstract fun dropDatabase(name: String): QueuedTask<Boolean>
 
     /**
-     * Async Method for
-     * @see DatabaseClient.getDatabase
+     * Check if a Database with [name] exists
      */
-    fun getDatabaseAsync(name: String): AsyncTask<Database>
+    abstract fun containsDatabase(name: String): QueuedTask<Boolean>
 
     /**
-     * Check if a Database with the given name exists
-     *
-     * @param name is the Name of the Database
-     *
-     * @return the result of the Check
+     * Get the Database with [name]
      */
-    fun exists(name: String): Boolean
+    abstract fun getDatabase(name: String): QueuedTask<Database>
 
-    /**
-     * Delete a Database
-     *
-     * @param name is the Name of the Database
-     */
-    fun drop(name: String): Boolean
 
-    fun close()
 }

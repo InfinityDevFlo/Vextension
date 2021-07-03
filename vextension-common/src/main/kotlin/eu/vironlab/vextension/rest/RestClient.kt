@@ -40,10 +40,10 @@ package eu.vironlab.vextension.rest
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import eu.vironlab.vextension.document.Document
-import eu.vironlab.vextension.document.DocumentManagement
+import eu.vironlab.vextension.document.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
@@ -135,7 +135,7 @@ class RestClient(val agent: String) {
             }
             connection.connect()
             val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-            val document = DocumentManagement.xmlStorage().read(urlStr, input)
+            val document = DocumentFactory.instance.documentXmlStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {
@@ -159,8 +159,8 @@ class RestClient(val agent: String) {
                 }
             }
             connection.connect()
-            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
-            val document = DocumentManagement.jsonStorage().read(urlStr, input)
+            val input = BufferedReader(InputStreamReader(connection.inputStream))
+            val document = DocumentFactory.instance.documentJsonStorage.read(input)
             connection.disconnect()
             return Optional.of(document)
         } catch (e: Exception) {
@@ -206,5 +206,35 @@ class RestClient(val agent: String) {
         }
     }
 
+    fun postJson(json: Document, url: String): Boolean {
+        return postJson(json, url, mapOf())
+    }
+
+    fun postJson(json: Document, urlStr: String, headers: Map<String, String>): Boolean {
+        try {
+            val url = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.POST.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (headers.isNotEmpty()) {
+                headers.forEach { (k, v) ->
+                    connection.setRequestProperty(k, v)
+                }
+            }
+            connection.connect()
+            OutputStreamWriter(connection.outputStream, "UTF-8").let {
+                it.write(json.toJson())
+                it.flush()
+                it.close()
+            }
+            connection.outputStream.close()
+            connection.outputStream.flush()
+            connection.outputStream.close()
+            connection.disconnect()
+            return true
+        } catch (e: Exception) {
+            return false
+        }
+    }
 
 }

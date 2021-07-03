@@ -37,9 +37,19 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang.user
 
+import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import eu.vironlab.vextension.lang.Nameable
+import java.lang.reflect.Type
 import java.util.*
 
-data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin): Nameable
+data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin) :
+    Nameable, java.io.Serializable {
+    companion object {
+        @JvmStatic
+        val TYPE: Type = object : TypeToken<MojangUser>() {}.type
+    }
+}
 
-data class Skin(val texture: String, val signature: String)
+data class Skin(val name: String, @SerializedName("value") val texture: String, val signature: String) :
+    java.io.Serializable

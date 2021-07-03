@@ -1,0 +1,11 @@
+{
+  "id": "vextension",
+  "name": "Vextension",
+  "version": "2.0.0-SNAPSHOT",
+  "description": "Vextension for Velocity",
+  "url": "https://github.com/Velocity",
+  "authors": [
+    "VironLab"
+  ],
+  "main": "eu.vironlab.vextension.velocity.VextensionVelocity"
+}

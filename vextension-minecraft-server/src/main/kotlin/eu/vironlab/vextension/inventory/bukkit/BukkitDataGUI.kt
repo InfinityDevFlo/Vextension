@@ -36,13 +36,12 @@
  */
 package eu.vironlab.vextension.inventory.bukkit
 
-import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
 import java.util.*
-import java.util.function.BiConsumer
 
 class BukkitDataGUI(override val lines: Int, override val name: String) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
@@ -61,7 +60,7 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
     }
 
     override fun open(player: UUID, list: MutableCollection<ItemStack>) {
-        scheduleAsync {
+        queueTask {
             val contents =
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val pages: MutableList<BukkitGUI> = mutableListOf()
@@ -125,7 +124,7 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                 }
             }
             pages[0].open(player)
-        }
+        }.queue()
     }
 
     fun setComparator(comparator: Comparator<ItemStack>): BukkitDataGUI {

@@ -38,7 +38,7 @@
 package eu.vironlab.vextension.item.extension
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
-import eu.vironlab.vextension.concurrent.scheduleAsync
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
@@ -46,19 +46,22 @@ import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
-import org.spongepowered.api.entity.living.monster.Vex
 
 /**
  * Set the [item] on [slot] into the Inventory
  */
 fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
-    if (ServerUtil.getServerType() != ServerType.BUKKIT)
+    if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
-    scheduleAsync {
+    queueTask {
         val bukkitItem: org.bukkit.inventory.ItemStack =
             org.bukkit.inventory.ItemStack(Material.valueOf(item.material.toString()), item.amount)
         val meta = bukkitItem.itemMeta
+        if (item.skullOwner != null) {
+            (meta as SkullMeta).owner = item.skullOwner
+        }
         if (meta is Damageable) meta.damage = item.damage
         if (item.material.name.toLowerCase() != item.name)
             meta.setDisplayName(item.name)
@@ -66,11 +69,11 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
         meta.isUnbreakable = item.unbreakable
         meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, item.identifier)
         bukkitItem.itemMeta = meta
-        if (!VextensionBukkit.instance.items.containsKey(item.identifier)) {
-            VextensionBukkit.instance.items[item.identifier] = item
+        if (!VextensionBukkit.items.containsKey(item.identifier)) {
+            VextensionBukkit.items[item.identifier] = item
         }
         this.setItem(slot, bukkitItem)
-    }
+    }.queue()
     return this
 }
 

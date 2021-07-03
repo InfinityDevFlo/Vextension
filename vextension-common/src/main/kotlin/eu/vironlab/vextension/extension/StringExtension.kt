@@ -38,16 +38,49 @@
 package eu.vironlab.vextension.extension
 
 import java.net.URL
+import java.util.*
+
+object StringExtension {
+    val UPPER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+
+    val LOWER_CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray()
+
+    val UPPER_LOWER_CHARS = UPPER_CHARS + LOWER_CHARS
+
+    val NUMBERS = "0123456789".toCharArray()
+
+    val CHARS = UPPER_CHARS + LOWER_CHARS + NUMBERS
+
+    val RANDOM: Random = Random()
+}
+
+fun String.isClass(): Boolean {
+    return try {
+        Class.forName(this)
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
 
 /**
  * Check if the String is an Integer
  */
 fun String.isInt(): Boolean {
-    try {
+    return try {
         this.toInt()
-        return true
-    }catch(e: Exception) {
-        return false
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
+fun String.isLong(): Boolean {
+    return try {
+        this.toLong()
+        true
+    } catch (e: Exception) {
+        false
     }
 }
 
@@ -55,23 +88,69 @@ fun String.isInt(): Boolean {
  * Check if the String is a Boolean
  */
 fun String.isBoolean(): Boolean {
-    try {
+    return try {
         this.toBoolean()
-        return true
-    }catch(e: Exception) {
-        return false
+        true
+    } catch (e: Exception) {
+        false
     }
 }
 
+
+fun String.Companion.random(length: Int, numbers: Boolean = true): String {
+    val stringBuilder = StringBuilder()
+    synchronized(StringExtension::class.java) {
+        if (numbers) {
+            val size = StringExtension.CHARS.size
+            for (i in 0 until length) {
+                stringBuilder.append(StringExtension.CHARS[StringExtension.RANDOM.nextInt(size)])
+            }
+        } else {
+            val size = StringExtension.UPPER_LOWER_CHARS.size
+            for (i in 0 until length) {
+                stringBuilder.append(StringExtension.UPPER_LOWER_CHARS[StringExtension.RANDOM.nextInt(size)])
+            }
+        }
+    }
+    return stringBuilder.toString()
+}
+
+fun String.containsIgnoreCase(searchQuery: String): Boolean {
+    return this.toLowerCase().contains(searchQuery.toLowerCase())
+}
 
 /**
  * Check if the String is an URL
  */
 fun String.isUrl(): Boolean {
-    try {
+    return try {
         URL(this)
-        return true
-    }catch(e: Exception) {
-        return false
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
+fun String.isUUID(): Boolean {
+    return try {
+        this.toUUID()
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
+fun String.toUUID(): UUID {
+    return if (contains("-")) {
+        UUID.fromString(this)
+    } else {
+        var uuid = ""
+        for (i in 0..31) {
+            uuid += this[i]
+            if (i == 7 || i == 11 || i == 15 || i == 19) {
+                uuid = "$uuid-"
+            }
+        }
+        UUID.fromString(uuid)
     }
 }

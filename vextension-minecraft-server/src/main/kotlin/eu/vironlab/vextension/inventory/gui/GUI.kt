@@ -43,5 +43,5 @@ interface GUI {
     val lines: Int
     val name: String
     fun open(player: UUID)
-    fun setBorder(border: ItemStack?) : GUI
+    fun setBorder(border: ItemStack?): GUI
 }

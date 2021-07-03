@@ -37,157 +37,71 @@
 
 package eu.vironlab.vextension.database
 
-import eu.vironlab.vextension.concurrent.AsyncTask
+import eu.vironlab.vextension.concurrent.task.QueuedTask
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.lang.Nameable
-import java.util.*
 
 /**
- * A Wrapper for Multiple Database Types
+ * All Database Actions return a QueuedTask instance to use the Database Sync or Async -> You can change the QueuedTaskProvider if you dont want to use Coroutines as Provider for the Async Calls
  */
 interface Database : Nameable {
 
     /**
-     * Get the Value of [key] in the Database as Optional instance
+     * Check if [key] is in the Database
+     */
+    fun contains(key: String): QueuedTask<Boolean>
+
+    /**
+     * Check if there is [fieldValue] with the key: [fieldValue] in the Database
+     */
+    fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
+
+    /**
+     * Get the Value of [key]
      *
-     * @return the Optional instance
+     * @return an Optional instance wich is Empty if there was no Object in the Database
      */
-    fun get(key: String): Optional<Document>
+    fun get(key: String): QueuedTask<Document?>
 
     /**
-     * Get all value with the [key] and [value]
+     * Get the Value of the entry from [fieldName] with the value: [fieldValue]
      *
-     * @return All matching things
+     * @return an Optional instance wich is Empty if there was no Object in the Database
      */
-    fun get(key: String, value: Any): Collection<Document>
+    fun get(fieldName: String, fieldValue: Any): QueuedTask<Collection<Document>>
 
     /**
-     * Get a value or set a Default
-     */
-    fun getOrDefault(key: String, definition: Document): Document
-
-    /**
-     * Insert [value] into the Database identified by [key]
+     * Get the Value of [key] if present or else insert [def]
      *
-     * @return if the Value can be inserted or the was an Error or the Key already exists
-     */
-    fun insert(key: String, value: Document): Boolean
-
-    /**
-     * Update a the value of [key] to [newValue]
+     * @see Database.get([key])
      *
-     * @return if the Value can be replaces
+     * @return the Document from the Database is present or else [def]
      */
-    fun update(key: String, newValue: Document): Boolean
+    fun get(key: String, def: Document): QueuedTask<Document>
 
     /**
-     * Delete the Value of [key]
-     *
-     * @return if the Value can be deleted
+     * Update a existing value of [key] to [newValue]
      */
-    fun delete(key: String): Boolean
+    fun update(key: String, newValue: Document): QueuedTask<Boolean>
 
     /**
-     * Check if the Database contains [key]
-     *
-     * @return the result of the Check
+     * Insert [value] identified by [key]
      */
-    fun contains(key: String): Boolean
+    fun insert(key: String, value: Document): QueuedTask<Boolean>
 
     /**
-     * Check if [value] is the the Database identified by [key]
-     *
-     * @return the result of the Check
+     * Delete the Document identified by [key]
      */
-    fun contains(key: String, value: Any): Boolean
+    fun delete(key: String): QueuedTask<Boolean>
 
     /**
-     * Get all keys of the Database
-     *
-     * @return all keys as Collection
+     * Delete the Documents identified by [fieldValue] in the [fieldName] Field
      */
-    fun keys(): Collection<String>
+    fun delete(fieldName: String, fieldValue: Any): QueuedTask<Boolean>
 
     /**
-     * Clear the whole Database
-     *
-     * @return if there was an Error while deleting the Data
+     * Get all Key from the Database
      */
-    fun clear(): Boolean
-
-    /**
-     * Execute a Unit for all Elements in the Database
-     */
-    fun forEach(func: (String, Document) -> Unit)
-
-    /**
-     * @see Database.get([key]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun getAsync(key: String): AsyncTask<Optional<Document>>
-
-    /**
-     * @see Database.get([key], [value]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun getAsync(key: String, value: Any): AsyncTask<Collection<Document>>
-
-    /**
-     * @see Database.insert([key], [value]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun insertAsync(key: String, value: Document): AsyncTask<Boolean>
-
-    /**
-     * @see Database.delete([key]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun deleteAsync(key: String): AsyncTask<Boolean>
-
-    /**
-     * @see Database.contains([key]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun containsAsync(key: String): AsyncTask<Boolean>
-
-    /**
-     * @see Database.keys as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun keysAsync(): AsyncTask<Collection<String>>
-
-    /**
-     * @see Database.contains([key], [value]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun containsAsync(key: String, value: Any): AsyncTask<Boolean>
-
-    /**
-     * @see Database.forEach([func]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun forEachAsync(func: (String, Document) -> Unit)
-
-    /**
-     * @see Database.clear as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun clearAsync(): AsyncTask<Boolean>
-
-    /**
-     * @see Database.update([key], [value]) as Async method
-     *
-     * @return the Result as AsyncTask
-     */
-    fun updateAsync(key: String, Documentvalue: Document): AsyncTask<Boolean>
+    fun keys(): QueuedTask<Collection<String>>
 
 }

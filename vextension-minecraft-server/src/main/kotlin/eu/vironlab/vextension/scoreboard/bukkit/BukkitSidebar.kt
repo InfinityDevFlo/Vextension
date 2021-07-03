@@ -39,15 +39,14 @@ package eu.vironlab.vextension.scoreboard.bukkit
 
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.collection.DataPair
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.multiversion.MinecraftVersion
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
-import eu.vironlab.vextension.scoreboard.builder.sidebar
-import eu.vironlab.vextension.util.ServerUtil
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -57,8 +56,6 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Team
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 
 class BukkitSidebar(
@@ -80,7 +77,7 @@ class BukkitSidebar(
             val color = ScoreboardUtil.getAvailableColor(usedColors)
             this.lines.put(line.name, DataPair(color, line))
             this.usedColors.add(color)
-            scheduleAsync {
+            queueTask {
                 this.players.forEach {
                     val scoreboard = it.scoreboard
                     val team: Team = scoreboard.registerNewTeam(line.name)
@@ -93,12 +90,12 @@ class BukkitSidebar(
                     team.addEntry(color)
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(color).score = line.score
                 }
-            }
+            }.queue()
         }
     }
 
     override fun updateLine(name: String, line: SidebarLine) {
-        scheduleAsync {
+        queueTask {
             lines[name] = DataPair(lines[name]!!.first, line)
             players.forEach {
                 val scoreboard = it.scoreboard
@@ -113,7 +110,7 @@ class BukkitSidebar(
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(lines.get(name)!!.first).score = line.score
                 }
             }
-        }
+        }.queue()
     }
 
     override fun set(player: UUID) {
@@ -175,7 +172,7 @@ class BukkitSidebar(
     }
 
     override fun removeAll() {
-        scheduleAsync {
+        queueTask {
             players.forEach {
                 remove(it.uniqueId)
             }
@@ -193,7 +190,7 @@ class BukkitSidebar(
 
     override fun updateTitle(title: String) {
         this.title = title
-        scheduleAsync {
+        queueTask {
             players.forEach {
                 it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName = title
             }

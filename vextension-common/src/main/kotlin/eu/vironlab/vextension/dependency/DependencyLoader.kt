@@ -1,84 +1,63 @@
+/**
+ *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ * <p>
+ *      ___    _______                        ______         ______  <p>
+ *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
+ *      __ | / / __  / __  ___/_  __ \__  __ \__  /  _  __ `/__  __ \<p>
+ *      __ |/ /  _  /  _  /    / /_/ /_  / / /_  /___/ /_/ / _  /_/ /<p>
+ *      _____/   /_/   /_/     \____/ /_/ /_/ /_____/\__,_/  /_.___/ <p>
+ *<p>
+ *    ____  _______     _______ _     ___  ____  __  __ _____ _   _ _____ <p>
+ *   |  _ \| ____\ \   / / ____| |   / _ \|  _ \|  \/  | ____| \ | |_   _|<p>
+ *   | | | |  _|  \ \ / /|  _| | |  | | | | |_) | |\/| |  _| |  \| | | |  <p>
+ *   | |_| | |___  \ V / | |___| |__| |_| |  __/| |  | | |___| |\  | | |  <p>
+ *   |____/|_____|  \_/  |_____|_____\___/|_|   |_|  |_|_____|_| \_| |_|  <p>
+ *<p>
+ *<p>
+ *   This program is free software: you can redistribute it and/or modify<p>
+ *   it under the terms of the GNU General Public License as published by<p>
+ *   the Free Software Foundation, either version 3 of the License, or<p>
+ *   (at your option) any later version.<p>
+ *<p>
+ *   This program is distributed in the hope that it will be useful,<p>
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of<p>
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<p>
+ *   GNU General Public License for more details.<p>
+ *<p>
+ *   You should have received a copy of the GNU General Public License<p>
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Contact:<p>
+ *<p>
+ *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
+ *     Website:         https://vironlab.eu/ <p>
+ *     Mail:            contact@vironlab.eu<p>
+ *<p>
+ */
+
 package eu.vironlab.vextension.dependency
 
-import java.io.File
-import java.lang.IllegalStateException
 import java.net.URL
-import java.nio.file.Files
+import java.net.URLClassLoader
 
-/**
- * WARNING: UNSAFE WHEN GETTING SNAPSHOTS
- */
-object DependencyLoader {
+interface DependencyLoader {
 
-    var dataPath: File = File(".libs")
-    var dependencyClassloader: DependencyClassloader = DependencyClassloader()
-    const val SUFFIX_JAR = ".jar"
-    const val SUFFIX_POM = ".pom"
+    fun addRepository(name: String, url: URL)
 
-    fun init() {
-        dataPath.mkdirs()
-    }
+    fun isRepositoryExists(name: String): Boolean
 
-    /**
-     * Get the [dependency] from [server]
-     */
-    @JvmStatic
-    fun require(server: String = Repository.MAVEN_CENTRAL, dependency: Dependency) {
-        if (!server.endsWith("/")) {
-            server.plus("/")
-        }
-        val filePath: String =
-            dependency.groupId.replace('.', '/') + '/' + dependency.artifactId + '/' + dependency.version
-        val fileName: String = dependency.artifactId + '-' + dependency.version + SUFFIX_JAR
+    fun getRepositoryName(url: URL): String?
 
-        val folder: File = File(dataPath, filePath)
-        val dest = File(folder, fileName)
+    @Throws(NoRepositoryFoundException::class)
+    fun addToQueue(dependency: Dependency): DependencyLoader
 
-        try {
-            if (!dest.exists()) {
-                dest.parentFile.mkdirs()
-                val requestURL = URL("$server$filePath/$fileName")
-                Files.copy(requestURL.openStream(), dest.toPath())
-            }
-            try {
-                dependencyClassloader.addJarToClasspath(dest)
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-                return
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return
-        }
-    }
+    @Throws(NoRepositoryFoundException::class)
+    fun addToQueue(gradle: String): DependencyLoader
 
-    /**
-     * Get the Dependency with [coords] from Maven Central Server
-     */
-    @JvmStatic
-    fun require(coords: String) {
-        require(server = Repository.MAVEN_CENTRAL, coords = coords)
-    }
+    fun addToQueue(name: String, server: URL): DependencyLoader
 
-    /**
-     * Get the Dependency with [coords] from [server]
-     */
-    @JvmStatic
-    fun require(server: String, coords: String) {
-        val split = coords.split(":".toRegex()).toTypedArray()
-        if (split.size != 3) {
-            throw IllegalStateException("Wrong Library input... StringExample: 'groupid:artifactid:version' Given: '$coords'")
-        }
-        require(server, Dependency(split[0], split[1], split[2]))
-    }
+    fun addQueueWithAgent()
 
-    object Repository {
-        const val MAVEN_CENTRAL = "https://repo1.maven.org/maven2/"
-
-        const val JCENTER = "https://jcenter.bintray.com/"
-
-        const val VIRONLAB_SNAPSHOT = "https://repo.vironlab.eu/repository/snapshot/"
-    }
-
+    fun createClassLoader(): URLClassLoader
 
 }

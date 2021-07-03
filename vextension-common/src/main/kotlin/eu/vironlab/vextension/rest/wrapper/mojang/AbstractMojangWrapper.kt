@@ -37,25 +37,17 @@
 
 package eu.vironlab.vextension.rest.wrapper.mojang
 
-import eu.vironlab.vextension.rest.RestUtil
-import java.util.*
+import com.google.gson.Gson
 
 
 abstract class AbstractMojangWrapper : MojangWrapper {
 
     override fun getServiceStatus(): MojangServiceStatusList {
-        return MojangConstants.CLIENT.getClassInstance(MojangConstants.STATUS_CHECK_URL, MojangServiceStatusList::class.java).get()
-    }
-
-    protected fun String.appendToUUID(): UUID {
-        var uuid = ""
-        for (i in 0..31) {
-            uuid += this[i]
-            if (i == 7 || i == 11 || i == 15 || i == 19) {
-                uuid = "$uuid-"
-            }
-        }
-        return UUID.fromString(uuid)
+        return MojangConstants.CLIENT.getClassInstance(
+            MojangConstants.STATUS_CHECK_URL,
+            MojangServiceStatusList::class.java,
+            Gson()
+        ).get()
     }
 
     inner class PropertyToken(val name: String, val value: String, val signature: String)

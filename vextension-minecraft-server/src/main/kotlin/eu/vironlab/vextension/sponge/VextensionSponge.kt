@@ -38,30 +38,20 @@
 package eu.vironlab.vextension.sponge
 
 import com.google.inject.Inject
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.sponge.SpongeItemEventConsumer
 import org.slf4j.Logger
+import org.spongepowered.api.ResourceKey
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.data.key.Key
-import org.spongepowered.api.data.value.mutable.Value
-import org.spongepowered.api.event.Listener
-import org.spongepowered.api.event.game.state.GameStartedServerEvent
-import org.spongepowered.api.plugin.Plugin
-import org.spongepowered.api.util.generator.dummy.DummyObjectProvider
+import org.spongepowered.api.data.Key
+import org.spongepowered.api.data.value.Value
+import org.spongepowered.plugin.PluginContainer
+import org.spongepowered.plugin.jvm.Plugin
 
-@Plugin(
-    id = "vextension_sponge",
-    name = "Vextension-Sponge",
-    version = "1.0.0-SNAPSHOT",
-    description = "Vextension for Sponge Plugins",
-    authors = ["VironLab"]
-)
-class VextensionSponge : Vextension  {
 
-    override lateinit var databaseClient: DatabaseClient
+@Plugin("sponge")
+class VextensionSponge @Inject constructor(val plugin: PluginContainer) {
+
     @Inject
     private lateinit var logger: Logger
 
@@ -69,16 +59,18 @@ class VextensionSponge : Vextension  {
     companion object {
         @JvmStatic
         lateinit var instance: VextensionSponge
+
         @JvmStatic
-        internal val vextensionSpongeKey: Key<Value<String>> =
-            DummyObjectProvider.createExtendedFor(Key::class.java, "VEXTENSION_SPONGE_KEY")
+        internal lateinit var vextensionSpongeKey: Key<Value<String>>
     }
+
     val items: MutableMap<String, ItemStack> = mutableMapOf()
-    @Listener
-    fun init(event: GameStartedServerEvent) {
+
+    init {
         instance = this
-        VextensionAPI.initialize(this)
-        Sponge.getEventManager().registerListeners(this, SpongeItemEventConsumer())
+        vextensionSpongeKey =
+            Key.builder().key(ResourceKey.of(plugin, "VEXTENSION_SPONGE")).elementType(String::class.java).build()
+        Sponge.game().eventManager().registerListeners(plugin, SpongeItemEventConsumer())
         logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
 }

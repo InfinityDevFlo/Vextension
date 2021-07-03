@@ -38,26 +38,12 @@
 package eu.vironlab.vextension.velocity
 
 import com.google.inject.Inject
-import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.*
 import org.slf4j.Logger
 
-@Plugin(
-    name = "Vextension",
-    authors = arrayOf("VironLab"),
-    id = "vextension_velocity",
-    description = "Vextension for Velocity",
-    version = "1.0.0-SNAPSHOT"
-)
-class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) : Vextension {
-    override lateinit var databaseClient: DatabaseClient
+class VextensionVelocity @Inject constructor(val server: ProxyServer, val logger: Logger) {
 
     init {
-        VextensionAPI.initialize(this)
+        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
-
-
 }

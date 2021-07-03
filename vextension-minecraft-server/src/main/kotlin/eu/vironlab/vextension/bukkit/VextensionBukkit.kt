@@ -36,45 +36,38 @@
  */
 
 package eu.vironlab.vextension.bukkit
-import eu.vironlab.vextension.Vextension
-import eu.vironlab.vextension.VextensionAPI
-import eu.vironlab.vextension.database.DatabaseClient
+
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.bukkit.BukkitItemEventConsumer
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
-import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.*
-import java.util.function.BiConsumer
 
 
-class VextensionBukkit : JavaPlugin(), Vextension, CommandExecutor {
+class VextensionBukkit : JavaPlugin(), CommandExecutor {
 
-    override lateinit var databaseClient: DatabaseClient
-
-    val items: MutableMap<String, ItemStack> = mutableMapOf()
 
     companion object {
         @JvmStatic
-        lateinit var instance: VextensionBukkit
+        lateinit var instance: JavaPlugin
+
+        @JvmStatic
+        val items: MutableMap<String, ItemStack> = mutableMapOf()
 
         @JvmStatic
         lateinit var key: NamespacedKey
     }
 
     override fun onLoad() {
-        VextensionAPI.initialize(this)
         instance = this
         key = NamespacedKey(instance, "vextension")
+        logger.info("Loaded Vextension by VironLab: https://github.com/VironLab/Vextension")
     }
 
     override fun onEnable() {
         Bukkit.getPluginManager().registerEvents(BukkitItemEventConsumer(), this)
     }
-
 
 
 }

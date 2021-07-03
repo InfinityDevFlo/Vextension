@@ -1,15 +1,12 @@
 package eu.vironlab.vextension.inventory.sponge
 
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.inventory.bukkit.BukkitGUI
-import eu.vironlab.vextension.inventory.bukkit.BukkitPage
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
 import java.util.*
-import java.util.function.BiConsumer
 
 class SpongeDataGUI(override val lines: Int, override val name: String) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
@@ -22,8 +19,9 @@ class SpongeDataGUI(override val lines: Int, override val name: String) : DataGU
             throw IllegalArgumentException("Lines have to be higher than 1")
         }
     }
+
     override fun open(player: UUID, list: MutableCollection<ItemStack>) {
-        scheduleAsync {
+        queueTask {
             val contents =
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val pages: MutableList<SpongeGUI> = mutableListOf()

@@ -4,11 +4,14 @@
 [![Discord](https://img.shields.io/discord/785956343407181824.svg)](https://discord.gg/wvcX92VyEH)
 [![Build Status](https://ci.vironlab.eu/job/Vextension/badge/icon)](https://ci.vironlab.eu/job/Vextension/)
 
-### Project description 
+### Project description
 
-Vextension JVM Utility
+Vextension JVM Utility v2.0.0-SNAPSHOT
+
+This version brings breaking changes to Version 1
 
 ---
+
 ## Maven Dependency
 
 ```gradle
@@ -16,23 +19,23 @@ Vextension JVM Utility
 //Repository - Groovy
 maven {
     name = "vironlab"
-    url = "https://repo.vironlab.eu/repository/snapshot/"
+    url = "https://repo.vironlab.eu/repository/maven-snapshot/"
 }
 
 //Repository - Kotlin DSL
-maven("https://repo.vironlab.eu/repository/snapshot/")
+maven("https://repo.vironlab.eu/repository/maven-snapshot/")
 
 //Dependency - Common
-compile("eu.vironlab.vextension:vextension-common:1.0.0-SNAPSHOT")
+compileOnly("eu.vironlab.vextension:vextension-common:2.0.0-SNAPSHOT")
 
 //Dependency - Discord
-compile("eu.vironlab.vextension:vextension-discord:1.0.0-SNAPSHOT")
+compileOnly("eu.vironlab.vextension:vextension-discord:2.0.0-SNAPSHOT")
 
 //Dependency - Minecraft - Server
-compile("eu.vironlab.vextension:vextension-minecraft-server:1.0.0-SNAPSHOT")
+compileOnly("eu.vironlab.vextension:vextension-minecraft-server:2.0.0-SNAPSHOT")
 
 //Dependency - Minecraft - Proxy
-compile("eu.vironlab.vextension:vextension-minecraft-proxy:1.0.0-SNAPSHOT")
+compileOnly("eu.vironlab.vextension:vextension-minecraft-proxy:2.0.0-SNAPSHOT")
 ```
 
 ## Modules
@@ -48,8 +51,6 @@ https://docs.vironlab.eu/vextension/
 Still in work.
 
 ### Discord
-
-
 
 <div align="center">
     <h1 style="color:#154444">Other Links:</h1>

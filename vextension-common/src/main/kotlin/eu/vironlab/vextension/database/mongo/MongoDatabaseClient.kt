@@ -39,43 +39,59 @@ package eu.vironlab.vextension.database.mongo
 
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
-import eu.vironlab.vextension.database.*
-import eu.vironlab.vextension.dependency.DependencyLoader
-import kotlin.reflect.KClass
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.concurrent.task.queueTask
+import eu.vironlab.vextension.database.Database
+import eu.vironlab.vextension.database.DatabaseClient
+import eu.vironlab.vextension.database.connectiondata.ConnectionData
+import eu.vironlab.vextension.database.connectiondata.RemoteConnectionData
+import com.mongodb.client.MongoDatabase as MongoDB
 
-class MongoDatabaseClient(val connectionData: RemoteConnectionData) : AbstractDatabaseClient() {
+open class MongoDatabaseClient constructor(connectionData: ConnectionData) : DatabaseClient() {
 
+    val remoteConnectionData: RemoteConnectionData
     lateinit var mongoClient: MongoClient
-    lateinit var database: com.mongodb.client.MongoDatabase
+    lateinit var mongoDatabase: MongoDB
 
-    override fun init() {
-        DependencyLoader.require("org.mongodb:mongodb-driver-sync:4.2.0")
-        DependencyLoader.require("org.mongodb:mongodb-driver-core:4.2.0")
-        DependencyLoader.require("org.mongodb:bson:4.2.0")
-        this.mongoClient = MongoClients.create(connectionData.toMongo())
-        this.database = this.mongoClient.getDatabase(connectionData.database)
-    }
-
-    override fun getDatabase(name: String): Database {
-        return MongoDatabase(name, this.database)
-    }
-
-    override fun exists(name: String): Boolean {
-        return this.database.listCollectionNames().contains(name)
-    }
-
-    override fun drop(name: String): Boolean {
-        return if (!exists(name)) {
-            false
-        } else {
-            this.database.getCollection(name).drop()
-            return true
-
+    init {
+        if (connectionData !is RemoteConnectionData) {
+            throw IllegalStateException("Cannot load MongoDB Client without RemoteConnectionData")
         }
+        this.remoteConnectionData = connectionData as RemoteConnectionData
+    }
 
+    override fun init(): Boolean {
+        this.mongoClient =
+            MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
+        this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
+        return true
     }
 
     override fun close() {
-        this.mongoClient.close()
+        mongoClient.close();
     }
+
+    override fun dropDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask {
+            if (!containsDatabase(name).complete()) {
+                false
+            }
+            this.mongoDatabase.getCollection(name).drop()
+            true
+        }
+    }
+
+
+    override fun containsDatabase(name: String): QueuedTask<Boolean> {
+        return queueTask { this.mongoDatabase.listCollectionNames().contains(name) }
+    }
+
+    override fun getDatabase(name: String): QueuedTask<Database> {
+        return queueTask {
+            return@queueTask MongoDatabase(name, this)
+        }
+    }
+
+    override val name: String = "mongodb"
+
 }

@@ -2,7 +2,6 @@ package eu.vironlab.vextension.inventory.bukkit
 
 import eu.vironlab.vextension.inventory.entry.Page
 import eu.vironlab.vextension.inventory.gui.DataGUI
-import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 
 class BukkitPage : Page {

@@ -38,6 +38,6 @@
 package eu.vironlab.vextension.rest.wrapper.mojang.user
 
 
-data class NameHistory(val names: Collection<NameHistoryEntry>)
+data class NameHistory(val names: Collection<NameHistoryEntry>) : java.io.Serializable
 
-data class NameHistoryEntry(val name: String, val changedToAt: Long)
+data class NameHistoryEntry(val name: String, val changedToAt: Long) : java.io.Serializable

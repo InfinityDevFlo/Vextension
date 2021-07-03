@@ -1,49 +1,37 @@
 package eu.vironlab.vextension.inventory.sponge
 
-import eu.vironlab.vextension.bukkit.VextensionBukkit
-import eu.vironlab.vextension.concurrent.scheduleAsync
-import eu.vironlab.vextension.inventory.bukkit.BukkitGUI
+import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
-import eu.vironlab.vextension.item.extension.toSponge
-import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
-import org.bukkit.inventory.CartographyInventory
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.item.inventory.Inventory
-import org.spongepowered.api.item.inventory.InventoryProperty
-import org.spongepowered.api.item.inventory.property.InventoryDimension
-import org.spongepowered.api.item.inventory.property.InventoryTitle
-import org.spongepowered.api.item.inventory.property.SlotIndex
-import org.spongepowered.api.item.inventory.property.SlotPos
-import org.spongepowered.api.item.inventory.query.QueryOperationTypes
-import org.spongepowered.api.text.Text
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.floor
 
 class SpongeGUI(override val lines: Int, override val name: String) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
-        if (ServerUtil.getServerType() != ServerType.SPONGE)
+        if (ServerUtil.SERVER_TYPE != ServerType.SPONGE)
             throw UnsupportedServerTypeException("SpongeGUI only supports Sponge!")
-        scheduleAsync {
-            Sponge.getRegistry().createBuilder(Inventory.Builder::class.java)
+        queueTask {
+            /*ViewableInventory.builder().type(ContainerTypes.)
+            Inventory.builder().slots(9 * lines).completeStructure().build().
                 .property("title", InventoryTitle(Text.of(name)))
                 .property("inventorydimensions", InventoryDimension(9, 9 * lines))
                 .build(VextensionSponge.instance)
                 .also {
+                    val spongePlayer =
+                        Sponge.server().player(player).orElseThrow { NullPointerException("Invalid Player") }
                     for (item in contents) {
-                        it.query<Inventory>(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(item.key))).first<Inventory>()
-                            .set(item.value.toSponge()!!)
+                        if (item.value.permission != null)
+                            if (spongePlayer.hasPermission(item.value.permission!!))
+                                it.query<Inventory>(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(item.key)))
+                                    .first<Inventory>()
+                                    .set(item.value.toSponge())
                     }
-                    Sponge.getServer().getPlayer(player).ifPresent { itt ->
-                        itt.openInventory(it)
-                    }
-                }
-        }
+                    spongePlayer.openInventory(it)
+                }*/
+        }.queue()
     }
 
     override fun setBorder(border: ItemStack?): SpongeGUI {
@@ -69,6 +57,7 @@ class SpongeGUI(override val lines: Int, override val name: String) : GUI {
         //</editor-fold>
         return this
     }
+
     fun setItem(slot: Int, item: ItemStack): SpongeGUI {
         contents[slot] = item
         return this

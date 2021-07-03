@@ -42,3 +42,23 @@ fun <T> Array<T>.asMutableList(): MutableList<T> {
     rs.addAll(this)
     return rs
 }
+
+inline fun <reified T> Array<out T>.toClean(): Array<T> {
+    val rs = mutableListOf<T>()
+    for (entry in this) {
+        rs.add(entry)
+    }
+    return rs.toTypedArray()
+}
+
+fun Array<String>.toCleanString(space: Boolean = true): String {
+    val rs = StringBuilder()
+    for (entry in this) {
+        rs.append(
+            entry + (if (space) {
+                " "
+            } else "")
+        )
+    }
+    return rs.toString()
+}
