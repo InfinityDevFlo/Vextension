@@ -74,8 +74,8 @@ class DocumentTest {
     @Test
     fun testJsonDocument() {
         val doc = DocumentFactory.instance.documentJsonStorage.read(this::class.java.getResourceAsStream("/test.json"))
-        assertEquals(doc.jsonStorage().serializeToString(), this::class.java.getResourceContent("/test.json"))
-        assertEquals(doc.jsonStorage().serializeToString(), document(DocumentTest()).jsonStorage().serializeToString())
+        assertEquals(doc.jsonStorage().serializeToString(), this::class.java.getResourceContent("/test.json").replace("\r\n", "\n"))
+        assertEquals(doc.jsonStorage().serializeToString(), document(DocumentTest()).jsonStorage().serializeToString().replace("\r\n", "\n"))
     }
 
     @Test
@@ -85,15 +85,12 @@ class DocumentTest {
     }
 
 
-    /*
     @Test
     fun testYamlDocument() {
         val doc = DocumentFactory.instance.documentYamlStorage.read(this::class.java.getResourceAsStream("/test.yml"))
-        println(doc.yamlStorage().serializeToString())
-        println(this::class.java.getResourceContent("/test.yml"))
-        assertEquals(doc.yamlStorage().serializeToString(), this::class.java.getResourceContent("/test.yml"))
-        assertEquals(doc.yamlStorage().serializeToString(), document(DocumentTest()).yamlStorage().serializeToString())
-    }*/
+        assertEquals(doc.yamlStorage().serializeToString(), this::class.java.getResourceContent("/test.yml").replace("\r\n", "\n"))
+        //assertEquals(doc.yamlStorage().serializeToString(), document(DocumentTest()).yamlStorage().serializeToString())
+    }
 
 
     inner class DocumentTest(
