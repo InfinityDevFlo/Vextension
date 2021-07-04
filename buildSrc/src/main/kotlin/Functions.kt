@@ -27,8 +27,6 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
- *   Creation: Samstag 19 Juni 2021 21:51:52<p>
- *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -37,50 +35,36 @@
  *<p>
  */
 
-package eu.vironlab.vextension.test
+//================================================ Dependency ================================================
 
-import eu.vironlab.vextension.extension.callMethodsAnnotatedWithSorted
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-
-class ClassExtensionTest {
-
-    /*@Test
-    fun testSortedAnnotatedMethodCall() {
-        TestClass::class.java.callMethodsAnnotatedWithSorted(
-            TestAnnotation::class.java,
-            TestClass(),
-            { o1, o2 -> o1.getAnnotation(TestAnnotation::class.java).value - o1.getAnnotation(TestAnnotation::class.java).value },
-            *arrayOf()
-        )
-        assertEquals(mutableListOf(1, 2, 3), TestClass.list)
-    }*/
-
+fun getDependency(groupName: String, name: String): String {
+    val group = Properties.dependencies[groupName] ?: throw DependencyGroupNotFoundException(groupName)
+    val dependency = group[name] ?: throw DependencyNotFoundException(name)
+    return if (dependency.contains("%version%")) {
+        val version = Properties.versions[groupName] ?: throw NoVersionFoundException(groupName)
+        dependency.replace("%version%", version)
+    } else {
+        dependency
+    }
 }
 
-class TestClass {
+class DependencyNotFoundException(dependency: String) : Exception("Dependency: $dependency not Found")
+class NoVersionFoundException(group: String) : Exception("There is not Version for Group: $group")
+class DependencyGroupNotFoundException(group: String) : Exception("Cannot find dependency Group: $group")
 
-    companion object {
-        var list = mutableListOf<Int>()
-    }
+//============================================================================================================
 
-    @TestAnnotation(1)
-    fun test1() {
-        list.add(1)
-    }
 
-    @TestAnnotation(2)
-    fun test2() {
-        list.add(2)
-    }
+//=================================================== Git ====================================================
 
-    @TestAnnotation(3)
-    fun test3() {
-        list.add(3)
-    }
-
+fun getCommitHash(): String = try {
+    val runtime = Runtime.getRuntime()
+    val process = runtime.exec("git rev-parse --short HEAD")
+    val out = process.inputStream
+    out.bufferedReader().readText()
+} catch (ignored: Exception) {
+    "unknown"
 }
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
-annotation class TestAnnotation(val value: Int = 32)
+//============================================================================================================
+

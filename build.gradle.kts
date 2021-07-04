@@ -2,7 +2,6 @@ buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.4.20")
@@ -28,24 +27,16 @@ allprojects {
 
     //Define Repositorys
     repositories {
-        mavenCentral()
-        maven("https://m2.dv8tion.net/releases/")
-        maven("https://oss.sonatype.org/content/groups/public/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://repo.destroystokyo.com/repository/maven-public/")
-        maven("https://repo.velocitypowered.com/releases/")
-        maven("https://libraries.minecraft.net/")
-        maven("https://repo.spongepowered.org/maven")
-        maven("https://repo.vironlab.eu/repository/snapshot/")
-        maven("https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/")
-        maven("https://repo.cloudnetservice.eu/repository/snapshots/")
-        maven("https://m2.dv8tion.net/releases/")
+        for (field in Repositories::class.java.declaredFields) {
+            if (field.name != "INSTANCE") {
+                maven(field.get(null))
+            }
+        }
     }
 
     //Define Version and Group
-    this.group = findProperty("group").toString()
-    this.version = findProperty("version").toString()
+    this.group = Properties.group
+    this.version = Properties.version
 
 }
 
@@ -59,12 +50,16 @@ subprojects {
 
     //Define Dependencies for all Modules
     dependencies {
-        compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
-        compileOnly("org.jetbrains.kotlin:kotlin-serialization")
-        compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-        testImplementation("org.jetbrains.kotlin:kotlin-stdlib")
-        testImplementation("org.jetbrains.kotlin:kotlin-serialization")
-        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        compileOnly(getDependency("kotlin", "stdlib"))
+        compileOnly(getDependency("kotlin", "serialization"))
+        compileOnly(getDependency("kotlinx", "coroutines-core"))
+
+        //Test
+        Properties.dependencies.forEach { group, dependencies ->
+            dependencies.forEach { name, coords ->
+                testImplementation(getDependency(group, name))
+            }
+        }
         testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 
@@ -72,14 +67,11 @@ subprojects {
         publishing {
             publications {
                 create<MavenPublication>(project.name) {
-                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
+                    artifact("${project.buildDir}/libs/${project.name}-${Properties.version}-${getCommitHash()}-sources.jar") {
                         extension = "sources"
                     }
-                    artifact("${project.buildDir}/libs/${project.name}.jar") {
+                    artifact("${project.buildDir}/libs/${project.name}-${Properties.version}-${getCommitHash()}.jar") {
                         extension = "jar"
-                    }
-                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
-                        extension = "sources"
                     }
                     groupId = findProperty("group").toString()
                     artifactId = project.name
@@ -126,9 +118,10 @@ subprojects {
         test {
             useJUnitPlatform()
         }
+
         //Set the Name of the Sources Jar
         kotlinSourcesJar {
-            archiveFileName.set("${project.name}-sources.jar")
+            archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}-sources.jar")
             doFirst {
                 //Set Manifest
                 manifest {
@@ -139,13 +132,15 @@ subprojects {
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
                     attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+                    attributes["VironLab-AppId"] = "vextension"
+                    attributes["Commit-Hash"] = getCommitHash()
                 }
             }
         }
 
         shadowJar {
             //Set the Name of the Output File
-            archiveFileName.set("${project.name}-full.jar")
+            archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}-full.jar")
 
             exclude("META-INF/**")
 
@@ -174,12 +169,14 @@ subprojects {
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
                     attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+                    attributes["VironLab-AppId"] = "vextension"
+                    attributes["Commit-Hash"] = getCommitHash()
                 }
             }
         }
 
         jar {
-            archiveFileName.set("${project.name}.jar")
+            archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}.jar")
             doFirst {
                 //Set Manifest
                 manifest {
@@ -190,6 +187,8 @@ subprojects {
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
                     attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+                    attributes["VironLab-AppId"] = "vextension"
+                    attributes["Commit-Hash"] = getCommitHash()
                 }
             }
             //Include Commons

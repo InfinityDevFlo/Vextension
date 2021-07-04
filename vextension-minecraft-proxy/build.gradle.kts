@@ -1,5 +1,5 @@
 dependencies {
     compileOnly(project(":vextension-common"))
-    compileOnly(findProperty("coords_waterfall").toString())
-    compileOnly(findProperty("coords_velocity").toString())
+    compileOnly(getDependency("minecraft", "waterfall"))
+    compileOnly(getDependency("minecraft", "velocity"))
 }

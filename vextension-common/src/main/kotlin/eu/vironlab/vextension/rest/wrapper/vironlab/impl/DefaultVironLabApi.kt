@@ -35,6 +35,8 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.vironlab
+package eu.vironlab.vextension.rest.wrapper.vironlab.impl
 
-interface VironLabAPI
+import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
+
+class DefaultVironLabApi : VironLabAPI

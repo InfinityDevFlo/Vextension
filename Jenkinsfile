@@ -5,6 +5,11 @@ pipeline {
         jdk 'jdk-16'
     }
 
+    environment {
+        GIT_COMMIT_HASH = sh (script: "git log -n 1 --pretty=format:'%H'", returnStdout: true)
+        VERSION = "2.0.0-SNAPSHOT"
+    }
+
     stages {
         stage("Clean") {
             steps {
@@ -18,9 +23,10 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
+
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
                 }
             }
         }
@@ -35,9 +41,9 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-full.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-full.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
                 }
             }
         }
@@ -55,9 +61,9 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
                 }
             }
         }
