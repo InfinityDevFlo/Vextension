@@ -21,14 +21,6 @@ pipeline {
             steps {
                 sh "./gradlew build";
             }
-            post {
-                success {
-
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH.jar', fingerprint: true
-                }
-            }
         }
         stage("Test") {
             steps {
@@ -38,13 +30,6 @@ pipeline {
         stage("Build ShadowJar") {
             steps {
                 sh "./gradlew shadowJar";
-            }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH-full.jar', fingerprint: true
-                }
             }
         }
         stage("Docs") {
@@ -59,18 +44,18 @@ pipeline {
             steps {
                 sh "./gradlew kotlinSourcesJar";
             }
-            post {
-                success {
-                    archiveArtifacts artifacts: 'vextension-common/build/libs/vextension-common-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/vextension-minecraft-server-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/vextension-minecraft-proxy-$VERSION-$GIT_COMMIT_HASH-sources.jar', fingerprint: true
-                }
-            }
         }
         stage("Publish") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                   sh "./gradlew publish -DpublishPassword=$PASSWORD -DpublishName=$USERNAME"
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'vextension-common/build/libs/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/*.jar', fingerprint: true
                 }
             }
         }
