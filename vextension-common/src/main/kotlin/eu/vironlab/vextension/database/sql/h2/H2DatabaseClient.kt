@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -66,7 +66,7 @@ class H2DatabaseClient constructor(data: ConnectionData) : AbstractSqlDatabaseCl
         if (data !is FileConnectionData) {
             throw IllegalStateException("Cannot create h2 Database without FileConnectionData")
         }
-        this.connectionData = data as FileConnectionData
+        this.connectionData = data
     }
 
     override fun <T> executeQuery(query: String, errorAction: (Throwable) -> Unit, action: (ResultSet) -> T): T {

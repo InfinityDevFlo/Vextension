@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -88,19 +88,24 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
         var server: String? = null
         for (it in repositories) {
             if (RestUtil.getStatusCode(URL("${it.value}$filePath/$fileName")).equals(200)) {
-                server = it.value
+                server = "${it.value}$filePath/$fileName"
                 break
-            } else if (RestUtil.getStatusCode(URL("${it.value}$filePath/maven-metadata.xml")).equals(200)) {
-                val meta: Document =
-                    RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
-                val newFileName =
-                    meta.getDocument("versioning")?.getDocument("snapshot")?.getDocument("snapshotVersions")
+            } else {
+                if (RestUtil.getStatusCode(URL("${it.value}$filePath/maven-metadata.xml")).equals(200)) {
+                    val meta: Document =
+                        RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
+                    val newFileName =
+                        dependency.artifactId + "-" + meta.getDocument("versioning")?.getDocument("snapshotVersions")
+                            ?.getDocument("snapshotVersion")?.getString("value") + ".jar"
+                    server = "${it.value}$filePath/$newFileName"
+                    break
+                }
             }
         }
         if (server == null) {
             throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
         }
-        this.queue.offer(DownloadableJar(URL("$server$filePath/$fileName"), dest, folder))
+        this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
         return this
     }
 
@@ -128,9 +133,11 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
     private fun downloadQueue(): ArrayList<File> {
         val urls = arrayListOf<File>()
         for (entry in queue) {
-            if (!entry.targetFile.exists() || entry.targetFile.name.toLowerCase().contains("snapshot")) {
+            if (!entry.targetFile.exists() || entry.targetFile.name.lowercase(Locale.getDefault())
+                    .contains("snapshot")
+            ) {
                 if (entry.dir != null) {
-                    if (!entry.dir!!.exists()) {
+                    if (!entry.dir.exists()) {
                         Files.createDirectories(entry.dir.toPath())
                     }
                 }

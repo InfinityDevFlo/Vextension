@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -57,7 +57,7 @@ open class MongoDatabaseClient constructor(connectionData: ConnectionData) : Dat
         if (connectionData !is RemoteConnectionData) {
             throw IllegalStateException("Cannot load MongoDB Client without RemoteConnectionData")
         }
-        this.remoteConnectionData = connectionData as RemoteConnectionData
+        this.remoteConnectionData = connectionData
     }
 
     override fun init(): Boolean {
@@ -68,7 +68,7 @@ open class MongoDatabaseClient constructor(connectionData: ConnectionData) : Dat
     }
 
     override fun close() {
-        mongoClient.close();
+        mongoClient.close()
     }
 
     override fun dropDatabase(name: String): QueuedTask<Boolean> {

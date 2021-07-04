@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -43,6 +43,7 @@ import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import java.util.*
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.meta.Damageable
@@ -63,7 +64,7 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
             (meta as SkullMeta).owner = item.skullOwner
         }
         if (meta is Damageable) meta.damage = item.damage
-        if (item.material.name.toLowerCase() != item.name)
+        if (item.material.name.lowercase(Locale.getDefault()) != item.name)
             meta.setDisplayName(item.name)
         meta.lore = item.lore
         meta.isUnbreakable = item.unbreakable

@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -38,7 +38,6 @@ package eu.vironlab.vextension.inventory.gui
 
 import eu.vironlab.vextension.item.ItemStack
 import java.util.*
-import java.util.function.BiConsumer
 
 interface DataGUI : GUI {
     var comparator: Comparator<ItemStack>?

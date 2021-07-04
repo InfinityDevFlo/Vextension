@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -106,12 +106,12 @@ class MariaDatabaseClient constructor(data: ConnectionData) : AbstractSqlDatabas
             )) {
                 it.addDataSourceProperty(arg, "true")
             }
-            it.addDataSourceProperty("prepStmtCacheSize", "250");
-            it.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-            it.addDataSourceProperty("maintainTimeStats", "false");
+            it.addDataSourceProperty("prepStmtCacheSize", "250")
+            it.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+            it.addDataSourceProperty("maintainTimeStats", "false")
             it.jdbcUrl =
                 "jdbc:mysql://${connectionData.host}:${connectionData.port}/${connectionData.database}?serverTimezone=UTC"
-            it.driverClassName = Driver::class.java.canonicalName;
+            it.driverClassName = Driver::class.java.canonicalName
             it.username = connectionData.user
             it.password = connectionData.password
             it

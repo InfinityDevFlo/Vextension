@@ -50,9 +50,9 @@ subprojects {
 
     //Define Dependencies for all Modules
     dependencies {
-        compileOnly(getDependency("kotlin", "stdlib"))
-        compileOnly(getDependency("kotlin", "serialization"))
-        compileOnly(getDependency("kotlinx", "coroutines-core"))
+        implementation(getDependency("kotlin", "stdlib"))
+        implementation(getDependency("kotlin", "serialization"))
+        implementation(getDependency("kotlinx", "coroutines-core"))
 
         //Test
         Properties.dependencies.forEach { group, dependencies ->

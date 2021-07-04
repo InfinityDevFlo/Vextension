@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -52,12 +52,15 @@ class CachedMojangWrapper(val dbClient: DatabaseClient) : DefaultMojangWrapper()
 
     override fun getUUID(name: String): Optional<UUID> {
         return Optional.ofNullable(
-            nameUUIDCache.get(name.toLowerCase()).complete()?.getString("uuid")?.toUUID() ?: run {
+            nameUUIDCache.get(name.lowercase(Locale.getDefault())).complete()?.getString("uuid")?.toUUID() ?: run {
                 val rs = super.getUUID(name)
                 if (!rs.isPresent) {
                     null
                 } else {
-                    nameUUIDCache.insert(name.toLowerCase(), document("name", name).append("uuid", rs.get())).complete()
+                    nameUUIDCache.insert(
+                        name.lowercase(Locale.getDefault()),
+                        document("name", name).append("uuid", rs.get())
+                    ).complete()
                     rs.get()
                 }
             }

@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -51,7 +51,7 @@ class TableCreator(val name: String, val key: TableEntry) {
         val query: StringBuilder = StringBuilder("CREATE TABLE IF NOT EXISTS `${name}` (")
         for (entry in entries) {
             query.append(
-                " `${entry.name}` ${entry.type.toString()}${
+                " `${entry.name}` ${entry.type}${
                     if (entry.length != 0) {
                         "(" + entry.length + ")"
                     } else ""

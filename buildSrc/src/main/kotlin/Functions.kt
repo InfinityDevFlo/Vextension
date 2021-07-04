@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -61,7 +61,7 @@ fun getCommitHash(): String = try {
     val runtime = Runtime.getRuntime()
     val process = runtime.exec("git rev-parse --short HEAD")
     val out = process.inputStream
-    out.bufferedReader().readText()
+    out.bufferedReader().readText().trim()
 } catch (ignored: Exception) {
     "unknown"
 }

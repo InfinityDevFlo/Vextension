@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -110,7 +110,7 @@ class RestClient(val agent: String) {
                 }
             }
             connection.connect()
-            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
+            val input = BufferedReader(InputStreamReader(connection.inputStream))
             val result: JsonArray = JsonParser.parseReader(input).asJsonArray
             connection.disconnect()
             return Optional.of(result)
@@ -134,7 +134,7 @@ class RestClient(val agent: String) {
                 }
             }
             connection.connect()
-            val input = BufferedReader(InputStreamReader(connection.getInputStream()))
+            val input = BufferedReader(InputStreamReader(connection.inputStream))
             val document = DocumentFactory.instance.documentXmlStorage.read(input)
             connection.disconnect()
             return Optional.of(document)

@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -37,9 +37,7 @@
 
 package eu.vironlab.vextension.document.impl
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonRootName
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import com.google.gson.*
 import com.google.gson.internal.bind.TypeAdapters
@@ -104,7 +102,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
 
 
     private class DefaultDocument() : Document {
-        internal var jsonObject: JsonObject
+        var jsonObject: JsonObject
 
 
         init {
@@ -125,15 +123,15 @@ internal class DefaultDocumentManagement : DocumentManagement {
         inner class SerializedMap<K, V>(map: MutableMap<K, V> = ConcurrentHashMap<K, V>()) : MutableMap<K, V> by map
 
         private fun asObject(element: JsonElement): Any? {
-            return if (element.isJsonArray()) {
-                val array: MutableCollection<Any?> = ArrayList<Any?>(element.getAsJsonArray().size())
-                for (jsonElement in element.getAsJsonArray()) {
+            return if (element.isJsonArray) {
+                val array: MutableCollection<Any?> = ArrayList<Any?>(element.asJsonArray.size())
+                for (jsonElement in element.asJsonArray) {
                     array.add(asObject(jsonElement))
                 }
                 array
-            } else if (element.isJsonObject()) {
-                val map= SerializedMap<String, Any>()
-                for ((key, value1) in element.getAsJsonObject().entrySet()) {
+            } else if (element.isJsonObject) {
+                val map = SerializedMap<String, Any>()
+                for ((key, value1) in element.asJsonObject.entrySet()) {
                     val value = asObject(value1)
                     if (value != null) {
                         map[key] = value
@@ -262,7 +260,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
         }
 
         fun append(reader: Reader?): DefaultDocument {
-            return append(JsonParser.parseReader(reader).getAsJsonObject())
+            return append(JsonParser.parseReader(reader).asJsonObject)
         }
 
         override fun getDocument(key: String): Document? {
@@ -270,7 +268,7 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonObject()) {
+            return if (jsonElement.isJsonObject) {
                 DefaultDocument(jsonElement)
             } else {
                 null
@@ -282,12 +280,12 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            if (jsonElement.isJsonArray()) {
-                val array: JsonArray = jsonElement.getAsJsonArray()
+            if (jsonElement.isJsonArray) {
+                val array: JsonArray = jsonElement.asJsonArray
                 val Documents: MutableCollection<Document> = ArrayList()
                 for (element in array) {
-                    if (element.isJsonObject()) {
-                        Documents.add(DefaultDocument(element.getAsJsonObject()))
+                    if (element.isJsonObject) {
+                        Documents.add(DefaultDocument(element.asJsonObject))
                     }
                 }
                 return Documents
@@ -300,8 +298,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsInt()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asInt
             } else {
                 null
             }
@@ -312,8 +310,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsDouble()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asDouble
             } else {
                 return null
             }
@@ -324,8 +322,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsFloat()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asFloat
             } else {
                 return null
             }
@@ -336,8 +334,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsByte()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asByte
             } else {
                 null
             }
@@ -348,8 +346,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsShort()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asShort
             } else {
                 null
             }
@@ -360,8 +358,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsLong()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asLong
             } else {
                 null
             }
@@ -372,8 +370,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsBoolean()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asBoolean
             } else {
                 false
             }
@@ -384,8 +382,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsString()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asString
             } else {
                 null
             }
@@ -396,8 +394,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsString().toCharArray()[0]
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asString.toCharArray()[0]
             } else {
                 return null
             }
@@ -408,8 +406,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsBigDecimal()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asBigDecimal
             } else {
                 null
             }
@@ -420,8 +418,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
                 return null
             }
             val jsonElement: JsonElement = jsonObject.get(key)
-            return if (jsonElement.isJsonPrimitive()) {
-                jsonElement.getAsBigInteger()
+            return if (jsonElement.isJsonPrimitive) {
+                jsonElement.asBigInteger
             } else {
                 null
             }

@@ -1,5 +1,5 @@
 /**
- *   Copyright © 2020 | vironlab.eu | All Rights Reserved.<p>
+ *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
  *      ___    _______                        ______         ______  <p>
  *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
@@ -116,7 +116,7 @@ fun String.Companion.random(length: Int, numbers: Boolean = true): String {
 }
 
 fun String.containsIgnoreCase(searchQuery: String): Boolean {
-    return this.toLowerCase().contains(searchQuery.toLowerCase())
+    return this.lowercase(Locale.getDefault()).contains(searchQuery.lowercase(Locale.getDefault()))
 }
 
 /**

@@ -1,18 +1,18 @@
 dependencies {
     //Database
-    compileOnly(getDependency("database", "mongo"))
-    compileOnly(getDependency("database", "hikari"))
-    compileOnly(getDependency("database", "mariadb"))
-    compileOnly(getDependency("database", "h2"))
+    implementation(getDependency("database", "mongo"))
+    implementation(getDependency("database", "hikari"))
+    implementation(getDependency("database", "mariadb"))
+    implementation(getDependency("database", "h2"))
 
     //Inject
-    compileOnly(getDependency("google", "guice"))
+    implementation(getDependency("google", "guice"))
 
     //Document
-    compileOnly(getDependency("google", "gson"))
-    compileOnly(getDependency("jackson", "xml"))
-    compileOnly(getDependency("jackson", "databind"))
-    compileOnly(getDependency("yaml", "snake"))
+    implementation(getDependency("google", "gson"))
+    implementation(getDependency("jackson", "xml"))
+    implementation(getDependency("jackson", "databind"))
+    implementation(getDependency("yaml", "snake"))
 
 }
 
