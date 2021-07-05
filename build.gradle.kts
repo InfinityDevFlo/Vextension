@@ -76,12 +76,13 @@ subprojects {
                     groupId = findProperty("group").toString()
                     artifactId = project.name
                     version = findProperty("version").toString()
+                    from(components.findByName("java"))
                     pom {
                         name.set(project.name)
                         url.set("https://github.com/VironLab/Vextension")
                         properties.put("inceptionYear", "2021")
                         licenses {
-                            license {
+                            license {from(components.findByName("java"))
                                 name.set("General Public License (GPL v3.0)")
                                 url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
                                 distribution.set("repo")
