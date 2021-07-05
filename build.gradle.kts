@@ -67,12 +67,6 @@ subprojects {
         publishing {
             publications {
                 create<MavenPublication>(project.name) {
-                    artifact("${project.buildDir}/libs/${project.name}-${Properties.version}-${getCommitHash()}-sources.jar") {
-                        extension = "sources"
-                    }
-                    artifact("${project.buildDir}/libs/${project.name}-${Properties.version}-${getCommitHash()}.jar") {
-                        extension = "jar"
-                    }
                     groupId = findProperty("group").toString()
                     artifactId = project.name
                     version = findProperty("version").toString()
