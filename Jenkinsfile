@@ -40,6 +40,11 @@ pipeline {
                 sh "./gradlew kotlinSourcesJar";
             }
         }
+        stage("Build ShadowJar") {
+            steps {
+                sh "./gradlew shadowJar";
+            }
+        }
         stage("Publish") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -52,11 +57,6 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/*.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/*.jar', fingerprint: true
                 }
-            }
-        }
-        stage("Build ShadowJar") {
-            steps {
-                sh "./gradlew shadowJar";
             }
         }
     }
