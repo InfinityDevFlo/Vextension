@@ -27,11 +27,6 @@ pipeline {
                 sh "./gradlew test";
             }
         }
-        stage("Build ShadowJar") {
-            steps {
-                sh "./gradlew shadowJar";
-            }
-        }
         stage("Docs") {
             steps {
                 sh "./gradlew dokkaHtmlMultiModule"
@@ -57,6 +52,11 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/*.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/*.jar', fingerprint: true
                 }
+            }
+        }
+        stage("Build ShadowJar") {
+            steps {
+                sh "./gradlew shadowJar";
             }
         }
     }
