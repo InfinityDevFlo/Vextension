@@ -44,18 +44,18 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.jar.JarFile
 
-fun <T> Class<T>.callStaticMethod(name: String, vararg params: Any) {
+fun <T> Class<T>.callStaticMethod(name: String, vararg params: Any): Any? {
     val method = this.getMethod(name, *params.map { it.javaClass }.toTypedArray())
         ?: throw IllegalStateException("Cannot invoke Unknown Method")
     method.isAccessible = true
-    method.invoke(null, params)
+    return method.invoke(null, params)
 }
 
-fun <T> Class<T>.callMethod(instance: T, name: String, vararg params: Any) {
+fun <T> Class<T>.callMethod(instance: T, name: String, vararg params: Any): Any? {
     val method = this.getMethod(name, *params.map { it.javaClass }.toTypedArray())
         ?: throw IllegalStateException("Cannot invoke Unknown Method")
     method.isAccessible = true
-    method.invoke(instance, params)
+    return method.invoke(instance, params)
 }
 
 
