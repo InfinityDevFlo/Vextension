@@ -29,6 +29,7 @@ allprojects {
     repositories {
         for (field in Repositories::class.java.declaredFields) {
             if (field.name != "INSTANCE") {
+                println("Added Repository: " + field.get(null))
                 maven(field.get(null))
             }
         }
