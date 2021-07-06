@@ -1,43 +1,44 @@
 /**
- *   Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
+ * Copyright © 2020 | vironlab.eu | Licensed under the GNU General Public license Version 3<p>
  * <p>
- *      ___    _______                        ______         ______  <p>
- *      __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
- *      __ | / / __  / __  ___/_  __ \__  __ \__  /  _  __ `/__  __ \<p>
- *      __ |/ /  _  /  _  /    / /_/ /_  / / /_  /___/ /_/ / _  /_/ /<p>
- *      _____/   /_/   /_/     \____/ /_/ /_/ /_____/\__,_/  /_.___/ <p>
- *<p>
- *    ____  _______     _______ _     ___  ____  __  __ _____ _   _ _____ <p>
- *   |  _ \| ____\ \   / / ____| |   / _ \|  _ \|  \/  | ____| \ | |_   _|<p>
- *   | | | |  _|  \ \ / /|  _| | |  | | | | |_) | |\/| |  _| |  \| | | |  <p>
- *   | |_| | |___  \ V / | |___| |__| |_| |  __/| |  | | |___| |\  | | |  <p>
- *   |____/|_____|  \_/  |_____|_____\___/|_|   |_|  |_|_____|_| \_| |_|  <p>
- *<p>
- *<p>
- *   This program is free software: you can redistribute it and/or modify<p>
- *   it under the terms of the GNU General Public License as published by<p>
- *   the Free Software Foundation, either version 3 of the License, or<p>
- *   (at your option) any later version.<p>
- *<p>
- *   This program is distributed in the hope that it will be useful,<p>
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of<p>
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<p>
- *   GNU General Public License for more details.<p>
- *<p>
- *   You should have received a copy of the GNU General Public License<p>
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
- *<p>
- *   Contact:<p>
- *<p>
- *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
- *     Website:         https://vironlab.eu/ <p>
- *     Mail:            contact@vironlab.eu<p>
- *<p>
+ * ___    _______                        ______         ______  <p>
+ * __ |  / /___(_)______________ _______ ___  / ______ ____  /_ <p>
+ * __ | / / __  / __  ___/_  __ \__  __ \__  /  _  __ `/__  __ \<p>
+ * __ |/ /  _  /  _  /    / /_/ /_  / / /_  /___/ /_/ / _  /_/ /<p>
+ * _____/   /_/   /_/     \____/ /_/ /_/ /_____/\__,_/  /_.___/ <p>
+ * <p>
+ * ____  _______     _______ _     ___  ____  __  __ _____ _   _ _____ <p>
+ * |  _ \| ____\ \   / / ____| |   / _ \|  _ \|  \/  | ____| \ | |_   _|<p>
+ * | | | |  _|  \ \ / /|  _| | |  | | | | |_) | |\/| |  _| |  \| | | |  <p>
+ * | |_| | |___  \ V / | |___| |__| |_| |  __/| |  | | |___| |\  | | |  <p>
+ * |____/|_____|  \_/  |_____|_____\___/|_|   |_|  |_|_____|_| \_| |_|  <p>
+ * <p>
+ * <p>
+ * This program is free software: you can redistribute it and/or modify<p>
+ * it under the terms of the GNU General Public License as published by<p>
+ * the Free Software Foundation, either version 3 of the License, or<p>
+ * (at your option) any later version.<p>
+ * <p>
+ * This program is distributed in the hope that it will be useful,<p>
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of<p>
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<p>
+ * GNU General Public License for more details.<p>
+ * <p>
+ * You should have received a copy of the GNU General Public License<p>
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ * <p>
+ * Contact:<p>
+ * <p>
+ * Discordserver:   https://discord.gg/wvcX92VyEH<p>
+ * Website:         https://vironlab.eu/ <p>
+ * Mail:            contact@vironlab.eu<p>
+ * <p>
  */
 
 package eu.vironlab.vextension.dependency;
 
 import eu.vironlab.vextension.document.DocumentInit;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,12 +50,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 
-public class DependencyAgent {
+final public class DependencyAgent {
 
     static File libDir = new File(System.getProperty("dependencyLibDir") != null ? System.getProperty("dependencyLibDir") : ".libs");
     static Instrumentation instrumentation;
 
-    static {
+
+    public static void premain(String agentArgs, Instrumentation inst) {
+        System.out.println("[Premain-Agent] Loading...");
+        agentmain(agentArgs, inst);
+    }
+
+    public static void agentmain(String agentArgs, Instrumentation inst) {
+        if (instrumentation != null)
+            return;
+        System.out.println("[Agent-Agent] Loading...");
+        DependencyAgent.instrumentation = inst;
         if (!libDir.exists()) {
             try {
                 Files.createDirectories(libDir.toPath());
@@ -74,18 +85,10 @@ public class DependencyAgent {
         }
     }
 
-    static void premain(String args, Instrumentation instrumentation) {
-        DependencyAgent.instrumentation = instrumentation;
-    }
-
-    static void agentmain(String args, Instrumentation instrumentation) {
-        DependencyAgent.instrumentation = instrumentation;
-    }
-
-    public static void appendJarFile(JarFile file) throws IOException {
+    public static void appendJarFile(JarFile file) {
         if (instrumentation != null) {
             instrumentation.appendToSystemClassLoaderSearch(file);
-        }
+        } else throw new ExceptionInInitializerError("Instrumentation is null");
     }
 
     private static void load(String dependencyStr) throws IOException {
