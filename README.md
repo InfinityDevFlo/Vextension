@@ -59,7 +59,7 @@ The CLI is an easy to use Command-Line Interface for your Application
 
 ### Command
 
-This is an Generall Command System you can use for every software with user input. In Addition it has an implementation
+This is a General Command System you can use for every software with user input. In Addition it has an implementation
 for our CLI Module
 
 ### Minecraft - Server
