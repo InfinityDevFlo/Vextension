@@ -14,6 +14,10 @@ rootProject.name = "Vextension"
 //Common Module
 include("vextension-common")
 
+//Console
+include("vextension-cli")
+include("vextension-command")
+
 //Minecraft Modules
 include("vextension-minecraft-server")
 include("vextension-minecraft-proxy")
