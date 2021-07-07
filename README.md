@@ -12,6 +12,10 @@ This version brings breaking changes to Version 1
 
 ---
 
+## Project is still a Snapshot!
+
+---
+
 ## Maven Dependency
 
 ```gradle
@@ -28,8 +32,11 @@ maven("https://repo.vironlab.eu/repository/maven-snapshot/")
 //Dependency - Common
 compileOnly("eu.vironlab.vextension:vextension-common:2.0.0-SNAPSHOT")
 
-//Dependency - Discord
-compileOnly("eu.vironlab.vextension:vextension-discord:2.0.0-SNAPSHOT")
+//Dependency - Command
+compileOnly("eu.vironlab.vextension:vextension-command:2.0.0-SNAPSHOT")
+
+//Dependency - Console
+compileOnly("eu.vironlab.vextension:vextension-cli:2.0.0-SNAPSHOT")
 
 //Dependency - Minecraft - Server
 compileOnly("eu.vironlab.vextension:vextension-minecraft-server:2.0.0-SNAPSHOT")
@@ -38,17 +45,38 @@ compileOnly("eu.vironlab.vextension:vextension-minecraft-server:2.0.0-SNAPSHOT")
 compileOnly("eu.vironlab.vextension:vextension-minecraft-proxy:2.0.0-SNAPSHOT")
 ```
 
+---
+
 ## Modules
 
 ### Common
 
 The common Module includes all Utils required for the other Modules and some things for your Project
 
-### Documentation
+### CLI
+
+The CLI is an easy to use Command-Line Interface for your Application
+
+### Command
+
+This is an Generall Command System you can use for every software with user input. In Addition it has an implementation
+for our CLI Module
+
+### Minecraft - Server
+
+There are some Utils and Builder for the latest Bukkit and Sponge API
+
+### Minecraft - Proxy
+
+A Launcher for Vextension on your Proxy Server like Bungeecord or Velocity wich come with some utils
+
+---
+
+## Documentation
 
 https://docs.vironlab.eu/vextension/
 
-Still in work.
+---
 
 ### Discord
 
