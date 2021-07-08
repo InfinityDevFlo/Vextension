@@ -1,7 +1,13 @@
 package eu.vironlab.vextension.document.impl.storage
 
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
 import com.google.gson.JsonParser
@@ -21,6 +27,7 @@ class XMLDocumentStorage : DocumentStorage {
     private val jsonMapper: ObjectMapper = ObjectMapper()
 
     init {
+        this.xmlMapper.registerModule(SimpleModule().addDeserializer(JsonNode::class.java, ArrayDeserializer()))
         this.xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true)
     }
 
@@ -46,5 +53,22 @@ class XMLDocumentStorage : DocumentStorage {
         this.xmlMapper.writeValue(writer, document.toPlainObjects())
     }
 
+    internal inner class ArrayDeserializer() : JsonNodeDeserializer() {
+
+        override fun _handleDuplicateField(
+            fieldName: String,
+            objectNode: ObjectNode,
+            oldValue: JsonNode,
+            newValue: JsonNode
+        ) {
+            val node = if (oldValue is ArrayNode) {
+                oldValue
+            } else {
+                JsonNodeFactory.instance.arrayNode().also { arrayNode -> arrayNode.add(oldValue) }
+            }
+            node.add(newValue)
+            objectNode.set(fieldName, node)
+        }
+    }
 
 }
