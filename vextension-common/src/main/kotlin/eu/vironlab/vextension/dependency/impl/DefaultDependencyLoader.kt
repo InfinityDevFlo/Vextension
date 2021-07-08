@@ -37,8 +37,10 @@
 
 package eu.vironlab.vextension.dependency.impl
 
+import com.google.gson.JsonArray
 import eu.vironlab.vextension.dependency.*
 import eu.vironlab.vextension.document.Document
+import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
 import eu.vironlab.vextension.rest.RestUtil
 import java.io.File
 import java.net.URL
@@ -52,10 +54,7 @@ import java.util.jar.JarFile
 internal class DefaultDependencyLoader(val libDir: File, val repositories: MutableMap<String, String>) :
     DependencyLoader {
 
-    internal inner class DownloadableJar(val url: URL, val targetFile: File, val dir: File? = null)
-
     val queue: Queue<DownloadableJar> = ConcurrentLinkedQueue<DownloadableJar>()
-
     override fun addRepository(name: String, url: URL) {
         if (this.repositories.contains(name)) {
             return
@@ -69,7 +68,6 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
     }
 
     override fun isRepositoryExists(name: String) = this.repositories[name] != null
-
     override fun getRepositoryName(url: URL): String? = this.repositories.filter {
         it.value == url.toString().let {
             if (!it.endsWith("/")) {
@@ -79,7 +77,7 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
         }
     }.keys.firstOrNull()
 
-    override fun addToQueue(dependency: Dependency): DependencyLoader {
+    override fun addToQueue(dependency: Dependency, subdependencies: Boolean): DependencyLoader {
         val filePath: String =
             dependency.groupId.replace('.', '/') + '/' + dependency.artifactId + '/' + dependency.version
         val fileName: String = dependency.artifactId + '-' + dependency.version + ".jar"
@@ -105,16 +103,34 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
         if (server == null) {
             throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
         }
+        if (subdependencies) {
+            val pom = RestUtil.DEFAULT_CLIENT.getXmlDocument(server.substring(0, server.length - 3) + "pom")
+                .orElseGet { null } ?: run {
+                this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
+                return this
+            }
+            val depends: JsonArray = pom.getDocument("dependencies")?.getJsonArray("dependency") ?: run {
+                this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
+                return this
+            }
+            for (depend in depends) {
+                val dependen =
+                    DefaultDocumentManagement.GSON.fromJson(depend.asJsonObject.asString, Dependency::class.java)
+                if (dependen.scope == "runtime") {
+                    addToQueue(dependency, subdependencies)
+                }
+            }
+        }
         this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
         return this
     }
 
-    override fun addToQueue(gradle: String): DependencyLoader {
+    override fun addToQueue(gradle: String, subdependencies: Boolean): DependencyLoader {
         val split = gradle.split(":").toTypedArray()
         if (split.size != 3) {
             throw java.lang.IllegalStateException("Wrong Library input... StringExample: 'groupid:artifactid:version' Given: '$gradle'")
         }
-        addToQueue(Dependency(split[0], split[1], split[2]))
+        addToQueue(Dependency(split[0], split[1], split[2], "runtime"), subdependencies)
         return this
     }
 
@@ -149,4 +165,6 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
         }
         return urls
     }
+
+    internal inner class DownloadableJar(val url: URL, val targetFile: File, val dir: File? = null)
 }

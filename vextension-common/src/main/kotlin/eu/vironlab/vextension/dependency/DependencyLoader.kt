@@ -49,10 +49,10 @@ interface DependencyLoader {
     fun getRepositoryName(url: URL): String?
 
     @Throws(NoRepositoryFoundException::class)
-    fun addToQueue(dependency: Dependency): DependencyLoader
+    fun addToQueue(dependency: Dependency, subdependencies: Boolean = false): DependencyLoader
 
     @Throws(NoRepositoryFoundException::class)
-    fun addToQueue(gradle: String): DependencyLoader
+    fun addToQueue(gradle: String, subdependencies: Boolean = false): DependencyLoader
 
     fun addToQueue(name: String, server: URL): DependencyLoader
 

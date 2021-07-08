@@ -42,7 +42,8 @@ class NoRepositoryFoundException(message: String) : Exception(message)
 data class Dependency(
     val groupId: String,
     val artifactId: String,
-    val version: String
+    val version: String,
+    val scope: String
 ) {
 
     fun toCoords(): String {
