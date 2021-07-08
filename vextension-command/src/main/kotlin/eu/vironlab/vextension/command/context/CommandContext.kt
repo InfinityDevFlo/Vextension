@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Donnerstag 08 Juli 2021 18:33:07<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,16 +38,18 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command.context;
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
 import eu.vironlab.vextension.command.sender.CommandSender
 
-interface CommandManager<S : CommandSender, C : CommandContext<S>, E : CommandExecutor<S, C>> {
+@FunctionalInterface
+interface CommandContext<S : CommandSender> {
 
-    operator fun plus(executor: E) = register(executor)
+    val args: Array<String>
 
-    fun register(executor: CommandExecutor<S, C>): Boolean
+    val sender: S
+
+    val command: String
+
 
 }

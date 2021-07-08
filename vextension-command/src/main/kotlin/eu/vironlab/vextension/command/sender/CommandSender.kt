@@ -35,9 +35,12 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command.sender
 
 import eu.vironlab.vextension.lang.Nameable
 
 interface CommandSender : Nameable {
+
+    fun displayMessage(message: String)
+
 }
