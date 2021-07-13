@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Donnerstag 08 Juli 2021 22:50:21<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,21 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command;
 
+import eu.vironlab.vextension.command.argument.CommandArgument
 import eu.vironlab.vextension.command.context.CommandContext
 import eu.vironlab.vextension.command.executor.CommandExecutor
 import eu.vironlab.vextension.command.source.CommandSource
+import eu.vironlab.vextension.lang.Nameable
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+interface Command<S : CommandSource, C : CommandContext<S>> : Nameable {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
+    val arguments: List<CommandArgument>
 
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
+    val executor: CommandExecutor<S, C>
 
-    fun register(cmd: CommandExecutor<S, C>): Boolean
+    val aliases: Array<String>
 
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
 
 }

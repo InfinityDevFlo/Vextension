@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Sonntag 11 Juli 2021 17:12:42<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,46 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.bukkit.command;
 
-import eu.vironlab.vextension.command.context.CommandContext
+import eu.vironlab.vextension.command.AbstractCommandManager
 import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
+import eu.vironlab.vextension.extension.toCleanString
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.command.Command as BukkitCommand
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+class BukkitCommandManager(val plugin: JavaPlugin, val prefix: String = plugin.name) :
+    AbstractCommandManager<BukkitCommandSource, BukkitCommandContext>(BukkitCommandContext::class.java) {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
+    override fun register(cmd: CommandExecutor<BukkitCommandSource, BukkitCommandContext>): Boolean {
+        if (super.register(cmd)) {
+            val data = this.commands.values.last()
+            Bukkit.getCommandMap().register(prefix, Command(data.name, data.aliases.toList()))
+            return true
+        }
+        return false
+    }
 
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
+    override fun close() {
+        this.aliases.forEach { (name, data) ->
+            Bukkit.getCommandMap().knownCommands.remove(name)
+        }
+    }
 
-    fun register(cmd: CommandExecutor<S, C>): Boolean
+    inner class Command(name: String, aliases: List<String>) : BukkitCommand(name) {
 
-    fun parseLine(line: String, source: S): Boolean
+        init {
+            super.setAliases(aliases)
+        }
 
-    fun close()
+        override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
+            return this@BukkitCommandManager.parseLine(
+                "$commandLabel ${args.toCleanString(true)}",
+                BukkitCommandSource(sender, sender.name)
+            )
+        }
+    }
 
 }

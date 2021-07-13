@@ -40,5 +40,12 @@
 
 package eu.vironlab.vextension.console;
 
+import eu.vironlab.vextension.console.input.ConsoleInputHandler
+
 interface Console {
+
+    val inputHandler: ConsoleInputHandler
+
+    fun printMessage(message: String)
+
 }

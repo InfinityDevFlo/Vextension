@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Donnerstag 08 Juli 2021 22:54:43<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,22 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command;
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
+import eu.vironlab.vextension.command.context.ConsoleCommandContext
+import eu.vironlab.vextension.command.source.ConsoleCommandSource
+import eu.vironlab.vextension.console.Console
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+class ConsoleCommandManager(
+    private val console: Console,
+    sourceName: String = "Console"
+) : AbstractCommandManager<ConsoleCommandSource, ConsoleCommandContext>() {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
+    private val source = ConsoleCommandSource(sourceName, console)
+    private val consoleInputHandlerId: String = console.inputHandler.register { input ->
+        parseLine(input, source)
+    }
 
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
+    override fun close() = console.inputHandler.unregister(consoleInputHandlerId)
 
 }

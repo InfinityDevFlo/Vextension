@@ -40,14 +40,14 @@
 
 package eu.vironlab.vextension.command.context;
 
-import eu.vironlab.vextension.command.sender.CommandSender
+import eu.vironlab.vextension.command.source.CommandSource
 
 @FunctionalInterface
-interface CommandContext<S : CommandSender> {
+interface CommandContext<S : CommandSource> {
 
     val args: Array<String>
 
-    val sender: S
+    val source: S
 
     val command: String
 

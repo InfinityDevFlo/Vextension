@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Sonntag 11 Juli 2021 17:13:15<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,12 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.bukkit.command;
 
 import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
-
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
-
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
-
-}
+class BukkitCommandContext(
+    override val args: Array<String>,
+    override val source: BukkitCommandSource,
+    override val command: String
+) : CommandContext<BukkitCommandSource>

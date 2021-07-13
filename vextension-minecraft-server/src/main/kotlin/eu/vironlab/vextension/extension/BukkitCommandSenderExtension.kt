@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Montag 12 Juli 2021 15:33:38<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,9 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.extension;
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
-
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
-
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
-
-}
+fun CommandSender.tryPlayerOrNull(): Player? = if (this is Player) { this } else { null }

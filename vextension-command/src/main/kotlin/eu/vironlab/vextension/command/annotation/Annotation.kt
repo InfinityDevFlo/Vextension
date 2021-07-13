@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Donnerstag 08 Juli 2021 23:11:59<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,16 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command.annotation;
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Command(val name: String, val aliases: Array<String> = [])
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class CommandPath(val path: String)
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
-
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
-
-}
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class CommandArgument(val name: String)

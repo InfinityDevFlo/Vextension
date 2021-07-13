@@ -35,22 +35,12 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.command.source
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
-import eu.vironlab.vextension.command.source.CommandSource
+import eu.vironlab.vextension.lang.Nameable
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+interface CommandSource : Nameable {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
-
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
+    fun sendMessage(message: String)
 
 }

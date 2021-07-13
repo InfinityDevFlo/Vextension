@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Montag 12 Juli 2021 19:56:00<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,12 +38,37 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command.sender
+package eu.vironlab.vextension.velocity.command;
 
-import eu.vironlab.vextension.lang.Nameable
+import com.velocitypowered.api.proxy.ProxyServer
+import eu.vironlab.vextension.command.AbstractCommandManager
+import eu.vironlab.vextension.command.executor.CommandExecutor
+import com.velocitypowered.api.command.RawCommand as VelocityCommand
 
-interface CommandSender : Nameable {
+class VelocityCommandManager(private val server: ProxyServer) :
+    AbstractCommandManager<VelocityCommandSource, VelocityCommandContext>(VelocityCommandContext::class.java) {
 
-    fun displayMessage(message: String)
+    override fun register(cmd: CommandExecutor<VelocityCommandSource, VelocityCommandContext>): Boolean {
+        if (super.register(cmd)) {
+            val data = this.commands.values.last()
+            server.commandManager.register(data.name, Command(), *data.aliases)
+            return true
+        }
+        return false
+    }
+
+    override fun close() {
+        this.aliases.forEach { (name, _) ->
+            server.commandManager.unregister(name)
+        }
+    }
+
+    inner class Command : VelocityCommand {
+        override fun execute(invocation: VelocityCommand.Invocation): Unit =
+            parseLine(
+                invocation.alias() + " " + invocation.arguments(),
+                VelocityCommandSource(invocation.source())
+            ).let { Unit }
+    }
 
 }

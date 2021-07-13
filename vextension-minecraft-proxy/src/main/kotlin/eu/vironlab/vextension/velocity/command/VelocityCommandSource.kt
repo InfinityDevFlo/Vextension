@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Montag 12 Juli 2021 19:56:37<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,21 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.velocity.command;
 
-import eu.vironlab.vextension.command.context.CommandContext
-import eu.vironlab.vextension.command.executor.CommandExecutor
+import com.velocitypowered.api.proxy.Player
 import eu.vironlab.vextension.command.source.CommandSource
+import com.velocitypowered.api.command.CommandSource as CommandSender
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
-
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
-
-    fun register(cmd: CommandExecutor<S, C>): Boolean
-
-    fun parseLine(line: String, source: S): Boolean
-
-    fun close()
-
+class VelocityCommandSource(
+    val sender: CommandSender, override val name: String = if (sender is Player) {
+        sender.username
+    } else {
+        "Console"
+    }
+) : CommandSource {
+    override fun sendMessage(message: String) {
+        TODO("Not yet implemented")
+    }
 }

@@ -26,6 +26,9 @@
  * <p>
  * You should have received a copy of the GNU General Public License<p>
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
+ *<p>
+ *   Creation: Samstag 10 Juli 2021 17:08:57<p>
+ *<p>
  * <p>
  * Contact:<p>
  * <p>
@@ -35,22 +38,63 @@
  * <p>
  */
 
-package eu.vironlab.vextension.command
+package eu.vironlab.vextension.test;
 
+import eu.vironlab.vextension.command.AbstractCommandManager
+import eu.vironlab.vextension.command.annotation.Command
+import eu.vironlab.vextension.command.annotation.CommandArgument
+import eu.vironlab.vextension.command.annotation.CommandPath
 import eu.vironlab.vextension.command.context.CommandContext
 import eu.vironlab.vextension.command.executor.CommandExecutor
 import eu.vironlab.vextension.command.source.CommandSource
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
-interface CommandManager<S : CommandSource, C : CommandContext<S>> {
+class CommandTest {
 
-    val commands: MutableMap<String, AbstractCommandManager<S, C>.Command>
+    lateinit var manager: TestCommandManager
 
-    operator fun plus(cmd: CommandExecutor<S, C>) = register(cmd)
+    @Test
+    @BeforeAll
+    fun initManager() {
+        this.manager = TestCommandManager()
+    }
 
-    fun register(cmd: CommandExecutor<S, C>): Boolean
+    @Test
+    fun testRegistration() {
+        manager.register(TestHandler())
+    }
 
-    fun parseLine(line: String, source: S): Boolean
+    @Command("test")
+    inner class TestHandler : CommandExecutor<TestSource, TestContext> {
 
-    fun close()
+        @CommandPath("<first> <second>")
+        fun handle(
+            ctx: TestContext,
+            @CommandArgument("first") first: String,
+            @CommandArgument("second") second: String
+        ) {
+
+        }
+
+    }
+
+    inner class TestCommandManager : AbstractCommandManager<TestSource, TestContext>(TestContext::class.java) {
+        override fun close() {
+
+        }
+    }
+
+    inner class TestSource : CommandSource {
+        override fun sendMessage(message: String) = println(message)
+
+        override val name: String = "testSource"
+    }
+
+    inner class TestContext : CommandContext<TestSource> {
+        override val args: Array<String> = arrayOf("test1", "test2")
+        override val source: TestSource = TestSource()
+        override val command: String = "test test1 test2"
+    }
 
 }

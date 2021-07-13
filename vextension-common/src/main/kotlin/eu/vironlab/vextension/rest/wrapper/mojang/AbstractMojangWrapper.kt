@@ -46,7 +46,6 @@ abstract class AbstractMojangWrapper : MojangWrapper {
         return MojangConstants.CLIENT.getClassInstance(
             MojangConstants.STATUS_CHECK_URL,
             MojangServiceStatusList::class.java,
-            Gson()
         ).get()
     }
 

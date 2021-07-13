@@ -54,51 +54,9 @@ import java.util.*
 class RestClient(val agent: String) {
 
     /**
-     * Get a JsonArray from [url]
-     */
-    fun getJsonArray(url: String): Optional<JsonArray> {
-        return getJsonArray(url, mutableMapOf())
-    }
-
-    /**
-     * Get a JsonDocument from [url]
-     */
-    fun getJsonDocument(url: String): Optional<Document> {
-        return getJsonDocument(url, mutableMapOf())
-    }
-
-    /**
-     * Get a XmlDocument from [url]
-     */
-    fun getXmlDocument(url: String): Optional<Document> {
-        return getXmlDocument(url, mutableMapOf())
-    }
-
-    /**
-     * Get an Instance of [clazz] from [url]
-     */
-    fun <T> getClassInstance(url: String, clazz: Class<T>): Optional<T> {
-        return getClassInstance(url, clazz, mutableMapOf(), Gson())
-    }
-
-    /**
-     * Get an Instance of [clazz] from [url] with [gson] as Parser
-     */
-    fun <T> getClassInstance(url: String, clazz: Class<T>, gson: Gson): Optional<T> {
-        return getClassInstance(url, clazz, mutableMapOf(), gson)
-    }
-
-    /**
-     * Get an Instance of [clazz] from [url] with [properties] in request
-     */
-    fun <T> getClassInstance(url: String, clazz: Class<T>, properties: Map<String, String>): Optional<T> {
-        return getClassInstance(url, clazz, properties, Gson())
-    }
-
-    /**
      * Get a JsonArray from [url] with request-[properties]
      */
-    fun getJsonArray(urlStr: String, properties: Map<String, String>): Optional<JsonArray> {
+    fun getJsonArray(urlStr: String, properties: Map<String, String> = mapOf()): Optional<JsonArray> {
         try {
             val url: URL = URL(urlStr)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
@@ -122,7 +80,7 @@ class RestClient(val agent: String) {
     /**
      * Get a XMLDocument from [urlStr] with request-[properties]
      */
-    fun getXmlDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
+    fun getXmlDocument(urlStr: String, properties: Map<String, String> = mapOf()): Optional<Document> {
         try {
             val url = URL(urlStr)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
@@ -147,7 +105,7 @@ class RestClient(val agent: String) {
     /**
      * Get a JsonDocument from [urlStr] with request-[properties]
      */
-    fun getJsonDocument(urlStr: String, properties: Map<String, String>): Optional<Document> {
+    fun getJsonDocument(urlStr: String, properties: Map<String, String> = mapOf()): Optional<Document> {
         try {
             val url = URL(urlStr)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
@@ -174,8 +132,8 @@ class RestClient(val agent: String) {
     fun <T> getClassInstance(
         urlStr: String,
         clazz: Class<T>,
-        properties: Map<String, String>,
-        gson: Gson
+        properties: Map<String, String> = mapOf(),
+        gson: Gson = Gson()
     ): Optional<T> {
         try {
             val url = URL(urlStr)
@@ -206,11 +164,7 @@ class RestClient(val agent: String) {
         }
     }
 
-    fun postJson(json: Document, url: String): Boolean {
-        return postJson(json, url, mapOf())
-    }
-
-    fun postJson(json: Document, urlStr: String, headers: Map<String, String>): Boolean {
+    fun postJson(json: Document, urlStr: String, headers: Map<String, String> = mapOf()): Boolean {
         try {
             val url = URL(urlStr)
             val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
