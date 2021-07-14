@@ -52,7 +52,7 @@ import org.junit.jupiter.api.Test
 
 class CommandTest {
 
-    lateinit var manager: TestCommandManager
+    /*lateinit var manager: TestCommandManager
 
     @Test
     @BeforeAll
@@ -95,6 +95,6 @@ class CommandTest {
         override val args: Array<String> = arrayOf("test1", "test2")
         override val source: TestSource = TestSource()
         override val command: String = "test test1 test2"
-    }
+    }*/
 
 }

@@ -47,7 +47,7 @@ import eu.vironlab.vextension.console.Console
 class ConsoleCommandManager(
     private val console: Console,
     sourceName: String = "Console"
-) : AbstractCommandManager<ConsoleCommandSource, ConsoleCommandContext>() {
+) : AbstractCommandManager<ConsoleCommandSource, ConsoleCommandContext>(ConsoleCommandContext::class.java) {
 
     private val source = ConsoleCommandSource(sourceName, console)
     private val consoleInputHandlerId: String = console.inputHandler.register { input ->

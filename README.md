@@ -74,7 +74,7 @@ A Launcher for Vextension on your Proxy Server like Bungeecord or Velocity wich 
 
 ## Documentation
 
-https://docs.vironlab.eu/vextension/
+https://docs.vironlab.eu/vextension-v2.0.0/
 
 ---
 

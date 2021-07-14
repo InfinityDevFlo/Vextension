@@ -132,14 +132,12 @@ class MongoDatabase(override val name: String, client: MongoDatabaseClient) :
         }
     }
 
-    override fun keys(): QueuedTask<Collection<String>> {
-        return queueTask {
-            val rs = mutableListOf<String>()
-            this@MongoDatabase.mongoCollection.find(BasicDBObject()).cursor().forEach {
-                rs.add(it.getString(COLLECTION_KEY))
-            }
-            rs
+    override fun keys(): QueuedTask<Collection<String>> = queueTask {
+        val rs = mutableListOf<String>()
+        this@MongoDatabase.mongoCollection.find(BasicDBObject()).cursor().forEach {
+            rs.add(it.getString(COLLECTION_KEY))
         }
+        rs
     }
 
     override fun contains(fieldName: String, fieldValue: Any): QueuedTask<Boolean> {
