@@ -1,3 +1,5 @@
+import java.io.File
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -71,6 +73,9 @@ subprojects {
         publishing {
             publications {
                 create<MavenPublication>(project.name) {
+                    this.artifacts.forEach { art ->
+                        println(art.file.nameWithoutExtension)
+                    }
                     groupId = findProperty("group").toString()
                     artifactId = project.name
                     version = findProperty("version").toString()
