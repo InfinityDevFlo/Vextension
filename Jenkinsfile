@@ -40,16 +40,16 @@ pipeline {
                 sh "./gradlew kotlinSourcesJar";
             }
         }
-        stage("Build ShadowJar") {
-            steps {
-                sh "./gradlew shadowJar";
-            }
-        }
-        stage("Publish") {
+                stage("Publish") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                   sh "./gradlew publish -DpublishPassword=$PASSWORD -DpublishName=$USERNAME"
                 }
+            }
+        }
+stage("Build ShadowJar") {
+            steps {
+                sh "./gradlew shadowJar";
             }
             post {
                 success {
