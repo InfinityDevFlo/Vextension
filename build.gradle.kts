@@ -65,7 +65,7 @@ subprojects {
     }
 
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
-        (components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(configurations["runtimeElements"]) {
+        (components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(configurations["shadow"]) {
             skip()
         }
         publishing {
