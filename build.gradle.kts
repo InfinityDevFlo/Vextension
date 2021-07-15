@@ -1,5 +1,3 @@
-import java.io.File
-
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -67,15 +65,9 @@ subprojects {
     }
 
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
-        (components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(configurations["runtimeElements"]) {
-            skip()
-        }
         publishing {
             publications {
                 create<MavenPublication>(project.name) {
-                    this.artifacts.forEach { art ->
-                        println(art.file.nameWithoutExtension)
-                    }
                     groupId = findProperty("group").toString()
                     artifactId = project.name
                     version = findProperty("version").toString()
@@ -220,4 +212,3 @@ subprojects {
         }
     }
 }
-
