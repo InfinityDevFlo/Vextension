@@ -66,6 +66,9 @@ subprojects {
 
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
         publishing {
+            (components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) {
+                skip()
+            }
             publications {
                 create<MavenPublication>(project.name) {
                     groupId = findProperty("group").toString()
