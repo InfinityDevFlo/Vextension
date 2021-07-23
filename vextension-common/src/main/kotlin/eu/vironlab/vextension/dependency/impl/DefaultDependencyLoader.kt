@@ -41,7 +41,8 @@ import com.google.gson.JsonArray
 import eu.vironlab.vextension.dependency.*
 import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.impl.DefaultDocumentManagement
-import eu.vironlab.vextension.rest.RestUtil
+import eu.vironlab.vextension.extension.status
+import eu.vironlab.vextension.extension.xml
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -85,13 +86,13 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
         val dest = File(folder, fileName)
         var server: String? = null
         for (it in repositories) {
-            if (RestUtil.getStatusCode(URL("${it.value}$filePath/$fileName")).equals(200)) {
+            if (URL("${it.value}$filePath/$fileName").status("GET").equals(200)) {
                 server = "${it.value}$filePath/$fileName"
                 break
             } else {
-                if (RestUtil.getStatusCode(URL("${it.value}$filePath/maven-metadata.xml")).equals(200)) {
+                if (URL("${it.value}$filePath/maven-metadata.xml").status("GET").equals(200)) {
                     val meta: Document =
-                        RestUtil.DEFAULT_CLIENT.getXmlDocument("${it.value}$filePath/maven-metadata.xml").get()
+                        URL("${it.value}$filePath/maven-metadata.xml").xml()!!
                     val newFileName =
                         dependency.artifactId + "-" + meta.getDocument("versioning")?.getDocument("snapshotVersions")
                             ?.getDocument("snapshotVersion")?.getString("value") + ".jar"
@@ -104,8 +105,7 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
             throw NoRepositoryFoundException("Cannot find the artifact ${dependency.toCoords()}")
         }
         if (subdependencies) {
-            val pom = RestUtil.DEFAULT_CLIENT.getXmlDocument(server.substring(0, server.length - 3) + "pom")
-                .orElseGet { null } ?: run {
+            val pom = URL(server.substring(0, server.length - 3) + "pom").xml() ?: run {
                 this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
                 return this
             }

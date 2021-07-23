@@ -35,11 +35,6 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest
+package eu.vironlab.vextension.vironlab
 
-/**
- * Supported Methods for HTTP Requests
- */
-enum class HttpMethod {
-    GET, POST, DELETE;
-}
+interface VironLabAPI

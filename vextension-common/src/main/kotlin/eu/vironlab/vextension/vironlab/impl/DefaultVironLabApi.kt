@@ -35,9 +35,8 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.mojang.user
+package eu.vironlab.vextension.vironlab.impl
 
+import eu.vironlab.vextension.vironlab.VironLabAPI
 
-data class NameHistory(val names: Collection<NameHistoryEntry>) : java.io.Serializable
-
-data class NameHistoryEntry(val name: String, val changedToAt: Long) : java.io.Serializable
+class DefaultVironLabApi : VironLabAPI

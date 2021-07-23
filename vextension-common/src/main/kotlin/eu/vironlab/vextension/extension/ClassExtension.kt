@@ -38,12 +38,15 @@
 
 package eu.vironlab.vextension.extension
 
+import com.google.common.reflect.TypeToken
 import java.io.File
 import java.lang.reflect.Method
+import java.lang.reflect.Type
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.jar.JarFile
+import kotlin.reflect.KClass
 
 fun <T> Class<T>.callStaticMethod(name: String, vararg params: Any): Any? {
     val method = this.getMethod(name, *params.map { it.javaClass }.toTypedArray())
@@ -73,6 +76,7 @@ fun <T> Class<T>.callMethodsAnnotatedWithSorted(
     }
 }
 
+fun <T: Any> KClass<T>.GSON_TYPE(): Type = object : TypeToken<T>() {}.type
 
 fun <T> Class<T>.callMethodsAnnotatedWith(annotation: Class<out Annotation>, instance: T, vararg params: Any) {
     val methods = this.methods.filter { it.isAnnotationPresent(annotation) }

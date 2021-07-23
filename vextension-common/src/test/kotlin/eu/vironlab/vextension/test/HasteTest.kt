@@ -40,8 +40,8 @@
 
 package eu.vironlab.vextension.test;
 
+import eu.vironlab.vextension.extension.content
 import eu.vironlab.vextension.extension.haste
-import eu.vironlab.vextension.rest.RestUtil
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -53,7 +53,7 @@ class HasteTest {
             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
         """.trimIndent()
         val url = str.haste()
-        assertEquals<String>(str, RestUtil.DEFAULT_CLIENT.getString(url.rawUrl.toString()).orElse(" "))
+        assertEquals<String>(str, url.rawUrl.content() ?: " ")
     }
 
 }

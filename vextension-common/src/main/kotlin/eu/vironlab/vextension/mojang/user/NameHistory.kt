@@ -35,53 +35,9 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.mojang
+package eu.vironlab.vextension.mojang.user
 
-import eu.vironlab.vextension.rest.wrapper.mojang.user.MojangUser
-import eu.vironlab.vextension.rest.wrapper.mojang.user.NameHistory
-import java.util.*
 
-interface MojangWrapper {
+data class NameHistory(val names: Collection<NameHistoryEntry>) : java.io.Serializable
 
-    /**
-     * Get the status of all Mojang API Services
-     *
-     * @return a List with all Services
-     */
-    fun getServiceStatus(): MojangServiceStatusList
-
-    /**
-     * Get a MojangUser by [name]
-     *
-     * @return an Optional with the User
-     */
-    fun getPlayer(name: String): Optional<MojangUser> {
-        val uuid = getUUID(name)
-        return if (uuid.isPresent) {
-            getPlayer(uuid.get())
-        } else {
-            Optional.ofNullable(null)
-        }
-    }
-
-    /**
-     * Get the UUID of a Player by [name]
-     *
-     * @return an Optional with the UUID
-     */
-    fun getUUID(name: String): Optional<UUID>
-
-    /**
-     * Get a MojangUser by the [uuid] of a Player
-     *
-     * @return an Optional with the MojangUser
-     */
-    fun getPlayer(uuid: UUID): Optional<MojangUser>
-
-    /**
-     * Get the namehistory of [uuid]
-     *
-     * @return the history as Optional
-     */
-    fun getNameHistory(uuid: UUID): Optional<NameHistory>
-}
+data class NameHistoryEntry(val name: String, val changedToAt: Long) : java.io.Serializable

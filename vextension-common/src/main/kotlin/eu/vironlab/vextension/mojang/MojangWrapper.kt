@@ -35,21 +35,47 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.mojang.user
+package eu.vironlab.vextension.mojang
 
-import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
-import eu.vironlab.vextension.lang.Nameable
-import java.lang.reflect.Type
+import eu.vironlab.vextension.rest.wrapper.mojang.MojangServiceStatusList
+import eu.vironlab.vextension.mojang.user.MojangUser
+import eu.vironlab.vextension.mojang.user.NameHistory
 import java.util.*
 
-data class MojangUser(val uuid: UUID, override val name: String, val nameHistory: NameHistory, val skin: Skin) :
-    Nameable, java.io.Serializable {
-    companion object {
-        @JvmStatic
-        val TYPE: Type = object : TypeToken<MojangUser>() {}.type
-    }
-}
+interface MojangWrapper {
 
-data class Skin(val name: String, @SerializedName("value") val texture: String, val signature: String) :
-    java.io.Serializable
+    /**
+     * Get the status of all Mojang API Services
+     *
+     * @return a List with all Services
+     */
+    fun getServiceStatus(): MojangServiceStatusList
+
+    /**
+     * Get a MojangUser by [name]
+     *
+     * @return an Optional with the User
+     */
+    fun getPlayer(name: String): MojangUser? = getPlayer(getUUID(name) ?: run { return null })
+
+    /**
+     * Get the UUID of a Player by [name]
+     *
+     * @return an Optional with the UUID
+     */
+    fun getUUID(name: String): UUID?
+
+    /**
+     * Get a MojangUser by the [uuid] of a Player
+     *
+     * @return an Optional with the MojangUser
+     */
+    fun getPlayer(uuid: UUID): MojangUser?
+
+    /**
+     * Get the namehistory of [uuid]
+     *
+     * @return the history as Optional
+     */
+    fun getNameHistory(uuid: UUID): NameHistory?
+}

@@ -1,6 +1,4 @@
-package eu.vironlab.vextension.rest.wrapper.mojang
-
-import eu.vironlab.vextension.rest.RestUtil
+package eu.vironlab.vextension.mojang
 
 object MojangConstants {
     @JvmStatic
@@ -14,7 +12,4 @@ object MojangConstants {
 
     @JvmStatic
     val PLAYER_NAME_HISTORY = "https://api.mojang.com/user/profiles/%uuid%/names"
-
-    @JvmStatic
-    var CLIENT = RestUtil.DEFAULT_CLIENT
 }

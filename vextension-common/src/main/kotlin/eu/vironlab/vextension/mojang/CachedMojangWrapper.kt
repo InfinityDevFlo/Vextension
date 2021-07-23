@@ -35,13 +35,14 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.mojang
+package eu.vironlab.vextension.mojang
 
 import eu.vironlab.vextension.database.Database
 import eu.vironlab.vextension.database.DatabaseClient
 import eu.vironlab.vextension.document.document
+import eu.vironlab.vextension.extension.GSON_TYPE
 import eu.vironlab.vextension.extension.toUUID
-import eu.vironlab.vextension.rest.wrapper.mojang.user.MojangUser
+import eu.vironlab.vextension.mojang.user.MojangUser
 import java.util.*
 
 
@@ -50,36 +51,22 @@ class CachedMojangWrapper(val dbClient: DatabaseClient) : DefaultMojangWrapper()
     val nameUUIDCache: Database = dbClient.getDatabase("mojang_cache_name_uuid").complete()
     val userCache: Database = dbClient.getDatabase("mojang_cache_user").complete()
 
-    override fun getUUID(name: String): Optional<UUID> {
-        return Optional.ofNullable(
-            nameUUIDCache.get(name.lowercase(Locale.getDefault())).complete()?.getString("uuid")?.toUUID() ?: run {
-                val rs = super.getUUID(name)
-                if (!rs.isPresent) {
-                    null
-                } else {
-                    nameUUIDCache.insert(
-                        name.lowercase(Locale.getDefault()),
-                        document("name", name).append("uuid", rs.get())
-                    ).complete()
-                    rs.get()
-                }
-            }
-        )
-    }
+    override fun getUUID(name: String): UUID? =
+        nameUUIDCache.get(name.lowercase(Locale.getDefault())).complete()?.getString("uuid")?.toUUID() ?: run {
+            val rs = super.getUUID(name) ?: return null
+            nameUUIDCache.insert(
+                name.lowercase(Locale.getDefault()),
+                document("name", name).append("uuid", rs)
+            ).complete()
+            rs
+        }
 
-    override fun getPlayer(uuid: UUID): Optional<MojangUser> {
-        return Optional.ofNullable(
-            userCache.get(uuid.toString()).complete()?.toInstance(MojangUser.TYPE) ?: run {
-                val rs = super.getPlayer(uuid)
-                if (!rs.isPresent) {
-                    null
-                } else {
-                    nameUUIDCache.insert(uuid.toString(), document(rs.get())).complete()
-                    rs.get()
-                }
-            }
-        )
-    }
+    override fun getPlayer(uuid: UUID): MojangUser? =
+        userCache.get(uuid.toString()).complete()?.toInstance(MojangUser::class.GSON_TYPE()) ?: run {
+            val rs = super.getPlayer(uuid) ?: return null
+            nameUUIDCache.insert(uuid.toString(), document(rs)).complete()
+            rs
+        }
 
 
 }

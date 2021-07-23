@@ -35,6 +35,22 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.vironlab
+package eu.vironlab.vextension.mojang
 
-interface VironLabAPI
+import com.google.gson.Gson
+import eu.vironlab.vextension.extension.GSON_TYPE
+import eu.vironlab.vextension.extension.json
+import eu.vironlab.vextension.rest.wrapper.mojang.MojangServiceStatusList
+import java.lang.IllegalStateException
+import java.net.URL
+
+
+abstract class AbstractMojangWrapper : MojangWrapper {
+
+    override fun getServiceStatus(): MojangServiceStatusList = URL(MojangConstants.STATUS_CHECK_URL).json()?.toInstance(MojangServiceStatusList::class.GSON_TYPE()) ?: throw IllegalStateException("Cannot get Service Status")
+
+    inner class PropertyToken(val name: String, val value: String, val signature: String)
+
+
+}
+

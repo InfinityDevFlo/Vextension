@@ -35,8 +35,19 @@
  *<p>
  */
 
-package eu.vironlab.vextension.rest.wrapper.vironlab.impl
+package eu.vironlab.vextension.vironlab.factory
 
-import eu.vironlab.vextension.rest.wrapper.vironlab.VironLabAPI
+import eu.vironlab.vextension.factory.Factory
+import eu.vironlab.vextension.vironlab.VironLabAPI
 
-class DefaultVironLabApi : VironLabAPI
+class VironLabApiFactory : Factory<VironLabAPI> {
+    override fun create(): VironLabAPI {
+        TODO("Not yet implemented")
+    }
+}
+
+fun createVironLabWrapper(apiKey: String, init: VironLabApiFactory.() -> Unit): VironLabAPI {
+    val factory = VironLabApiFactory()
+    factory.init()
+    return factory.create()
+}
