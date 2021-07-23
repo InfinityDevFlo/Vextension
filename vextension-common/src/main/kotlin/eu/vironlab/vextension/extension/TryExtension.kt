@@ -36,6 +36,7 @@
  *     Mail:            contact@vironlab.eu<p>
  *<p>
  */
+@file:JvmName("ExceptionUtils")
 
 package eu.vironlab.vextension.extension
 

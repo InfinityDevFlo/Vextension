@@ -55,12 +55,6 @@ subprojects {
         implementation(getDependency("kotlin", "serialization"))
         implementation(getDependency("kotlinx", "coroutines-core"))
 
-        //Test
-        Properties.dependencies.forEach { group, dependencies ->
-            dependencies.forEach { name, coords ->
-                testImplementation(getDependency(group, name))
-            }
-        }
         testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 

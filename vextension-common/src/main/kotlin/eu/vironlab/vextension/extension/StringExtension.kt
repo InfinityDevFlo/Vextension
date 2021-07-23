@@ -34,7 +34,7 @@
  *     Mail:            contact@vironlab.eu<p>
  *<p>
  */
-
+@file:JvmName("StringUtils")
 package eu.vironlab.vextension.extension
 
 import java.net.URL

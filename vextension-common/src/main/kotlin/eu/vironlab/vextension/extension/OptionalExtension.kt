@@ -34,6 +34,7 @@
  *     Mail:            contact@vironlab.eu<p>
  *<p>
  */
+@file:JvmName("OptionalUtils")
 
 package eu.vironlab.vextension.extension
 

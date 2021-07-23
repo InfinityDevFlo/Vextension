@@ -164,6 +164,36 @@ class RestClient(val agent: String) {
         }
     }
 
+    fun getString(urlStr: String, properties: Map<String, String> = mapOf()): Optional<String> {
+        try {
+            val url = URL(urlStr)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = HttpMethod.GET.toString()
+            connection.setRequestProperty("User-Agent", agent)
+            if (!properties.isEmpty()) {
+                properties.forEach { k, v ->
+                    connection.setRequestProperty(k, v)
+                }
+            }
+            connection.connect()
+            var content: StringBuilder
+            try {
+                BufferedReader(InputStreamReader(connection.inputStream)).use { input ->
+                    var line: String?
+                    content = StringBuilder()
+                    while (input.readLine().also { line = it } != null) {
+                        content.append(line)
+                    }
+                }
+            } finally {
+                connection.disconnect()
+            }
+            return Optional.of(content.toString())
+        } catch (e: Exception) {
+            return Optional.ofNullable(null)
+        }
+    }
+
     fun postJson(json: Document, urlStr: String, headers: Map<String, String> = mapOf()): Boolean {
         try {
             val url = URL(urlStr)
