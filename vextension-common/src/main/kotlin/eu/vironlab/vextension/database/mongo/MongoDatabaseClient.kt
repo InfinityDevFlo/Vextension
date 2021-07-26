@@ -49,6 +49,11 @@ import com.mongodb.client.MongoDatabase as MongoDB
 
 open class MongoDatabaseClient constructor(connectionData: ConnectionData) : DatabaseClient() {
 
+    companion object {
+        @JvmStatic
+        var mongoAuthMechanism: String = "SCRAM-SHA-1"
+    }
+
     val remoteConnectionData: RemoteConnectionData
     lateinit var mongoClient: MongoClient
     lateinit var mongoDatabase: MongoDB
@@ -62,7 +67,7 @@ open class MongoDatabaseClient constructor(connectionData: ConnectionData) : Dat
 
     override fun init(): Boolean {
         this.mongoClient =
-            MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}")
+            MongoClients.create("mongodb://${remoteConnectionData.user}:${remoteConnectionData.password}@${remoteConnectionData.host}:${remoteConnectionData.port}/${remoteConnectionData.database}?authMechanism=${mongoAuthMechanism}")
         this.mongoDatabase = this.mongoClient.getDatabase(this.remoteConnectionData.database)
         return true
     }

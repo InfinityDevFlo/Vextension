@@ -75,7 +75,7 @@ object Properties {
                 Pair("coroutines-core", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
             )
             it["database"] = mutableMapOf(
-                Pair("mongo", "org.mongodb:mongodb-driver-sync:4.2.3"),
+                Pair("mongo", "org.mongodb:mongodb-driver-sync:4.3"),
                 Pair("mariadb", "org.mariadb.jdbc:mariadb-java-client:2.7.2"),
                 Pair("hikari", "com.zaxxer:HikariCP:3.4.5"),
                 Pair("h2", "com.h2database:h2:1.4.197")
