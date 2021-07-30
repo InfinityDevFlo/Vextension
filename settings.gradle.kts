@@ -22,4 +22,4 @@ include("vextension-command")
 include("vextension-minecraft-server")
 include("vextension-minecraft-proxy")
 
-    
+include("vextension-cli")

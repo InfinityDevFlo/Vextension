@@ -40,5 +40,12 @@
 
 package eu.vironlab.vextension.console;
 
+import java.util.logging.Level
+import java.util.logging.Logger
+
 interface Console {
+    val logger: Logger
+    fun progressAnimation(animationType: ConsoleAnimationType): ConsoleAnimation
+    fun echo(text: (TextFactory).() -> Unit, level: Level)
+
 }
