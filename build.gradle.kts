@@ -65,10 +65,40 @@ subprojects {
             }
             publications {
                 create<MavenPublication>(project.name) {
-                    groupId = findProperty("group").toString()
+                    groupId = Properties.group
                     artifactId = project.name
-                    version = findProperty("version").toString()
+                    version = Properties.version
                     from(components.findByName("java"))
+                    pom {
+                        name.set(project.name)
+                        url.set("https://github.com/VironLab/Vextension")
+                        properties.put("inceptionYear", "2021")
+                        licenses {
+                            license {
+                                name.set("General Public License (GPL v3.0)")
+                                url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("Infinity_dev")
+                                name.set("Florin Dornig")
+                                email.set("infinitydev@vironlab.eu")
+                            }
+                            developer {
+                                id.set("SteinGaming")
+                                name.set("Danial Daryab")
+                                email.set("steingaming@vironlab.eu")
+                            }
+                        }
+                    }
+                }
+                create<MavenPublication>("${project.name}-sources") {
+                    groupId = Properties.group
+                    artifactId = project.name
+                    version = Properties.version
+                    from(components.findByName("kotlinSourcesJar"))
                     pom {
                         name.set(project.name)
                         url.set("https://github.com/VironLab/Vextension")
