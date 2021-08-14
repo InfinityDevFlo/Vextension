@@ -58,6 +58,10 @@ subprojects {
         testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 
+    java {
+        withSourcesJar()
+    }
+
     if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
         publishing {
             (components["java"] as AdhocComponentWithVariants).withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) {
@@ -68,6 +72,7 @@ subprojects {
                     groupId = Properties.group
                     artifactId = project.name
                     version = Properties.version
+                    from(components["java"])
                     pom {
                         name.set(project.name)
                         url.set("https://github.com/VironLab/Vextension")

@@ -30,19 +30,14 @@ pipeline {
                 sh "cp -r build/vextension-v2.0.0 /var/docs"
             }
         }
-        stage("Sources") {
-            steps {
-                sh "./gradlew kotlinSourcesJar";
-            }
-        }
-                stage("Publish") {
+        stage("Publish") {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                   sh "./gradlew publish -DpublishPassword=$PASSWORD -DpublishName=$USERNAME"
                 }
             }
         }
-stage("Build ShadowJar") {
+        stage("Build ShadowJar") {
             steps {
                 sh "./gradlew shadowJar";
             }
