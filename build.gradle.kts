@@ -123,8 +123,8 @@ subprojects {
                 //Set Manifest
                 manifest {
                     attributes["Implementation-Title"] = project.name
-                    attributes["Implementation-Version"] = findProperty("version").toString()
-                    attributes["Specification-Version"] = findProperty("version").toString()
+                    attributes["Implementation-Version"] = Properties.version
+                    attributes["Specification-Version"] = Properties.version
                     attributes["Implementation-Vendor"] = "VironLab.eu"
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
@@ -160,8 +160,8 @@ subprojects {
                 //Set Manifest
                 manifest {
                     attributes["Implementation-Title"] = project.name
-                    attributes["Implementation-Version"] = findProperty("version").toString()
-                    attributes["Specification-Version"] = findProperty("version").toString()
+                    attributes["Implementation-Version"] = Properties.version
+                    attributes["Specification-Version"] = Properties.version
                     attributes["Implementation-Vendor"] = "VironLab.eu"
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
@@ -178,8 +178,8 @@ subprojects {
                 //Set Manifest
                 manifest {
                     attributes["Implementation-Title"] = project.name
-                    attributes["Implementation-Version"] = findProperty("version").toString()
-                    attributes["Specification-Version"] = findProperty("version").toString()
+                    attributes["Implementation-Version"] = Properties.version
+                    attributes["Specification-Version"] = Properties.version
                     attributes["Implementation-Vendor"] = "VironLab.eu"
                     attributes["Built-By"] = System.getProperty("user.name")
                     attributes["Build-Jdk"] = System.getProperty("java.version")
