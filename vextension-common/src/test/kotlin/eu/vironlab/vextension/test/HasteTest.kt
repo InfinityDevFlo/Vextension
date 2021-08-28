@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class HasteTest {
-
+/*
     @Test
     fun testStringHaste() {
         val str = """
@@ -56,6 +56,6 @@ class HasteTest {
         assertEquals<String>(str, url.rawUrl.content() ?: " ")
     }
 
-
+*/
 
 }
