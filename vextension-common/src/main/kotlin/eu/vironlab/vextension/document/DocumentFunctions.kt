@@ -152,6 +152,11 @@ fun document(key: String, value: Any): Document {
     return DocumentFactory.instance.documentManagement.createDocument(key, value)
 }
 
+fun document(init: Document.() -> Unit): Document {
+    val doc = DocumentFactory.instance.createDocument()
+    doc.init()
+    return doc
+}
 
 fun <T> document(obj: T): Document {
     return DocumentFactory.instance.documentManagement.createDocument(obj)
