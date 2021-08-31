@@ -42,7 +42,11 @@ package eu.vironlab.vextension.concurrent.network
 import eu.vironlab.vextension.concurrent.task.AsyncTask
 import java.util.concurrent.TimeUnit
 
-interface NetworkAction<T> : AsyncTask<T, NetworkAction<T>> {
+interface NetworkAction<T> : AsyncTask<T, NetworkAction<T>>{
+
+    fun <S> then(action: (T) -> S): NetworkAction<S>
+
+    fun get(): T
 
     fun onTimeout(action: () -> Unit): NetworkAction<T>
 

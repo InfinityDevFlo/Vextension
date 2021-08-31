@@ -47,7 +47,7 @@ import java.net.URL
 
 abstract class AbstractMojangWrapper : MojangWrapper {
 
-    override fun getServiceStatus(): MojangServiceStatusList = URL(MojangConstants.STATUS_CHECK_URL).json()?.toInstance(MojangServiceStatusList::class.GSON_TYPE()) ?: throw IllegalStateException("Cannot get Service Status")
+    //override fun getServiceStatus(): MojangServiceStatusList = URL(MojangConstants.STATUS_CHECK_URL).json()?.toInstance(MojangServiceStatusList::class.GSON_TYPE()) ?: throw IllegalStateException("Cannot get Service Status")
 
     inner class PropertyToken(val name: String, val value: String, val signature: String)
 

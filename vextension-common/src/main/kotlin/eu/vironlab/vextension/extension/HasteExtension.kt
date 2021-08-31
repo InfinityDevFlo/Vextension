@@ -51,7 +51,7 @@ import java.net.http.HttpResponse
 
 val httpClient: HttpClient = HttpClient.newHttpClient()
 
-fun String.haste(hasteServer: String = "https://hastebin.com"): HasteResult {
+fun String.haste(hasteServer: String = "https://just-paste.it"): HasteResult {
     val request =
         HttpRequest.newBuilder(URI("$hasteServer/documents")).POST(HttpRequest.BodyPublishers.ofString(this)).build()
     val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
@@ -60,7 +60,7 @@ fun String.haste(hasteServer: String = "https://hastebin.com"): HasteResult {
     return HasteResult(URL("$hasteServer/$key"), URL("$hasteServer/raw/$key"), key)
 }
 
-fun InputStream.haste(hasteServer: String = "https://hastebin.com"): HasteResult =
+fun InputStream.haste(hasteServer: String = "https://just-paste.it"): HasteResult =
     this.bufferedReader().readText().haste(hasteServer)
 
 data class HasteResult(val url: URL, val rawUrl: URL, val key: String)

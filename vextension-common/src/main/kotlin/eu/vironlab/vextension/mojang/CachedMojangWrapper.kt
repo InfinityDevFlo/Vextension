@@ -37,16 +37,8 @@
 
 package eu.vironlab.vextension.mojang
 
-import eu.vironlab.vextension.database.Database
-import eu.vironlab.vextension.database.DatabaseClient
-import eu.vironlab.vextension.document.document
-import eu.vironlab.vextension.extension.GSON_TYPE
-import eu.vironlab.vextension.extension.toUUID
-import eu.vironlab.vextension.mojang.user.MojangUser
-import java.util.*
 
-
-class CachedMojangWrapper(val dbClient: DatabaseClient) : DefaultMojangWrapper() {
+/*class CachedMojangWrapper(val dbClient: DatabaseClient) : DefaultMojangWrapper() {
 
     val nameUUIDCache: Database = dbClient.getDatabase("mojang_cache_name_uuid").complete()
     val userCache: Database = dbClient.getDatabase("mojang_cache_user").complete()
@@ -69,4 +61,4 @@ class CachedMojangWrapper(val dbClient: DatabaseClient) : DefaultMojangWrapper()
         }
 
 
-}
+}*/

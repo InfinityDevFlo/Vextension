@@ -120,6 +120,8 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.append(key, value)
     }
 
+    override fun append(doc: Document.() -> Unit) = doc.invoke(wrapped)
+
     override fun getDocument(key: String): Document? {
         return wrapped.getDocument(key)
     }
@@ -253,9 +255,7 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.getBinary(key, def)
     }
 
-    override fun get(key: String): JsonElement? {
-        return wrapped.get(key)
-    }
+    override fun String.invoke(doc: Document.() -> Unit) = doc.invoke(wrapped)
 
     override fun <T> get(key: String, clazz: Class<T>): T? {
         return wrapped.get(key, clazz)
@@ -265,6 +265,10 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.get(key, type)
     }
 
+    override fun <T> get(key: String, clazz: Class<T>, def: T): T? =
+        wrapped.get(key, clazz, def)
+
+
     override fun <T> get(key: String, type: Type, def: T): T? {
         return wrapped.get(key, type, def)
     }
@@ -273,10 +277,8 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.get(key, gson, clazz)
     }
 
+    override fun get(key: String): Any? = wrapped.get(key)
 
-    override fun <T> get(key: String, clazz: Class<T>, def: T): T {
-        return wrapped.get(key, clazz, def)
-    }
 
     override fun storage(storage: DocumentStorage): DocumentSpecificStorage {
         return DocumentSpecificStorageWrapper(this, Companion.storage)
@@ -294,9 +296,11 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
         return wrapped.contains(key)
     }
 
-    override fun delete(key: String) {
-        wrapped.delete(key)
-    }
+    override fun plusAssign(entry: Pair<String, Any>) = wrapped.plusAssign(entry)
+
+    override fun minusAssign(key: String) = wrapped.minusAssign(key)
+
+    override fun remove(key: String) = wrapped.remove(key)
 
     override fun clear() {
         return wrapped.clear()
@@ -313,6 +317,8 @@ class ConfigDocument(val file: File, private var wrapped: Document) : Document {
     override fun getKeys(): MutableCollection<String> {
         return wrapped.getKeys()
     }
+
+    override fun contains(entry: Pair<String, String>): Boolean = wrapped.contains(entry)
 
     fun loadConfig() {
         this.wrapped = storage.read(file)
