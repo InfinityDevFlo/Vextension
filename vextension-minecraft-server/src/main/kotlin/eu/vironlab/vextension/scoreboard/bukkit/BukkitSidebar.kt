@@ -44,6 +44,7 @@ import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
 import eu.vironlab.vextension.scoreboard.builder.SidebarLineImpl
+import net.kyori.adventure.text.Component
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -75,7 +76,7 @@ class BukkitSidebar(
     override fun addLine(line: SidebarLine) {
         if (!this.lines.containsKey(line.name)) {
             val color = ScoreboardUtil.getAvailableColor(usedColors)
-            this.lines.put(line.name, DataPair(color, line))
+            this.lines[line.name] = DataPair(color, line)
             this.usedColors.add(color)
             queueTask {
                 this.players.forEach {
@@ -85,8 +86,12 @@ class BukkitSidebar(
                         line.proceed!!.invoke(line, it.uniqueId)
                     }
                     val splittetLine = ScoreboardUtil.splitContent(line.content)
-                    team.prefix = splittetLine.first
-                    team.suffix = splittetLine.second
+                    team.prefix(
+                        Component.text(splittetLine.first)
+                    )
+                    team.suffix(
+                        Component.text(splittetLine.second)
+                    )
                     team.addEntry(color)
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(color).score = line.score
                 }
@@ -105,8 +110,12 @@ class BukkitSidebar(
                         line.proceed!!.invoke(line, it.uniqueId)
                     }
                     val splittetLine = ScoreboardUtil.splitContent(line.content)
-                    team.prefix = splittetLine.first
-                    team.suffix = splittetLine.second
+                    team.prefix(
+                        Component.text(splittetLine.first)
+                    )
+                    team.suffix(
+                        Component.text(splittetLine.second)
+                    )
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(lines.get(name)!!.first).score = line.score
                 }
             }
@@ -122,7 +131,7 @@ class BukkitSidebar(
         if (scoreboard.getObjective("sidebar") != null) {
             scoreboard.getObjective("sidebar")!!.unregister()
         }
-        val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", this.title)
+        val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", Component.text(this.title))
         objective.displaySlot = DisplaySlot.SIDEBAR
         this.lines.forEach { (name, pair) ->
             if (scoreboard.getTeam(name) != null) {
@@ -135,17 +144,12 @@ class BukkitSidebar(
             }
             //splittetLine = ScoreboardUtil.splitContent(pair.second.content)
             val splittetLine = ScoreboardUtil.splitContent(line.content)
-            if (line.content.length > 32) {
-                Executors.newSingleThreadScheduledExecutor().schedule({
-                    for (index in pair.second.content.indices) {
-                        team.suffix = pair.second.content.substring(index, index + 16)
-                        Thread.sleep(1000)
-                    }
-                }, 3, TimeUnit.SECONDS)
-            } else {
-                team.prefix = splittetLine.first
-                team.suffix = splittetLine.second
-            }
+            team.prefix(
+                Component.text(splittetLine.first)
+            )
+            team.suffix(
+                Component.text(splittetLine.second)
+            )
             team.addEntry(pair.first)
             objective.getScore(pair.first).score = pair.second.score
         }
