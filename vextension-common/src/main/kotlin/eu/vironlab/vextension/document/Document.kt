@@ -35,7 +35,6 @@
  *<p
  */
 
-
 package eu.vironlab.vextension.document
 
 import com.google.gson.Gson
@@ -50,11 +49,57 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.function.Consumer
 
-/**
- * This class is used for the hole storage and Database System of the Cord. You can get this as ExtensionConfig or when you add/get Properties from many instances.
- * You can store the Document as Json of Yaml
- */
 interface Document {
+
+    /**
+     * Get an already appended Document by a key
+     * @param key is the key for getting the Document
+     * @return the Document if it exists
+     */
+    fun getDocument(key: String): Document?
+
+    /**
+     * Get a Collection of Document identified by key
+     * @param key is the key for getting the Documents
+     * @return a Collection with the Document if exists
+     */
+    fun getDocuments(key: String): Collection<Document>?
+
+    /**
+     * @return the current Document as JsonStorage
+     */
+    fun jsonStorage(): DocumentSpecificStorage {
+        return storage(DocumentFactory.instance.documentJsonStorage)
+    }
+
+    /**
+     * @return the current Document as YamlStorage
+     */
+    fun yamlStorage(): DocumentSpecificStorage {
+        return storage(DocumentFactory.instance.documentYamlStorage)
+    }
+
+    /**
+     * @return the current Document as XMLStorage
+     */
+    fun xmlStorage(): DocumentSpecificStorage {
+        return storage(DocumentFactory.instance.documentXmlStorage)
+    }
+
+    /**
+     * Get the Document as SpecificDocumentStorage by an IDocumentStorage instance
+     * @param storage is the Storage to get the specific Storage
+     * @return the SpecificStorage
+     */
+    fun storage(storage: DocumentStorage): DocumentSpecificStorage
+
+    /**
+     * Serialize the current Document to String
+     */
+    fun toJson(): String {
+        return jsonStorage().serializeToString()
+    }
+
     /**
      * Get the current Document instance as plain Java Object (Any in Kotlin)
      * @return the current instance as Object
@@ -152,20 +197,6 @@ interface Document {
      * @param value is the JsonElement to append into the Document
      */
     fun append(key: String, value: JsonElement): Document
-
-    /**
-     * Get an already appended Document by a key
-     * @param key is the key for getting the Document
-     * @return the Document if it exists
-     */
-    fun getDocument(key: String): Document?
-
-    /**
-     * Get a Collection of Document identified by key
-     * @param key is the key for getting the Documents
-     * @return a Collection with the Document if exists
-     */
-    fun getDocuments(key: String): Collection<Document>?
 
     /**
      * Get an Integer by a Key
@@ -272,69 +303,6 @@ interface Document {
         return getKeys().isEmpty()
     }
 
-
-    /**
-     * Get a List of a specific generic type
-     * @param key is the key of the List
-     * @return the List
-     */
-    fun <T> getList(key: String): MutableList<T>? {
-        return get(key, object : TypeToken<MutableList<T>>() {}.type)
-    }
-
-    /**
-     * Get a Map of specific generic types
-     * @param key is the key of the Map
-     * @return the Map
-     */
-    fun <K, V> getMap(key: String): MutableMap<K, V>? {
-        return get(key, object : TypeToken<MutableMap<K, V>>() {}.type)
-    }
-
-    /**
-     * Get a JsonElement by a key
-     * @param key is the key of the element
-     * @return the JsonElement
-     */
-    fun get(key: String): JsonElement?
-
-    /**
-     * Get a Value of a Specific class by a key
-     * @param key is the Key to the the Value
-     * @param clazz is the Class of the Value
-     * @param <T> is the Class to parse the Value
-     * @return the parsed Value if exist
-    </T */
-    fun <T> get(key: String, clazz: Class<T>): T?
-
-    /**
-     * Get a Value of a Type by the key
-     * @param key is the Key to get the Value
-     * @param type is the Type of the Value
-     * @param <T> is the Class to parse the Value
-     * @return the parsed Value if exist
-    </T */
-    fun <T> get(key: String, type: Type): T?
-
-    /**
-     * Get a Value of a Type by the key with default value
-     * @param key is the Key to get the Value
-     * @param type is the Type of the Value
-     * @param <T> is the Class to parse the Value
-     * @return the parsed Value if exist or definiton
-    </T */
-    fun <T> get(key: String, type: Type, def: T): T?
-
-    /**
-     * Get a Value of an specific Class by adding a Gson parser to get the Class
-     * @param key is the key to get the Value
-     * @param gson is the parser to parse the value
-     * @param clazz is the class on wich the value will be parsed
-     * @param <T> is the Value class
-     * @return the Value if exist
-    </T */
-    operator fun <T> get(key: String, gson: Gson, clazz: Class<T>): T?
-
     /**
      * Get an Integer and append a value if the key does not exist
      *
@@ -388,30 +356,6 @@ interface Document {
      * @return the value if exists otherwise it will return the default value
      */
     fun getFloat(key: String, def: Float): Float
-
-    /**
-     * Get a List of a specific generic type
-     * @param key is the key of the List
-     * @return the List
-     */
-    fun <T> getList(key: String, def: MutableList<T>): MutableList<T> {
-        return getList<T>(key) ?: run {
-            append(key, def)
-            def
-        }
-    }
-
-    /**
-     * Get a Map of specific generic types
-     * @param key is the key of the Map
-     * @return the Map
-     */
-    fun <K, V> getMap(key: String, def: MutableMap<K, V>): MutableMap<K, V> {
-        return getMap<K, V>(key) ?: run {
-            append(key, def)
-            def
-        }
-    }
 
     /**
      * Get a String and append a value if the key does not exist
@@ -468,16 +412,6 @@ interface Document {
     fun getBinary(key: String, def: ByteArray): ByteArray
 
     /**
-     * Get a Class instance and append a value if the key does not exists
-     *
-     * @param key is the Key to get the Value
-     * @param clazz is the Class of the returned instance
-     * @param def is the Default value to set if the key does not exist
-     * @return the value if exists otherwise it will return the default value
-     */
-    fun <T> get(key: String, clazz: Class<T>, def: T): T
-
-    /**
      * Get a BigInteger and append a value if the key does not exist
      *
      * @param key is the Key to get the Value
@@ -505,32 +439,17 @@ interface Document {
     fun getChar(key: String, def: Char): Char
 
     /**
-     * @return the current Document as JsonStorage
+     * Clear the whole Document
      */
-    fun jsonStorage(): DocumentSpecificStorage {
-        return storage(DocumentFactory.instance.documentJsonStorage)
-    }
+    fun clear()
 
     /**
-     * @return the current Document as YamlStorage
+     * Get the count of all keys in the Document
+     * @return the count of keys
      */
-    fun yamlStorage(): DocumentSpecificStorage {
-        return storage(DocumentFactory.instance.documentYamlStorage)
-    }
+    fun size(): Int
 
-    /**
-     * @return the current Document as XMLStorage
-     */
-    fun xmlStorage(): DocumentSpecificStorage {
-        return storage(DocumentFactory.instance.documentXmlStorage)
-    }
-
-    /**
-     * Get the Document as SpecificDocumentStorage by an IDocumentStorage instance
-     * @param storage is the Storage to get the specific Storage
-     * @return the SpecificStorage
-     */
-    fun storage(storage: DocumentStorage): DocumentSpecificStorage
+    fun <T> toInstance(type: Type): T
 
     /**
      * Execute the Unit to all keys of the Document
@@ -545,43 +464,135 @@ interface Document {
     fun forEach(consumer: Consumer<String>)
 
     /**
-     * Check if the Document contains a specific Key
-     * @param key is the Key for the Check
-     *
-     * @return is the Document contains the key
-     */
-    fun contains(key: String): Boolean
-
-    /**
-     * Delete a specific value from the Document
-     *
-     * @param key is the key of the value to Delete
-     */
-    fun delete(key: String)
-
-    /**
-     * Clear the whole Document
-     */
-    fun clear()
-
-    /**
-     * Get the count of all keys in the Document
-     * @return the count of keys
-     */
-    fun size(): Int
-
-    fun <T> toInstance(type: Type): T
-
-    /**
      * Get all keys of the Document
      * @return all keys in a Collection
      */
     fun getKeys(): MutableCollection<String>
 
     /**
-     * Serialize the current Document to String
+     * Check if there is [entry] in the Document
      */
-    fun toJson(): String {
-        return jsonStorage().serializeToString()
+    operator fun contains(entry: Pair<String, String>): Boolean
+
+    /**
+     * Check if there is an entry with [key] in the Document
+     */
+    operator fun contains(key: String): Boolean
+
+    /**
+     * Add [entry] to the Document
+     */
+    operator fun plusAssign(entry: Pair<String, Any>)
+
+    fun remove(key: String) = minusAssign(key)
+
+    /**
+     * Remove the Entry identified by [key] from the Document
+     */
+    operator fun minusAssign(key: String)
+
+    /**
+     * Get a List of a specific generic type
+     * @param key is the key of the List
+     * @return the List
+     */
+    fun <T> getList(key: String): MutableList<T>? {
+        return get(key, object : TypeToken<MutableList<T>>() {}.type)
     }
+
+    /**
+     * Get a Map of specific generic types
+     * @param key is the key of the Map
+     * @return the Map
+     */
+    fun <K, V> getMap(key: String): MutableMap<K, V>? {
+        return get(key, object : TypeToken<MutableMap<K, V>>() {}.type)
+    }
+
+    /**
+     * Get a Value of a Specific class by a key
+     * @param key is the Key to the the Value
+     * @param clazz is the Class of the Value
+     * @param <T> is the Class to parse the Value
+     * @return the parsed Value if exist
+    </T */
+    operator fun <T> get(key: String, clazz: Class<T>): T?
+
+    /**
+     * Get a Value of a Type by the key
+     * @param key is the Key to get the Value
+     * @param type is the Type of the Value
+     * @param <T> is the Class to parse the Value
+     * @return the parsed Value if exist
+    </T */
+    operator fun <T> get(key: String, type: Type): T?
+
+    /**
+     * Get a Value of a Type by the key with default value
+     * @param key is the Key to get the Value
+     * @param type is the Type of the Value
+     * @param <T> is the Class to parse the Value
+     * @return the parsed Value if exist or definiton
+    </T */
+    operator fun <T> get(key: String, clazz: Class<T>, def: T): T?
+
+    /**
+     * Get a Value of a Type by the key with default value
+     * @param key is the Key to get the Value
+     * @param type is the Type of the Value
+     * @param <T> is the Class to parse the Value
+     * @return the parsed Value if exist or definiton
+    </T */
+    operator fun <T> get(key: String, type: Type, def: T): T?
+
+    /**
+     * Get a Value of an specific Class by adding a Gson parser to get the Class
+     * @param key is the key to get the Value
+     * @param gson is the parser to parse the value
+     * @param clazz is the class on wich the value will be parsed
+     * @param <T> is the Value class
+     * @return the Value if exist
+    </T */
+    operator fun <T> get(key: String, gson: Gson, clazz: Class<T>): T?
+
+    /**
+     * Get a List of a specific generic type
+     * @param key is the key of the List
+     * @return the List
+     */
+    operator fun <T> get(key: String, def: MutableList<T>): MutableList<T> = getList<T>(key) ?: run {
+        plusAssign(Pair(key, def))
+        return@run def
+    }
+
+    /**
+     * Get a Map of specific generic types
+     * @param key is the key of the Map
+     * @return the Map
+     */
+    operator fun <K, V> get(key: String, def: MutableMap<K, V>): MutableMap<K, V> = getMap<K, V>(key) ?: run {
+        Pair(key, def)
+        def
+    }
+
+    /**
+     * Get the value of [key] as Any and Null if the key does not exists
+     */
+    operator fun get(key: String): Any?
+
+    /**
+     * Insert a Value by String instance
+     */
+    infix fun String.to(value: Any) = plusAssign(Pair(this, value))
+
+    /**
+     * Append Multiple Value to the Document using DSL
+     */
+    fun append(doc: Document.() -> Unit)
+
+    /**
+     * Create a new Json Object in DSL
+     */
+    operator fun String.invoke(doc: Document.() -> Unit)
+
 }

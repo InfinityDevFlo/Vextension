@@ -78,7 +78,8 @@ object Properties {
                 Pair("mongo", "org.mongodb:mongodb-driver-sync:4.3.0"),
                 Pair("mariadb", "org.mariadb.jdbc:mariadb-java-client:2.7.2"),
                 Pair("hikari", "com.zaxxer:HikariCP:3.4.5"),
-                Pair("h2", "com.h2database:h2:1.4.197")
+                Pair("h2", "com.h2database:h2:1.4.197"),
+                "redis" to "io.lettuce:lettuce-core:6.1.4.RELEASE"
             )
             it["yaml"] = mutableMapOf(
                 Pair("snake", "org.yaml:snakeyaml:1.27")

@@ -47,7 +47,7 @@ pipeline {
                     archiveArtifacts artifacts: 'vextension-command/build/libs/*.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-cli/build/libs/*.jar', fingerprint: true
                     archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/*.jar', fingerprint: true
-                    archiveArtifacts artifacts: 'vextension-minecraft-proxy/build/libs/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'vextension-minecraft-server/build/libs/*.jar', fingerprint: true
                 }
             }
         }

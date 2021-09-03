@@ -37,6 +37,7 @@
 
 package eu.vironlab.vextension.mojang
 
+import eu.vironlab.vextension.concurrent.network.NetworkAction
 import eu.vironlab.vextension.rest.wrapper.mojang.MojangServiceStatusList
 import eu.vironlab.vextension.mojang.user.MojangUser
 import eu.vironlab.vextension.mojang.user.NameHistory
@@ -49,33 +50,33 @@ interface MojangWrapper {
      *
      * @return a List with all Services
      */
-    fun getServiceStatus(): MojangServiceStatusList
+    fun getServiceStatus(): NetworkAction<MojangServiceStatusList>
 
     /**
      * Get a MojangUser by [name]
      *
      * @return an Optional with the User
      */
-    fun getPlayer(name: String): MojangUser? = getPlayer(getUUID(name) ?: run { return null })
+    //fun getPlayer(name: String): NetworkAction<MojangUser?> = getUUID(name)
 
     /**
      * Get the UUID of a Player by [name]
      *
      * @return an Optional with the UUID
      */
-    fun getUUID(name: String): UUID?
+    fun getUUID(name: String): NetworkAction<UUID?>
 
     /**
      * Get a MojangUser by the [uuid] of a Player
      *
      * @return an Optional with the MojangUser
      */
-    fun getPlayer(uuid: UUID): MojangUser?
+    fun getPlayer(uuid: UUID): NetworkAction<MojangUser?>
 
     /**
      * Get the namehistory of [uuid]
      *
      * @return the history as Optional
      */
-    fun getNameHistory(uuid: UUID): NameHistory?
+    fun getNameHistory(uuid: UUID): NetworkAction<NameHistory?>
 }

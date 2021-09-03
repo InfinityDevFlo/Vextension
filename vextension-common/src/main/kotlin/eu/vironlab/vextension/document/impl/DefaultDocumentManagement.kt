@@ -163,6 +163,11 @@ internal class DefaultDocumentManagement : DocumentManagement {
             return this.jsonObject.keySet()
         }
 
+        override operator fun contains(entry: Pair<String, String>): Boolean {
+            val e = this.jsonObject.get(entry.first) ?: return false
+            return if (e.asString == entry.second) true else false
+        }
+
         override fun size(): Int {
             return jsonObject.size()
         }
@@ -176,15 +181,19 @@ internal class DefaultDocumentManagement : DocumentManagement {
         }
 
         override fun clear() {
-            getKeys().forEach(Consumer { key: String -> delete(key) })
-        }
-
-        override fun delete(key: String) {
-            jsonObject.remove(key)
+            getKeys().forEach(Consumer { key: String -> remove(key) })
         }
 
         override fun contains(key: String): Boolean {
             return jsonObject.has(key)
+        }
+
+        override fun plusAssign(entry: Pair<String, Any>) {
+            this.jsonObject.add(entry.first, GSON.toJsonTree(entry.second))
+        }
+
+        override fun minusAssign(key: String) {
+            jsonObject.remove(key)
         }
 
         fun <T> toInstanceOf(clazz: Class<T>?): T {
@@ -479,6 +488,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
             return getJsonObject(key)
         }
 
+        override fun String.invoke(doc: Document.() -> Unit) = doc.invoke(this@DefaultDocument)
+
 
         override fun getInt(key: String, def: Int): Int {
             return getInt(key) ?: run {
@@ -639,6 +650,8 @@ internal class DefaultDocumentManagement : DocumentManagement {
         override fun append(key: String, value: JsonElement): Document {
             return append(key, value.asString)
         }
+
+        override fun append(doc: Document.() -> Unit) = doc.invoke(this@DefaultDocument)
 
     }
 

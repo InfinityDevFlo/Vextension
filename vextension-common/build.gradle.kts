@@ -4,6 +4,7 @@ dependencies {
     implementation(getDependency("database", "hikari"))
     implementation(getDependency("database", "mariadb"))
     implementation(getDependency("database", "h2"))
+    implementation(getDependency("database", "redis"))
 
     //Inject
     implementation(getDependency("google", "guice"))

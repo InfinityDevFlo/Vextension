@@ -50,7 +50,7 @@ import java.net.URL
 import java.util.*
 
 
-open class DefaultMojangWrapper : AbstractMojangWrapper() {
+/*open class DefaultMojangWrapper : AbstractMojangWrapper() {
     override fun getPlayer(uuid: UUID): MojangUser? {
         val profileRequest =
             URL(
@@ -84,4 +84,4 @@ open class DefaultMojangWrapper : AbstractMojangWrapper() {
         return NameHistory(history)
     }
 
-}
+}*/
