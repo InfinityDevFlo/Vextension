@@ -151,7 +151,7 @@ class BukkitSidebar(
                 Component.text(splittetLine.second)
             )
             team.addEntry(pair.first)
-            objective.getScore(pair.first).score = pair.second.score
+            objective.getScore(pair.first).score = line.score
         }
         p.scoreboard = scoreboard
         if (!players.contains(p))

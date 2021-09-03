@@ -7,12 +7,12 @@ object ScoreboardUtil {
 
     @JvmStatic
     fun splitContent(input: String): DataPair<String, String> {
-        if (input.length > 11) {
-            val first = input.substring(0, 10)
-            val second = ChatColor.getLastColors(first) + input.substring(11)
-            return DataPair(first, second)
+        return if (input.length > 64) {
+            val first = input.substring(0, 63)
+            val second = ChatColor.getLastColors(first) + input.substring(64)
+            DataPair(first, second)
         } else {
-            return DataPair(input, "§f")
+            DataPair(input, "§f")
         }
     }
 
