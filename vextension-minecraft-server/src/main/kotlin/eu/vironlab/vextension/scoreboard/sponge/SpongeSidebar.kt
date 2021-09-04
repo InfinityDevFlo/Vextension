@@ -42,6 +42,7 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
+import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 import org.spongepowered.api.entity.living.player.Player
 
@@ -60,6 +61,10 @@ class SpongeSidebar(
     init {
         //Sponge.getEventManager().registerListeners(this, VextensionSponge.instance)
     }
+
+    override var scoreboardProceed: ((UUID) -> Scoreboard)?
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     override fun addLine(line: SidebarLine) {
         if (!this.lines.containsKey(line.name)) {

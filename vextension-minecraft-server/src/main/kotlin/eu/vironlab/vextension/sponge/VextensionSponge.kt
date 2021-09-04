@@ -46,7 +46,7 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.Key
 import org.spongepowered.api.data.value.Value
 import org.spongepowered.plugin.PluginContainer
-import org.spongepowered.plugin.jvm.Plugin
+import org.spongepowered.plugin.builtin.jvm.Plugin
 
 
 @Plugin("sponge")
