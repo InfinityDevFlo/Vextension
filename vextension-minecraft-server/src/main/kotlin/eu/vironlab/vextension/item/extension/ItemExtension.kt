@@ -44,8 +44,11 @@ import eu.vironlab.vextension.sponge.VextensionSponge.Companion.vextensionSponge
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.spongepowered.api.item.inventory.ItemStackSnapshot
 import org.bukkit.inventory.ItemStack as BukkitItemStack
@@ -55,13 +58,15 @@ import org.spongepowered.api.item.inventory.ItemStack as SpongeItemStack
 fun ItemStack.toBukkit(): BukkitItemStack {
     if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
-    val item: BukkitItemStack =
+    val item =
         BukkitItemStack(Material.valueOf(this.material.toString()), this.amount)
     val meta = item.itemMeta
     if (meta is Damageable) meta.damage = this.damage
     if (name != null)
-        meta.setDisplayName(this.name)
-    meta.lore = this.lore
+        meta.displayName(Component.text(this.name!!))
+    if (skullOwner != null)
+        (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(skullOwner!!)
+    meta.lore(this.lore.map { Component.text(it) })
     meta.isUnbreakable = this.unbreakable
     meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, this.identifier)
     if (!VextensionBukkit.items.containsKey(this.identifier)) {

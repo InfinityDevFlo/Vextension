@@ -42,9 +42,11 @@ import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.extension.setItem
+import eu.vironlab.vextension.item.extension.toBukkit
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import net.kyori.adventure.text.Component
 import java.util.*
 import org.bukkit.Bukkit
 
@@ -59,7 +61,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         queueTask {
-            val inventory = Bukkit.createInventory(null, 9 * lines, name)
+            val inventory = Bukkit.createInventory(null, 9 * lines, Component.text(name))
             val guiCopy = if (openConsumer == null) this else
                 BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
                     .openConsumer(player)
@@ -70,7 +72,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
                         return@queueTask
                     }
                 }
-                inventory.setItem(index, item)
+                inventory.setItem(index, item.toBukkit())
             }
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
                 bukkitPlayer.openInventory(inventory)

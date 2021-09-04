@@ -53,6 +53,6 @@ data class ItemStack(
     var interactHandler: ((ItemStack, UUID, Optional<InteractType>) -> Unit)?,
     var clickHandler: ((ItemStack, UUID) -> Unit)?,
     var permission: String?,
-    var skullOwner: String? = null
+    var skullOwner: UUID? = null
 
 )
