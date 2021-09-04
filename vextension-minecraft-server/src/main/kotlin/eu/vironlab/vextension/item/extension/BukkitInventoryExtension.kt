@@ -43,6 +43,8 @@ import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import java.util.*
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
@@ -61,14 +63,15 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
             org.bukkit.inventory.ItemStack(Material.valueOf(item.material.toString()), item.amount)
         val meta = bukkitItem.itemMeta
         if (item.skullOwner != null) {
-            (meta as SkullMeta).owner = item.skullOwner
+            (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(item.skullOwner!!)
         }
         if (meta is Damageable) meta.damage = item.damage
         if (item.material.name.lowercase(Locale.getDefault()) != item.name)
-            meta.setDisplayName(item.name)
-        meta.lore = item.lore
+            meta.displayName(Component.text(item.name!!))
+        meta.lore(item.lore.map { Component.text(it) })
         meta.isUnbreakable = item.unbreakable
         meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, item.identifier)
+
         bukkitItem.itemMeta = meta
         if (!VextensionBukkit.items.containsKey(item.identifier)) {
             VextensionBukkit.items[item.identifier] = item
