@@ -56,6 +56,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
+import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 
 
@@ -71,6 +72,12 @@ class BukkitSidebar(
 
     init {
         Bukkit.getPluginManager().registerEvents(this, VextensionBukkit.instance)
+    }
+
+    override var scoreboardProceed: ((UUID) -> Scoreboard)? = null
+
+    fun useScoreboard(proceed: ((UUID) -> Scoreboard)?) {
+        scoreboardProceed = proceed
     }
 
     override fun addLine(line: SidebarLine) {
@@ -124,7 +131,7 @@ class BukkitSidebar(
 
     override fun set(player: UUID) {
         val p: Player = Bukkit.getPlayer(player) ?: return
-        val scoreboard = Bukkit.getScoreboardManager().newScoreboard
+        val scoreboard = scoreboardProceed?.invoke(player) ?: Bukkit.getScoreboardManager().newScoreboard
         if (scoreboard.getObjective(DisplaySlot.SIDEBAR) != null) {
             scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.unregister()
         }

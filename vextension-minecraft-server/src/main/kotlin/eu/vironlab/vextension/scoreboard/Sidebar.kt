@@ -38,6 +38,7 @@
 package eu.vironlab.vextension.scoreboard
 
 import eu.vironlab.vextension.collection.DataPair
+import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 
 interface Sidebar {
@@ -45,6 +46,8 @@ interface Sidebar {
     val title: String
 
     val lines: MutableMap<String, DataPair<String, SidebarLine>>
+
+    var scoreboardProceed: ((UUID) -> Scoreboard)?
 
     fun addLine(line: SidebarLine)
 
