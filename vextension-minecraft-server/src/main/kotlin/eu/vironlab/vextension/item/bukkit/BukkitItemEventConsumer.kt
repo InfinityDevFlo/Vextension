@@ -47,25 +47,24 @@ import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.persistence.PersistentDataType
 
 class BukkitItemEventConsumer : Listener {
     @EventHandler
     fun interact(e: PlayerInteractEvent) {
-        if (e.item != null) {
-            if (e.item!!.hasItemMeta()) {
-                if (!e.item!!.itemMeta.persistentDataContainer.isEmpty) {
-                    val item =
-                        VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
-                            ?: return
-                    if (item.blockInteract) e.isCancelled = true
-                    if (item.interactHandler != null) item.interactHandler!!.invoke(
-                        item,
-                        e.player.uniqueId,
-                        Optional.ofNullable(InteractType.valueOf(e.action.toString()))
-                    )
-                    e.action
-                }
+        if (e.item?.hasItemMeta() == true) {
+            if (!e.item!!.itemMeta.persistentDataContainer.isEmpty) {
+                val item =
+                    VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                        ?: return
+                if (item.blockInteract) e.isCancelled = true
+                if (item.interactHandler != null) item.interactHandler!!.invoke(
+                    item,
+                    e.player.uniqueId,
+                    Optional.ofNullable(InteractType.valueOf(e.action.toString()))
+                )
+                e.action
             }
         }
     }
@@ -92,15 +91,28 @@ class BukkitItemEventConsumer : Listener {
             if (e.cursor?.type != org.bukkit.Material.AIR) e.cursor else null,
             if (e.currentItem?.type != org.bukkit.Material.AIR) e.currentItem else null
         ).forEach { item ->
-            if (item != null) {
-                if (item.hasItemMeta()) {
-                    if (!item.itemMeta.persistentDataContainer.isEmpty) {
-                        val itemm: ItemStack =
-                            VextensionBukkit.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
-                                ?: return
-                        if (itemm.blockClick) e.isCancelled = true
-                        if (itemm.clickHandler != null) itemm.clickHandler!!.invoke(itemm, e.whoClicked.uniqueId)
-                    }
+            if (item?.hasItemMeta() == true) {
+                if (!item.itemMeta.persistentDataContainer.isEmpty) {
+                    val itemm: ItemStack =
+                        VextensionBukkit.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                            ?: return
+                    if (itemm.blockClick) e.isCancelled = true
+                    if (itemm.clickHandler != null) itemm.clickHandler!!.invoke(itemm, e.whoClicked.uniqueId)
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    fun offhand(event: PlayerSwapHandItemsEvent) {
+        mutableListOf(event.mainHandItem, event.offHandItem).forEach { item ->
+            if (item?.hasItemMeta() == true) {
+                if (!item.itemMeta.persistentDataContainer.isEmpty) {
+                    val itemm: ItemStack =
+                        VextensionBukkit.items[item.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                            ?: return
+                    if (itemm.blockClick) event.isCancelled = true
+                    if (itemm.clickHandler != null) itemm.clickHandler!!.invoke(itemm, event.player.uniqueId)
                 }
             }
         }
