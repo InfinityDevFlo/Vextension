@@ -13,6 +13,9 @@ class SpongeDataGUI(override val lines: Int, override val name: String) : DataGU
     override var defaultList: MutableCollection<ItemStack> = mutableListOf()
     override var clickHandler: ((ItemStack, UUID) -> Unit)? = null
     override var border: ItemStack? = null
+    override var layout: MutableMap<Int, ItemStack>
+        get() = TODO("Not yet implemented")
+        set(value) {}
 
     init {
         if (lines == 1) {
@@ -36,14 +39,12 @@ class SpongeDataGUI(override val lines: Int, override val name: String) : DataGU
                     if (currentStep + steps < contents.size) currentStep + steps else contents.size
                 )
                 pages.add(
-                    SpongePage().also {
-                        it.border = this.border
-                    }.create(
+                    SpongePage().create(
                         contents.toMutableList().subList(
                             currentStep,
                             if (currentStep + steps < contents.size) currentStep + steps else contents.size
-                        ), index, this
-                    )
+                        ), index, this, SpongeGUI(lines, name)
+                    ) as SpongeGUI
                 )
                 index++
                 step += steps + 1

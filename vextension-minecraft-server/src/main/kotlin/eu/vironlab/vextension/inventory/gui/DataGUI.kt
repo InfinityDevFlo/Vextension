@@ -45,4 +45,5 @@ interface DataGUI : GUI {
     var defaultList: MutableCollection<ItemStack>
     var clickHandler: ((ItemStack, UUID) -> Unit)?
     var border: ItemStack?
+    var layout: MutableMap<Int, ItemStack>
 }

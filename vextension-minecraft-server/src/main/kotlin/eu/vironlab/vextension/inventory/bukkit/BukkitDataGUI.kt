@@ -38,6 +38,7 @@ package eu.vironlab.vextension.inventory.bukkit
 
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.DataGUI
+import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
@@ -48,6 +49,7 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
     override var border: ItemStack? = null
     override var defaultList: MutableCollection<ItemStack> = mutableListOf()
     override var clickHandler: ((ItemStack, UUID) -> Unit)? = null
+    override var layout: MutableMap<Int, ItemStack> = mutableMapOf()
 
     override fun open(player: UUID) {
         open(player, defaultList)
@@ -61,13 +63,18 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
 
     override fun open(player: UUID, list: MutableCollection<ItemStack>) {
         queueTask {
+            println("PRE-SET")
             val contents =
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
+            val layout = BukkitGUI(lines, name).also { it.contents = layout.toMutableMap() }
+            if (border != null)
+                layout.setBorder(border)
             val pages: MutableList<BukkitGUI> = mutableListOf()
-            val steps: Int =
-                if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
+            val steps: Int = 9 * lines - layout.contents.size
+            //if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
             var step = 0
             var index = 0
+            println("SETS")
             while (step < contents.size) {
                 val currentStep = steps * index
                 contents.toMutableList().subList(
@@ -75,54 +82,55 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                     if (currentStep + steps < contents.size) currentStep + steps else contents.size
                 )
                 pages.add(
-                    BukkitPage().also {
-                        it.border = this.border
-                    }.create(
+                    BukkitPage().create(
                         contents.toMutableList().subList(
                             currentStep,
-                            if (currentStep + steps < contents.size) currentStep + steps else contents.size
-                        ), index, this
+                            if (currentStep + steps < contents.size) currentStep + steps else contents.size,
+                        ), index, this, layout
                     )
                 )
                 index++
                 step += steps + 1
             }
-            for ((indexx, page) in pages.withIndex()) {
+            println("PUTS")
+            for ((i, page) in pages.withIndex()) {
                 val indexUp: (ItemStack, UUID) -> Unit = { _, uuid ->
-                    pages[indexx + 1].open(uuid)
+                    pages[i + 1].open(uuid)
                 }
                 val indexDown: (ItemStack, UUID) -> Unit = { _, uuid ->
-                    pages[indexx - 1].open(uuid)
+                    pages[i - 1].open(uuid)
                 }
-                when (indexx) {
+                when (i) {
                     0 -> {
-                        page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                            setName("Goto Page ${indexx + 2} ->")
-                            setBlockAll(true)
-                            setClickHandler(indexUp)
-                        })
+                        if (pages.size != 1)
+                            page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
+                                setName("Goto Page ${i + 2} ->")
+                                setBlockAll(true)
+                                setClickHandler(indexUp)
+                            })
                     }
                     pages.lastIndex -> {
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $indexx")
+                            setName("<- Goto Page $i")
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })
                     }
                     else -> {
                         page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                            setName("Goto Page ${indexx + 2} ->")
+                            setName("Goto Page ${i + 2} ->")
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $indexx")
+                            setName("<- Goto Page $i")
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })
                     }
                 }
             }
+            println("OPENING")
             pages[0].open(player)
         }.queue()
     }
@@ -146,4 +154,29 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
         this.clickHandler = handler
         return this
     }
+
+    fun addLayoutItem(item: ItemStack): BukkitDataGUI {
+        var current = 0
+        var slot: Int? = null
+        for (i in layout.keys.toSortedSet().iterator()) {
+            if (i != current) {
+                slot = current
+                break
+            }
+            current++
+        }
+        slot ?: return this
+        layout.putIfAbsent(slot, item)
+        return this
+    }
+
+    fun addAllLayoutItems(items: Map<Int, ItemStack>): BukkitDataGUI {
+        layout.putAll(items)
+        return this
+    }
+}
+
+fun applyBukkitGUI(gui: BukkitGUI, init: BukkitGUI.() -> BukkitGUI): BukkitGUI {
+    gui.init()
+    return gui
 }

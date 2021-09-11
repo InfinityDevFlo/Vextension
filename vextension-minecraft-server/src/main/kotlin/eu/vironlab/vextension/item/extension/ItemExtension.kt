@@ -37,8 +37,13 @@
 
 package eu.vironlab.vextension.item.extension
 
+import com.destroystokyo.paper.profile.PlayerProfile
+import com.destroystokyo.paper.profile.ProfileProperty
+import com.google.gson.JsonParser
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.mojang.AbstractMojangWrapper
+import eu.vironlab.vextension.mojang.MojangConstants
 import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.sponge.VextensionSponge.Companion.vextensionSpongeKey
 import eu.vironlab.vextension.util.ServerType
@@ -47,10 +52,16 @@ import eu.vironlab.vextension.util.UnsupportedServerTypeException
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 import org.spongepowered.api.item.inventory.ItemStackSnapshot
+import org.spongepowered.api.profile.GameProfile
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.net.URL
+import java.util.*
 import org.bukkit.inventory.ItemStack as BukkitItemStack
 import org.spongepowered.api.item.inventory.ItemStack as SpongeItemStack
 
@@ -65,7 +76,17 @@ fun ItemStack.toBukkit(): BukkitItemStack {
     if (name != null)
         meta.displayName(Component.text(this.name!!))
     if (skullOwner != null)
-        (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(skullOwner!!)
+        if (!Bukkit.getOfflinePlayer(skullOwner!!).hasPlayedBefore()) (meta as SkullMeta).playerProfile = Bukkit.createProfile(skullOwner!!)
+            .also {
+                it.properties.also { l -> l.removeIf { ll -> ll.name == "textures" } }.add(ProfileProperty("textures", JsonParser().parse(InputStreamReader(URL("https://sessionserver.mojang.com/session/minecraft/profile/$skullOwner").openConnection().getInputStream()))
+                    .asJsonObject.get("properties").asJsonArray[0].asJsonObject.get("value").asString/*.let { textureData ->
+                        String.format("{textures:{SKIN:{url:\\\"%s\\\"}}}", JsonParser().parse(Base64.getDecoder().decode(textureData).decodeToString())
+                            .asJsonObject.getAsJsonObject("textures")
+                            .getAsJsonObject("SKIN").get("url").asString)
+                }*/))
+
+            } else
+            (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(skullOwner!!)
     meta.lore(this.lore.map { Component.text(it) })
     meta.isUnbreakable = this.unbreakable
     meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, this.identifier)

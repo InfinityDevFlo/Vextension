@@ -55,7 +55,12 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
     override fun open(player: UUID) {
         open(player, null)
     }
-
+    fun clone(): BukkitGUI {
+        return BukkitGUI(lines, name).also {
+            it.contents = contents.toMutableMap()
+            it.currentBorder = currentBorder
+        }
+    }
     private var currentBorder: ItemStack? = null
     fun open(player: UUID, openConsumer: (BukkitGUI.(UUID) -> BukkitGUI)?) {
         if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
