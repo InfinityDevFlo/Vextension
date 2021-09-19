@@ -59,24 +59,7 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
     if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
     queueTask {
-        val bukkitItem: org.bukkit.inventory.ItemStack =
-            org.bukkit.inventory.ItemStack(Material.valueOf(item.material.toString()), item.amount)
-        val meta = bukkitItem.itemMeta
-        if (item.skullOwner != null) {
-            (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(item.skullOwner!!)
-        }
-        if (meta is Damageable) meta.damage = item.damage
-        if (item.material.name.lowercase(Locale.getDefault()) != item.name)
-            meta.displayName(Component.text(item.name!!))
-        meta.lore(item.lore.map { Component.text(it) })
-        meta.isUnbreakable = item.unbreakable
-        meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, item.identifier)
-
-        bukkitItem.itemMeta = meta
-        if (!VextensionBukkit.items.containsKey(item.identifier)) {
-            VextensionBukkit.items[item.identifier] = item
-        }
-        this.setItem(slot, bukkitItem)
+        this.setItem(slot, item.toBukkit())
     }.queue()
     return this
 }

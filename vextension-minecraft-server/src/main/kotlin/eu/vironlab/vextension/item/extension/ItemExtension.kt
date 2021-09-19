@@ -78,7 +78,7 @@ fun ItemStack.toBukkit(): BukkitItemStack {
     if (skullOwner != null)
         if (!Bukkit.getOfflinePlayer(skullOwner!!).hasPlayedBefore()) (meta as SkullMeta).playerProfile = Bukkit.createProfile(skullOwner!!)
             .also {
-                it.properties.also { l -> l.removeIf { ll -> ll.name == "textures" } }.add(ProfileProperty("textures", JsonParser().parse(InputStreamReader(URL("https://sessionserver.mojang.com/session/minecraft/profile/$skullOwner").openConnection().getInputStream()))
+                it.properties.also { l -> l.removeIf { ll -> ll.name == "textures" } }.add(ProfileProperty("textures", skullTexture ?: JsonParser().parse(InputStreamReader(URL("https://sessionserver.mojang.com/session/minecraft/profile/$skullOwner").openConnection().getInputStream()))
                     .asJsonObject.get("properties").asJsonArray[0].asJsonObject.get("value").asString/*.let { textureData ->
                         String.format("{textures:{SKIN:{url:\\\"%s\\\"}}}", JsonParser().parse(Base64.getDecoder().decode(textureData).decodeToString())
                             .asJsonObject.getAsJsonObject("textures")

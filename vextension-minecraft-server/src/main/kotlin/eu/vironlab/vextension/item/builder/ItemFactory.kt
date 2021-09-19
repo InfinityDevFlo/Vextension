@@ -65,6 +65,7 @@ class ItemFactory(
     private var clickHandler: ((ItemStack, UUID) -> Unit)? = null
     private var permission: String? = null
     private var skullOwner: UUID? = null
+    private var skullTexture: String? = null
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
@@ -93,7 +94,8 @@ class ItemFactory(
             interactHandler,
             clickHandler,
             permission,
-            skullOwner
+            skullOwner,
+            skullTexture
         )
     }
 
@@ -125,7 +127,8 @@ class ItemFactory(
             interactHandler,
             clickHandler,
             permission,
-            skullOwner
+            skullOwner,
+            skullTexture
         )
     }
 
@@ -198,6 +201,11 @@ class ItemFactory(
 
     fun setPermission(permission: String?): ItemFactory {
         this.permission = permission
+        return this
+    }
+
+    fun setFallbackSkullTexture(textureURL: String?): ItemFactory {
+        this.skullTexture = textureURL
         return this
     }
 }
