@@ -37,6 +37,7 @@
 package eu.vironlab.vextension.item.builder
 
 
+import com.google.gson.JsonParser
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.extension.random
 import eu.vironlab.vextension.factory.Factory
@@ -205,7 +206,18 @@ class ItemFactory(
     }
 
     fun setFallbackSkullTexture(textureURL: String?): ItemFactory {
-        this.skullTexture = textureURL
+        this.skullTexture = when {
+            textureURL == null -> textureURL
+            "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?\$".toRegex().matches(textureURL) -> textureURL
+            try {
+                JsonParser().parse(textureURL);
+                true
+            } catch (e: Exception) {
+                false
+            } -> Base64.getEncoder().encode(textureURL.toByteArray()).decodeToString()
+            else -> Base64.getEncoder().encode("{\"textures\": {\"SKIN\": {\"url\": \"$textureURL\"}}}".toByteArray())
+                .decodeToString()
+        }
         return this
     }
 }
