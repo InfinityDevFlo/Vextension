@@ -6,9 +6,10 @@ import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
+import net.kyori.adventure.text.Component
 import java.util.*
 
-class SpongeDataGUI(override val lines: Int, override val name: String) : DataGUI {
+class SpongeDataGUI(override val lines: Int, override val name: Component) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
     override var defaultList: MutableCollection<ItemStack> = mutableListOf()
     override var clickHandler: ((ItemStack, UUID) -> Unit)? = null
@@ -59,26 +60,26 @@ class SpongeDataGUI(override val lines: Int, override val name: String) : DataGU
                 when (indexx) {
                     0 -> {
                         page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                            setName("Goto Page ${indexx + 2} ->")
+                            setName(Component.text("Goto Page ${indexx + 2} ->"))
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                     }
                     pages.lastIndex -> {
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $indexx")
+                            setName(Component.text("<- Goto Page $indexx"))
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })
                     }
                     else -> {
                         page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                            setName("Goto Page ${indexx + 2} ->")
+                            setName(Component.text("Goto Page ${indexx + 2} ->"))
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $indexx")
+                            setName(Component.text("<- Goto Page $indexx"))
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })

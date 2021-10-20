@@ -42,9 +42,10 @@ import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
+import net.kyori.adventure.text.Component
 import java.util.*
 
-class BukkitDataGUI(override val lines: Int, override val name: String) : DataGUI {
+class BukkitDataGUI(override val lines: Int, override val name: Component) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
     override var border: ItemStack? = null
     override var defaultList: MutableCollection<ItemStack> = mutableListOf()
@@ -63,7 +64,6 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
 
     override fun open(player: UUID, list: MutableCollection<ItemStack>) {
         queueTask {
-            println("PRE-SET")
             val contents =
                 list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val layout = BukkitGUI(lines, name).also { it.contents = layout.toMutableMap() }
@@ -74,7 +74,6 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
             //if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
             var step = 0
             var index = 0
-            println("SETS")
             while (step < contents.size) {
                 val currentStep = steps * index
                 contents.toMutableList().subList(
@@ -92,7 +91,6 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                 index++
                 step += steps + 1
             }
-            println("PUTS")
             for ((i, page) in pages.withIndex()) {
                 val indexUp: (ItemStack, UUID) -> Unit = { _, uuid ->
                     pages[i + 1].open(uuid)
@@ -104,26 +102,26 @@ class BukkitDataGUI(override val lines: Int, override val name: String) : DataGU
                     0 -> {
                         if (pages.size != 1)
                             page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                                setName("Goto Page ${i + 2} ->")
+                                setName(Component.text("Goto Page ${i + 2} ->"))
                                 setBlockAll(true)
                                 setClickHandler(indexUp)
                             })
                     }
                     pages.lastIndex -> {
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $i")
+                            setName(Component.text("<- Goto Page $i"))
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })
                     }
                     else -> {
                         page.setItem(lines * 9 - 1, createItem(Material.ARROW) {
-                            setName("Goto Page ${i + 2} ->")
+                            setName(Component.text("Goto Page ${i + 2} ->"))
                             setBlockAll(true)
                             setClickHandler(indexUp)
                         })
                         page.setItem((lines - 1) * 9, createItem(Material.ARROW) {
-                            setName("<- Goto Page $i")
+                            setName(Component.text("<- Goto Page $i"))
                             setBlockAll(true)
                             setClickHandler(indexDown)
                         })

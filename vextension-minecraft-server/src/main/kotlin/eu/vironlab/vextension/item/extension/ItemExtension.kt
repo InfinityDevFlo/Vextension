@@ -74,7 +74,7 @@ fun ItemStack.toBukkit(): BukkitItemStack {
     val meta = item.itemMeta
     if (meta is Damageable) meta.damage = this.damage
     if (name != null)
-        meta.displayName(Component.text(this.name!!))
+        meta.displayName(this.name!!)
     if (skullOwner != null)
         if (!Bukkit.getOfflinePlayer(skullOwner!!).hasPlayedBefore()) (meta as SkullMeta).playerProfile =
             Bukkit.createProfile(skullOwner!!)
@@ -98,7 +98,7 @@ fun ItemStack.toBukkit(): BukkitItemStack {
 
                 } else
             (meta as SkullMeta).owningPlayer = Bukkit.getOfflinePlayer(skullOwner!!)
-    meta.lore(this.lore.map { Component.text(it) })
+    meta.lore(this.lore)
     meta.isUnbreakable = this.unbreakable
     meta.persistentDataContainer.set(VextensionBukkit.key, PersistentDataType.STRING, this.identifier)
     if (!VextensionBukkit.items.containsKey(this.identifier)) {

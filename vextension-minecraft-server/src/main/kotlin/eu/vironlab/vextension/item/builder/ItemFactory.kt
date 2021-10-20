@@ -47,16 +47,17 @@ import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
+import net.kyori.adventure.text.Component
 import java.util.*
 
 class ItemFactory(
     private var material: Material
 ) : Factory<ItemStack> {
 
-    private var name: String? = null
+    private var name: Component? = null
     private var amount: Int = 1
     private var damage: Int = 0
-    private var lore: MutableList<String> = mutableListOf()
+    private var lore: MutableList<Component> = mutableListOf()
     private var unbreakable: Boolean = false
     private var blockInteract: Boolean = false
     private var blockClick: Boolean = false
@@ -133,7 +134,7 @@ class ItemFactory(
         )
     }
 
-    fun setName(name: String): ItemFactory {
+    fun setName(name: Component): ItemFactory {
         this.name = name
         return this
     }
@@ -153,7 +154,7 @@ class ItemFactory(
         return this
     }
 
-    fun setLore(lore: MutableList<String>): ItemFactory {
+    fun setLore(lore: MutableList<Component>): ItemFactory {
         this.lore = lore
         return this
     }

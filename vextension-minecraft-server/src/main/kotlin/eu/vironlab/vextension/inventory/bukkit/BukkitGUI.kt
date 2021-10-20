@@ -50,7 +50,7 @@ import net.kyori.adventure.text.Component
 import java.util.*
 import org.bukkit.Bukkit
 
-class BukkitGUI(override val lines: Int, override val name: String) : GUI {
+class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         open(player, null)
@@ -66,7 +66,7 @@ class BukkitGUI(override val lines: Int, override val name: String) : GUI {
         if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
         queueTask {
-            val inventory = Bukkit.createInventory(null, 9 * lines, Component.text(name))
+            val inventory = Bukkit.createInventory(null, 9 * lines, name)
             val guiCopy = if (openConsumer == null) this else
                 BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
                     .openConsumer(player)

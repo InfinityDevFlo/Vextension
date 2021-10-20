@@ -36,14 +36,15 @@
  */
 package eu.vironlab.vextension.item
 
+import net.kyori.adventure.text.Component
 import java.util.*
 
 data class ItemStack(
     var material: Material,
-    var name: String?,
+    var name: Component?,
     var amount: Int,
     var damage: Int,
-    var lore: MutableList<String>,
+    var lore: MutableList<Component>,
     var unbreakable: Boolean,
     var blockDrop: Boolean,
     var blockInteract: Boolean,

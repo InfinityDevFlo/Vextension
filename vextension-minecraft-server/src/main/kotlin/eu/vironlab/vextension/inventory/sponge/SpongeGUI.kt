@@ -6,9 +6,10 @@ import eu.vironlab.vextension.item.ItemStack
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
+import net.kyori.adventure.text.Component
 import java.util.*
 
-class SpongeGUI(override val lines: Int, override val name: String) : GUI {
+class SpongeGUI(override val lines: Int, override val name: Component) : GUI {
     var contents: MutableMap<Int, ItemStack> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.SERVER_TYPE != ServerType.SPONGE)

@@ -36,12 +36,14 @@
  */
 package eu.vironlab.vextension.inventory.gui
 
+import eu.vironlab.vextension.inventory.bukkit.BukkitGUI
 import eu.vironlab.vextension.item.ItemStack
+import net.kyori.adventure.text.Component
 import java.util.*
 
 interface GUI {
     val lines: Int
-    val name: String
+    val name: Component
     fun open(player: UUID)
     fun setBorder(border: ItemStack?): GUI
 }
