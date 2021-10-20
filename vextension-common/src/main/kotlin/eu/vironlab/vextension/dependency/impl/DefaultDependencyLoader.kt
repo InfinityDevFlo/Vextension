@@ -116,9 +116,7 @@ internal class DefaultDependencyLoader(val libDir: File, val repositories: Mutab
             for (depend in depends) {
                 val dependen =
                     DefaultDocumentManagement.GSON.fromJson(depend.asJsonObject, Dependency::class.java)
-                if (dependen.scope == "runtime") {
-                    addToQueue(dependency, subdependencies)
-                }
+                addToQueue(dependency, subdependencies)
             }
         }
         this.queue.offer(DownloadableJar(URL("$server"), dest, folder))
