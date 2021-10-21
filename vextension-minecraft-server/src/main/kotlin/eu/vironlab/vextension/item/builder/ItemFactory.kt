@@ -68,6 +68,7 @@ class ItemFactory(
     private var permission: String? = null
     private var skullOwner: UUID? = null
     private var skullTexture: String? = null
+    private var properties: MutableMap<String, String> = mutableMapOf()
 
     override fun create(): ItemStack {
         var key: String = String.random(64)
@@ -97,7 +98,8 @@ class ItemFactory(
             clickHandler,
             permission,
             skullOwner,
-            skullTexture
+            skullTexture,
+            properties
         )
     }
 
@@ -130,7 +132,8 @@ class ItemFactory(
             clickHandler,
             permission,
             skullOwner,
-            skullTexture
+            skullTexture,
+            properties
         )
     }
 
@@ -219,6 +222,14 @@ class ItemFactory(
             else -> Base64.getEncoder().encode("{\"textures\": {\"SKIN\": {\"url\": \"$textureURL\"}}}".toByteArray())
                 .decodeToString()
         }
+        return this
+    }
+    fun addProperty(key: String, value: String): ItemFactory {
+        this.properties[key] = value
+        return this
+    }
+    fun removeProperty(key: String): ItemFactory {
+        this.properties.remove(key)
         return this
     }
 }

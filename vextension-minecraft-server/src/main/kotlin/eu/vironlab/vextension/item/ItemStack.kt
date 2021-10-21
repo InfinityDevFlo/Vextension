@@ -39,7 +39,7 @@ package eu.vironlab.vextension.item
 import net.kyori.adventure.text.Component
 import java.util.*
 
-data class ItemStack(
+open class ItemStack(
     var material: Material,
     var name: Component?,
     var amount: Int,
@@ -55,6 +55,6 @@ data class ItemStack(
     var clickHandler: ((ItemStack, UUID) -> Unit)?,
     var permission: String?,
     var skullOwner: UUID? = null,
-    var skullTexture: String? = null
-
+    var skullTexture: String? = null,
+    var properties: Map<String, String>
 )
