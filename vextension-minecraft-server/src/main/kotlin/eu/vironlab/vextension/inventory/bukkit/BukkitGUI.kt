@@ -82,7 +82,7 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
             Bukkit.getScheduler().runTask(VextensionBukkit.instance) { ->
                 bukkitPlayer.openInventory(inventory)
             }
-        }.queue()
+        }.onError { it.printStackTrace() }.queue()
     }
 
     fun setItem(slot: Int, item: ItemStack): BukkitGUI {

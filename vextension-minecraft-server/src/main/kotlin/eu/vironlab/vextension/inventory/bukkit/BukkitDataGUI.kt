@@ -130,7 +130,7 @@ class BukkitDataGUI(override val lines: Int, override val name: Component) : Dat
             }
             println("OPENING")
             pages[0].open(player)
-        }.queue()
+        }.onError { it.printStackTrace() }.queue()
     }
 
     fun setComparator(comparator: Comparator<ItemStack>): BukkitDataGUI {
