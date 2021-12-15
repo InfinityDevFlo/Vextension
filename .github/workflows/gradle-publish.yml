@@ -33,17 +33,11 @@ jobs:
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
-      with:
-        arguments: build
+      run: ./gradlew build
     - name: Shadow Build with Gradle
-      uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
-      with:
-        arguments: shadowJar
+      run: ./gradlew shadowJar
     - name: Source Build with Gradle
-      uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
-      with:
-        arguments: sourcesJar
+      run: ./gradlew sourcesJar
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
     - name: Create Release
@@ -59,8 +53,7 @@ jobs:
     - name: Upload artifact and release
       uses: nanoufo/action-upload-artifacts-and-release-assets@main
       with:
-        path: |
-          out/*
+        path: out/*
         upload-release-files: true
         release-upload-url: ${{ steps.create_release.outputs.upload_url }}
       env:
