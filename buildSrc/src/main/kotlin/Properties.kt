@@ -48,7 +48,7 @@ object Properties {
 
     @JvmStatic
     val versions: MutableMap<String, String> = mutableMapOf<String, String>().also {
-        it["kotlin"] = "1.5.10"
+        it["kotlin"] = "1.6.0"
         it["jackson"] = "2.1.0"
     }
 
