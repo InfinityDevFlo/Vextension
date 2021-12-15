@@ -92,7 +92,7 @@ object Properties {
                 Pair("bukkit", "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"),
                 Pair("sponge", "org.spongepowered:spongeapi:8.0.0-SNAPSHOT"),
                 Pair("bungee", "net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT"),
-                Pair("velocity", "com.velocitypowered:velocity-api:1.1.8")
+                Pair("velocity", "com.velocitypowered:velocity-api:3.0.1")
             )
         }
 
