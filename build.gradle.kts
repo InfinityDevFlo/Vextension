@@ -24,7 +24,6 @@ tasks.dokkaHtmlMultiModule.configure {
 }
 //Define Variables for all Projects
 allprojects {
-
     //Define Repositorys
     repositories {
         for (field in Repositories::class.java.declaredFields) {
@@ -54,7 +53,6 @@ subprojects {
         implementation(getDependency("kotlin", "stdlib"))
         implementation(getDependency("kotlin", "serialization"))
         implementation(getDependency("kotlinx", "coroutines-core"))
-
         testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 
@@ -119,6 +117,7 @@ subprojects {
         //Set the Name of the Sources Jar
         kotlinSourcesJar {
             archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}-sources.jar")
+            destinationDirectory.set(file("$projectDir/../out"))
             doFirst {
                 //Set Manifest
                 manifest {
@@ -138,7 +137,7 @@ subprojects {
         shadowJar {
             //Set the Name of the Output File
             archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}-full.jar")
-
+            destinationDirectory.set(file("$projectDir/../out"))
             exclude("META-INF/**")
 
             //Include Commons
@@ -155,7 +154,6 @@ subprojects {
                     include("**")
                 }
             }
-
             doFirst {
                 //Set Manifest
                 manifest {
@@ -174,6 +172,7 @@ subprojects {
 
         jar {
             archiveFileName.set("${project.name}-${Properties.version}-${getCommitHash()}.jar")
+            destinationDirectory.set(file("$projectDir/../out"))
             doFirst {
                 //Set Manifest
                 manifest {
