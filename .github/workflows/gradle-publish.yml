@@ -9,8 +9,8 @@ name: Gradle Package
 
 on:
   push:
-    branches: 
-      - main
+    branches:
+    -   main
 
 jobs:
   build:
