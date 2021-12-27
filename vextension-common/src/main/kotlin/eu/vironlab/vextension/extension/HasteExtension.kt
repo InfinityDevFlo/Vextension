@@ -55,6 +55,7 @@ fun String.haste(hasteServer: String = "https://just-paste.it"): HasteResult {
     val request =
         HttpRequest.newBuilder(URI("$hasteServer/documents")).POST(HttpRequest.BodyPublishers.ofString(this)).build()
     val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    println(response.body())
     val doc = documentFromJson(response.body())
     val key = doc.getString("key") ?: throw IllegalStateException("Cannot parse Key from Haste Result")
     return HasteResult(URL("$hasteServer/$key"), URL("$hasteServer/raw/$key"), key)

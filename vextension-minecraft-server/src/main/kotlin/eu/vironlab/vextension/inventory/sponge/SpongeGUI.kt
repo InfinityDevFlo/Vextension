@@ -3,6 +3,7 @@ package eu.vironlab.vextension.inventory.sponge
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
@@ -10,7 +11,7 @@ import net.kyori.adventure.text.Component
 import java.util.*
 
 class SpongeGUI(override val lines: Int, override val name: Component) : GUI {
-    var contents: MutableMap<Int, ItemStack> = mutableMapOf()
+    var contents: MutableMap<Int, ItemStackLike> = mutableMapOf()
     override fun open(player: UUID) {
         if (ServerUtil.SERVER_TYPE != ServerType.SPONGE)
             throw UnsupportedServerTypeException("SpongeGUI only supports Sponge!")
@@ -35,7 +36,7 @@ class SpongeGUI(override val lines: Int, override val name: Component) : GUI {
         }.queue()
     }
 
-    override fun setBorder(border: ItemStack?): SpongeGUI {
+    override fun setBorder(border: ItemStackLike?): SpongeGUI {
         //<editor-fold desc="Border creation" defaultstate="collapsed">
         for (i: Int in 0..8) {
             if (border != null)

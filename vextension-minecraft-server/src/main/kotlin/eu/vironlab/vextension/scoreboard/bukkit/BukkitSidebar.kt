@@ -63,7 +63,7 @@ import org.bukkit.scoreboard.Team
 class BukkitSidebar(
     override val lines: MutableMap<String, DataPair<String, SidebarLine>>,
     val usedColors: MutableCollection<String>,
-    override var title: String
+    override var title: (UUID) -> Component
 ) : Sidebar,
     Listener {
 
@@ -94,10 +94,10 @@ class BukkitSidebar(
                     }
                     val splittetLine = ScoreboardUtil.splitContent(line.content)
                     team.prefix(
-                        Component.text(splittetLine.first)
+                        splittetLine.first
                     )
                     team.suffix(
-                        Component.text(splittetLine.second)
+                        splittetLine.second
                     )
                     team.addEntry(color)
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(color).score = line.score
@@ -118,10 +118,10 @@ class BukkitSidebar(
                     }
                     val splittetLine = ScoreboardUtil.splitContent(line.content)
                     team.prefix(
-                        Component.text(splittetLine.first)
+                        splittetLine.first
                     )
                     team.suffix(
-                        Component.text(splittetLine.second)
+                        splittetLine.second
                     )
                     scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.getScore(lines.get(name)!!.first).score = line.score
                 }
@@ -138,7 +138,7 @@ class BukkitSidebar(
         if (scoreboard.getObjective("sidebar") != null) {
             scoreboard.getObjective("sidebar")!!.unregister()
         }
-        val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", Component.text(this.title))
+        val objective: Objective = scoreboard.registerNewObjective("sidebar", "dummy", this.title(player))
         objective.displaySlot = DisplaySlot.SIDEBAR
         this.lines.forEach { (name, pair) ->
             if (scoreboard.getTeam(name) != null) {
@@ -152,10 +152,10 @@ class BukkitSidebar(
             //splittetLine = ScoreboardUtil.splitContent(pair.second.content)
             val splittetLine = ScoreboardUtil.splitContent(line.content)
             team.prefix(
-                Component.text(splittetLine.first)
+                splittetLine.first
             )
             team.suffix(
-                Component.text(splittetLine.second)
+                splittetLine.second
             )
             team.addEntry(pair.first)
             objective.getScore(pair.first).score = line.score
@@ -199,11 +199,11 @@ class BukkitSidebar(
         }
     }
 
-    override fun updateTitle(title: String) {
+    override fun updateTitle(title: (UUID) -> Component) {
         this.title = title
         queueTask {
             players.forEach {
-                it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName = title
+                it.scoreboard.getObjective(DisplaySlot.SIDEBAR)!!.displayName(title(it.uniqueId))
             }
         }
     }

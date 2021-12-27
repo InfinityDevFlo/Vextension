@@ -42,6 +42,7 @@ import com.destroystokyo.paper.profile.ProfileProperty
 import com.google.gson.JsonParser
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.mojang.AbstractMojangWrapper
 import eu.vironlab.vextension.mojang.MojangConstants
 import eu.vironlab.vextension.sponge.VextensionSponge
@@ -108,6 +109,7 @@ fun ItemStack.toBukkit(): BukkitItemStack {
     return item
 }
 
+fun ItemStackLike.toBukkit(uuid: UUID? = null): BukkitItemStack = this.get(uuid).toBukkit()
 
 /*fun ItemStack.toSponge(): SpongeItemStack {
     return Sponge.getRegistry().createBuilder(Builder::class.java)

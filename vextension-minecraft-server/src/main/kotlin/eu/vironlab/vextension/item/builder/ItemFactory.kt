@@ -43,6 +43,7 @@ import eu.vironlab.vextension.extension.random
 import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.item.InteractType
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.sponge.VextensionSponge
 import eu.vironlab.vextension.util.ServerType
@@ -52,7 +53,7 @@ import java.util.*
 
 class ItemFactory(
     private var material: Material
-) : Factory<ItemStack> {
+) : Factory<ItemStack>, ItemStackLike {
 
     private var name: Component? = null
     private var amount: Int = 1
@@ -232,6 +233,8 @@ class ItemFactory(
         this.properties.remove(key)
         return this
     }
+
+    override fun get(uuid: UUID?): ItemStack = create()
 }
 
 fun createItem(material: Material, init: ItemFactory.() -> Unit): ItemStack {

@@ -37,13 +37,15 @@
 package eu.vironlab.vextension.inventory.gui
 
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import java.util.*
 
 interface DataGUI : GUI {
     var comparator: Comparator<ItemStack>?
-    fun open(player: UUID, list: MutableCollection<ItemStack>)
-    var defaultList: MutableCollection<ItemStack>
+    fun open(player: UUID, list: MutableCollection<ItemStackLike>)
+    fun open(player: UUID, list: MutableCollection<ItemStackLike>, comparator: Comparator<ItemStack>?)
+    var defaultList: MutableCollection<ItemStackLike>
     var clickHandler: ((ItemStack, UUID) -> Unit)?
-    var border: ItemStack?
-    var layout: MutableMap<Int, ItemStack>
+    var border: ItemStackLike?
+    var layout: MutableMap<Int, ItemStackLike>
 }

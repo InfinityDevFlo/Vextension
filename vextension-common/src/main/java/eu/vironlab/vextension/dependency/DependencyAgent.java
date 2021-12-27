@@ -38,6 +38,8 @@
 package eu.vironlab.vextension.dependency;
 
 import eu.vironlab.vextension.document.DocumentInit;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +86,18 @@ final public class DependencyAgent {
         }
     }
 
+    private static boolean bbInit = false;
+
+    private static @Nullable Instrumentation getBBInst() {
+        /*if (!bbInit) {
+            ByteBuddyAgent.install(ByteBuddyAgent.AttachmentProvider.ForUserDefinedToolsJar.INSTANCE);
+            bbInit = true;
+        }
+        return ByteBuddyAgent.getInstrumentation();*/
+        return null;
+    }
     public static void appendJarFile(JarFile file) {
+        Instrumentation instrumentation = DependencyAgent.instrumentation != null ? DependencyAgent.instrumentation : getBBInst();
         if (instrumentation != null) {
             instrumentation.appendToSystemClassLoaderSearch(file);
         } else throw new ExceptionInInitializerError("Instrumentation is null");

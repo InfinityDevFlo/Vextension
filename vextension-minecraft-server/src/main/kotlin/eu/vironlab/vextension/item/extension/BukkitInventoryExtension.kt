@@ -40,6 +40,7 @@ package eu.vironlab.vextension.item.extension
 import eu.vironlab.vextension.bukkit.VextensionBukkit
 import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
 import eu.vironlab.vextension.util.UnsupportedServerTypeException
@@ -48,18 +49,20 @@ import org.bukkit.Bukkit
 import java.util.*
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
 
 /**
  * Set the [item] on [slot] into the Inventory
+ * If it is a PlayerInventory, gives its UUID as an argument
  */
-fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
+fun Inventory.setItem(slot: Int, item: ItemStackLike, passUUID: Boolean = true): Inventory {
     if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
         throw UnsupportedServerTypeException("Only usable with bukkit")
     queueTask {
-        this.setItem(slot, item.toBukkit())
+        this.setItem(slot, item.toBukkit(if (passUUID && this is PlayerInventory) this.holder?.uniqueId else null))
     }.queue()
     return this
 }
@@ -67,7 +70,7 @@ fun Inventory.setItem(slot: Int, item: ItemStack): Inventory {
 /**
  * Add the [item] into a Bukkit Inventory
  */
-fun Inventory.addItem(item: ItemStack): Inventory {
+fun Inventory.addItem(item: ItemStackLike): Inventory {
     this.setItem(this.firstEmpty(), item)
     return this
 }

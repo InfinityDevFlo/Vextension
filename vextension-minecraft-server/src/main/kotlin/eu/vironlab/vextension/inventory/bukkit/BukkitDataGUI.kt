@@ -40,6 +40,7 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
 import net.kyori.adventure.text.Component
@@ -47,13 +48,17 @@ import java.util.*
 
 class BukkitDataGUI(override val lines: Int, override val name: Component) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
-    override var border: ItemStack? = null
-    override var defaultList: MutableCollection<ItemStack> = mutableListOf()
+    override var border: ItemStackLike? = null
+    override var defaultList: MutableCollection<ItemStackLike> = mutableListOf()
     override var clickHandler: ((ItemStack, UUID) -> Unit)? = null
-    override var layout: MutableMap<Int, ItemStack> = mutableMapOf()
+    override var layout: MutableMap<Int, ItemStackLike> = mutableMapOf()
 
     override fun open(player: UUID) {
         open(player, defaultList)
+    }
+
+    override fun open(player: UUID, list: MutableCollection<ItemStackLike>) {
+        open(player, list, comparator)
     }
 
     init {
@@ -62,13 +67,13 @@ class BukkitDataGUI(override val lines: Int, override val name: Component) : Dat
         }
     }
 
-    override fun open(player: UUID, list: MutableCollection<ItemStack>) {
+    override fun open(player: UUID, list: MutableCollection<ItemStackLike>, comparator: Comparator<ItemStack>?) {
         queueTask {
             val contents =
-                list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
+                list.map { it.get(player) }.sortedWith(comparator ?: this.comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val layout = BukkitGUI(lines, name).also { it.contents = layout.toMutableMap() }
             if (border != null)
-                layout.setBorder(border)
+                layout.setBorder(border!!.get(player))
             val pages: MutableList<BukkitGUI> = mutableListOf()
             val steps: Int = 9 * lines - layout.contents.size
             //if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
@@ -138,12 +143,12 @@ class BukkitDataGUI(override val lines: Int, override val name: Component) : Dat
         return this
     }
 
-    override fun setBorder(border: ItemStack?): BukkitDataGUI {
+    override fun setBorder(border: ItemStackLike?): BukkitDataGUI {
         this.border = border
         return this
     }
 
-    fun setDefaultList(list: MutableCollection<ItemStack>): BukkitDataGUI {
+    fun setDefaultList(list: MutableCollection<ItemStackLike>): BukkitDataGUI {
         this.defaultList = list
         return this
     }
@@ -152,8 +157,11 @@ class BukkitDataGUI(override val lines: Int, override val name: Component) : Dat
         this.clickHandler = handler
         return this
     }
-
-    fun addLayoutItem(item: ItemStack): BukkitDataGUI {
+    fun setLayoutItem(slot: Int, item: ItemStackLike): BukkitDataGUI {
+        this.layout[slot] = item
+        return this
+    }
+    fun addLayoutItem(item: ItemStackLike): BukkitDataGUI {
         var current = 0
         var slot: Int? = null
         for (i in layout.keys.toSortedSet().iterator()) {
@@ -168,7 +176,7 @@ class BukkitDataGUI(override val lines: Int, override val name: Component) : Dat
         return this
     }
 
-    fun addAllLayoutItems(items: Map<Int, ItemStack>): BukkitDataGUI {
+    fun addAllLayoutItems(items: Map<Int, ItemStackLike>): BukkitDataGUI {
         layout.putAll(items)
         return this
     }

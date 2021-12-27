@@ -56,8 +56,8 @@ class BukkitItemEventConsumer : Listener {
         if (e.item?.hasItemMeta() == true) {
             if (!e.item!!.itemMeta.persistentDataContainer.isEmpty) {
                 val item =
-                    VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
-                        ?: return
+                    (VextensionBukkit.items[e.item!!.itemMeta.persistentDataContainer[VextensionBukkit.key, PersistentDataType.STRING]]
+                        ?: return)
                 if (item.blockInteract) e.isCancelled = true
                 if (item.interactHandler != null) item.interactHandler!!.invoke(
                     item,

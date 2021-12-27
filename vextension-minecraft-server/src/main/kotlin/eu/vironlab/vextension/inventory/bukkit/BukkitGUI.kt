@@ -41,6 +41,7 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.extension.tryBukkitPlayer
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.item.extension.setItem
 import eu.vironlab.vextension.item.extension.toBukkit
 import eu.vironlab.vextension.util.ServerType
@@ -51,7 +52,7 @@ import java.util.*
 import org.bukkit.Bukkit
 
 class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
-    var contents: MutableMap<Int, ItemStack> = mutableMapOf()
+    var contents: MutableMap<Int, ItemStackLike> = mutableMapOf()
     override fun open(player: UUID) {
         open(player, null)
     }
@@ -61,7 +62,7 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
             it.currentBorder = currentBorder
         }
     }
-    private var currentBorder: ItemStack? = null
+    private var currentBorder: ItemStackLike? = null
     fun open(player: UUID, openConsumer: (BukkitGUI.(UUID) -> BukkitGUI)?) {
         if (ServerUtil.SERVER_TYPE != ServerType.BUKKIT)
             throw UnsupportedServerTypeException("BukkitGUI only supports Bukkit!")
@@ -71,10 +72,11 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
                 BukkitGUI(lines, name).setBorder(currentBorder).addAllItems(contents)
                     .openConsumer(player)
             val bukkitPlayer = player.tryBukkitPlayer().orElseThrow { IllegalArgumentException("Player doesn't exist") }
-            for ((index: Int, item: ItemStack) in guiCopy.contents) {
+            for ((index: Int, itemLike: ItemStackLike) in guiCopy.contents) {
+                val item = itemLike.get(player)
                 if (item.permission != null) {
                     if (!bukkitPlayer.hasPermission(item.permission!!)) {
-                        return@queueTask
+                       continue
                     }
                 }
                 inventory.setItem(index, item.toBukkit())
@@ -85,7 +87,7 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
         }.onError { it.printStackTrace() }.queue()
     }
 
-    fun setItem(slot: Int, item: ItemStack): BukkitGUI {
+    fun setItem(slot: Int, item: ItemStackLike): BukkitGUI {
         contents[slot] = item
         return this
     }
@@ -96,7 +98,7 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
     }
 
 
-    override fun setBorder(border: ItemStack?): BukkitGUI {
+    override fun setBorder(border: ItemStackLike?): BukkitGUI {
         currentBorder = border
         //<editor-fold desc="Border creation" defaultstate="collapsed">
         for (i: Int in 0..8) {
@@ -121,12 +123,12 @@ class BukkitGUI(override val lines: Int, override val name: Component) : GUI {
         return this
     }
 
-    fun addAllItems(itemList: Map<out Int, ItemStack>): BukkitGUI {
+    fun addAllItems(itemList: Map<out Int, ItemStackLike>): BukkitGUI {
         this.contents.putAll(itemList)
         return this
     }
 
-    fun addItem(item: ItemStack): BukkitGUI {
+    fun addItem(item: ItemStackLike): BukkitGUI {
         var current = 0
         var slot: Int? = null
         for (i in contents.keys.toSortedSet().iterator()) {

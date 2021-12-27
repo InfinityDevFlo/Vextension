@@ -39,15 +39,18 @@ package eu.vironlab.vextension.scoreboard.builder
 
 import eu.vironlab.vextension.factory.Factory
 import eu.vironlab.vextension.scoreboard.SidebarLine
+import net.kyori.adventure.text.Component
 import java.util.*
 
 
-class LineFactory : Factory<SidebarLine> {
+open class LineFactory : Factory<SidebarLine> {
 
     var name: String = ""
-    var content: String = ""
+    var content: Component = Component.empty()
+    @Deprecated("Use Component instead of String.", ReplaceWith("this.code.setContent(content)"), DeprecationLevel.ERROR)
+    fun setContent(content: String) = Exception("Deprecated.")
     var score: Int = 1
-    var proceed: ((SidebarLine, UUID) -> Unit?)? = null
+    var proceed: ((SidebarLine, UUID) -> Unit)? = null
 
     fun proceed(proceed: (SidebarLine, UUID) -> Unit) {
         this.proceed = proceed
@@ -73,7 +76,7 @@ interface LineConsumer<K, V> {
 }
 
 class SidebarLineImpl(
-    override val name: String, override var content: String, override var score: Int,
+    override val name: String, override var content: Component, override var score: Int,
     override var proceed: ((SidebarLine, UUID) -> Unit?)?
 ) : SidebarLine {
     fun clone(): SidebarLineImpl {

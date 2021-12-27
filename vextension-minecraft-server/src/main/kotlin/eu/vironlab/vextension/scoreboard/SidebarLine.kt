@@ -38,11 +38,12 @@
 package eu.vironlab.vextension.scoreboard
 
 import eu.vironlab.vextension.lang.Nameable
+import net.kyori.adventure.text.Component
 import java.util.*
 
 interface SidebarLine : Nameable {
 
-    var content: String
+    var content: Component
 
     var score: Int
 

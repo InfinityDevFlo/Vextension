@@ -42,6 +42,7 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.scoreboard.ScoreboardUtil
 import eu.vironlab.vextension.scoreboard.Sidebar
 import eu.vironlab.vextension.scoreboard.SidebarLine
+import net.kyori.adventure.text.Component
 import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 import org.spongepowered.api.entity.living.player.Player
@@ -50,7 +51,7 @@ import org.spongepowered.api.entity.living.player.Player
 class SpongeSidebar(
     override val lines: MutableMap<String, DataPair<String, SidebarLine>>,
     val usedColors: MutableCollection<String>,
-    override var title: String
+    override var title: (UUID) -> Component
 ) : Sidebar {
 
     val players: MutableList<Player> = mutableListOf()
@@ -182,7 +183,7 @@ class SpongeSidebar(
         }*/
     }
 
-    override fun updateTitle(title: String) {
+    override fun updateTitle(title: (UUID) -> Component) {
         this.title = title
         queueTask {
             players.forEach {

@@ -57,4 +57,6 @@ open class ItemStack(
     var skullOwner: UUID? = null,
     var skullTexture: String? = null,
     var properties: Map<String, String>
-)
+): ItemStackLike {
+    override fun get(uuid: UUID?): ItemStack = this
+}

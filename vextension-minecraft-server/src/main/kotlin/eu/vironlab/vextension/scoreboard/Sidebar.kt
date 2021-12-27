@@ -38,12 +38,13 @@
 package eu.vironlab.vextension.scoreboard
 
 import eu.vironlab.vextension.collection.DataPair
+import net.kyori.adventure.text.Component
 import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 
 interface Sidebar {
 
-    val title: String
+    val title: (UUID) -> Component
 
     val lines: MutableMap<String, DataPair<String, SidebarLine>>
 
@@ -65,5 +66,5 @@ interface Sidebar {
 
     fun remove(player: UUID)
 
-    fun updateTitle(title: String)
+    fun updateTitle(title: (UUID) -> Component)
 }

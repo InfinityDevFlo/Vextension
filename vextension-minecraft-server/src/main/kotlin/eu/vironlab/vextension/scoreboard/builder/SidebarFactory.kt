@@ -46,12 +46,14 @@ import eu.vironlab.vextension.scoreboard.bukkit.BukkitSidebar
 import eu.vironlab.vextension.scoreboard.sponge.SpongeSidebar
 import eu.vironlab.vextension.util.ServerType
 import eu.vironlab.vextension.util.ServerUtil
+import net.kyori.adventure.text.Component
+import java.util.*
 
 
 class SidebarFactory : Factory<Sidebar> {
 
     val lines: MutableMap<String, SidebarLine> = mutableMapOf()
-    var title: String = ""
+    var title: (UUID) -> Component = { Component.empty() }
 
     fun addLine(init: LineFactory.() -> Unit) {
         val builder: LineFactory = LineFactory()
@@ -63,8 +65,19 @@ class SidebarFactory : Factory<Sidebar> {
     fun addEmptyLine(name: String, score: Int) {
         addLine {
             this.score = score
-            this.content = " "
+            this.content = Component.empty()
             this.name = name
+        }
+    }
+
+    fun addDynamicLine(score: Int, name: String, setter: Component.(UUID) -> Component, startContent: Component = Component.empty()) {
+        addLine {
+            this.score = score
+            this.name = name
+            this.content = startContent
+            this.proceed = { line, uuid ->
+                line.content = line.content.setter(uuid)
+            }
         }
     }
 

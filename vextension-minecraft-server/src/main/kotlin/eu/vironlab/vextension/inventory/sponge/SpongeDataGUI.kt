@@ -4,6 +4,7 @@ import eu.vironlab.vextension.concurrent.task.queueTask
 import eu.vironlab.vextension.inventory.gui.DataGUI
 import eu.vironlab.vextension.inventory.gui.GUI
 import eu.vironlab.vextension.item.ItemStack
+import eu.vironlab.vextension.item.ItemStackLike
 import eu.vironlab.vextension.item.Material
 import eu.vironlab.vextension.item.builder.createItem
 import net.kyori.adventure.text.Component
@@ -11,10 +12,10 @@ import java.util.*
 
 class SpongeDataGUI(override val lines: Int, override val name: Component) : DataGUI {
     override var comparator: Comparator<ItemStack>? = null
-    override var defaultList: MutableCollection<ItemStack> = mutableListOf()
+    override var defaultList: MutableCollection<ItemStackLike> = mutableListOf()
     override var clickHandler: ((ItemStack, UUID) -> Unit)? = null
-    override var border: ItemStack? = null
-    override var layout: MutableMap<Int, ItemStack>
+    override var border: ItemStackLike? = null
+    override var layout: MutableMap<Int, ItemStackLike>
         get() = TODO("Not yet implemented")
         set(value) {}
 
@@ -24,10 +25,14 @@ class SpongeDataGUI(override val lines: Int, override val name: Component) : Dat
         }
     }
 
-    override fun open(player: UUID, list: MutableCollection<ItemStack>) {
+    override fun open(player: UUID, list: MutableCollection<ItemStackLike>) {
+        open(player, list, comparator)
+    }
+
+    override fun open(player: UUID, list: MutableCollection<ItemStackLike>, comparator: Comparator<ItemStack>?) {
         queueTask {
             val contents =
-                list.sortedWith(comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
+                list.map { it.get(player) }.sortedWith(comparator ?: this.comparator ?: throw NullPointerException("Comparator cannot be null")).toMutableList()
             val pages: MutableList<SpongeGUI> = mutableListOf()
             val steps: Int =
                 if (border != null) (((lines - 1) * 9) - (lines * 2)) + lines * 2 - 4 - 9 else (lines - 1) * 9
@@ -92,7 +97,7 @@ class SpongeDataGUI(override val lines: Int, override val name: Component) : Dat
 
     override fun open(player: UUID) = open(player, defaultList)
 
-    override fun setBorder(border: ItemStack?): GUI {
+    override fun setBorder(border: ItemStackLike?): GUI {
         this.border = border
         return this
     }
